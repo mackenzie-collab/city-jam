@@ -1,25 +1,13 @@
-# Finish City Jam deploy — run after `vercel login`
+# Finish City Jam deploy - run after `vercel login`
 $ErrorActionPreference = "Stop"
-Set-Location $PSScriptRoot
+Set-Location (Join-Path $PSScriptRoot "..")
 
-Write-Host "`n=== City Jam — finish Vercel deploy ===`n" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "=== City Jam - finish Vercel deploy ===" -ForegroundColor Cyan
+Write-Host ""
 
-# 1. Local health check
-Write-Host "Checking local Supabase..." -ForegroundColor Yellow
-try {
-  $health = Invoke-RestMethod "http://localhost:3000/api/health" -TimeoutSec 5
-  if ($health.ok) {
-    Write-Host "  Local Supabase: OK" -ForegroundColor Green
-  } else {
-    Write-Host "  Local health failed — run 'npm run dev' first" -ForegroundColor Red
-  }
-} catch {
-  Write-Host "  Dev server not running. Start with: npm run dev" -ForegroundColor Red
-}
-
-# 2. Load .env.local
 if (!(Test-Path ".env.local")) {
-  Write-Host "`nMissing .env.local — Supabase keys not found." -ForegroundColor Red
+  Write-Host "Missing .env.local - Supabase keys not found." -ForegroundColor Red
   exit 1
 }
 
@@ -38,21 +26,23 @@ if (!$url -or !$key) {
   exit 1
 }
 
-Write-Host "`nVercel login required if not already logged in:" -ForegroundColor Yellow
-Write-Host "  vercel login`n"
-
-# 3. Link project (creates .vercel if needed)
-Write-Host "Linking Vercel project (pick city-jam or create new)..." -ForegroundColor Yellow
+Write-Host "Linking Vercel project..." -ForegroundColor Yellow
 vercel link --yes 2>$null
 
-# 4. Push env vars (non-interactive)
 Write-Host "Setting Vercel environment variables..." -ForegroundColor Yellow
-echo $url | vercel env add NEXT_PUBLIC_SUPABASE_URL production preview development --yes 2>$null
-echo $key | vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY production preview development --yes 2>$null
+foreach ($envName in @("production", "preview", "development")) {
+  if ($envName -eq "preview") {
+    $url | vercel env add NEXT_PUBLIC_SUPABASE_URL preview --value $url --yes 2>$null
+    $key | vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY preview --value $key --yes 2>$null
+  } else {
+    $url | vercel env add NEXT_PUBLIC_SUPABASE_URL $envName --yes 2>$null
+    $key | vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY $envName --yes 2>$null
+  }
+}
 
-# 5. Deploy
-Write-Host "`nDeploying to production..." -ForegroundColor Yellow
+Write-Host "Deploying to production..." -ForegroundColor Yellow
 vercel --prod --yes
 
-Write-Host "`nDone! Open the URL above and test /api/health" -ForegroundColor Green
-Write-Host "Share that URL with friends for live matching.`n" -ForegroundColor Green
+Write-Host ""
+Write-Host "Done! Test /api/health on the URL above." -ForegroundColor Green
+Write-Host ""
