@@ -4,15 +4,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import JamStreakWidget from "@/components/JamStreakWidget";
 import { useAuth } from "@/hooks/useAuth";
 
 const navLinks = [
+  { href: "/community", label: "Community", highlight: true },
   { href: "/studio", label: "Studio" },
-  { href: "/signal-map", label: "Signal Map" },
+  { href: "/signal-map", label: "Map" },
   { href: "/blind-echo", label: "Blind Echo" },
   { href: "/echo-roulette", label: "Echo Roulette" },
-  { href: "/project-match", label: "Projects" },
-  { href: "/listening-rooms", label: "Rooms" },
 ];
 
 export default function Navbar() {
@@ -27,18 +27,20 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 flex w-full items-center justify-between bg-cj-purple-dark px-6 py-4 md:px-8">
       <Link
-        href="/"
+        href={isAuthenticated ? "/community" : "/"}
         className="font-display text-2xl font-bold tracking-wide text-cj-gold md:text-3xl"
       >
         CITY<span className="mx-1 opacity-60">/</span>JAM
       </Link>
 
-      <div className="hidden items-center gap-5 xl:flex">
+      <div className="hidden items-center gap-5 lg:flex">
         {navLinks.map((link) => (
           <Link
             key={link.href}
             href={link.href}
-            className="text-xs uppercase tracking-widest text-cj-gold no-underline transition-opacity hover:opacity-70"
+            className={`text-xs uppercase tracking-widest no-underline transition-opacity hover:opacity-70 ${
+              link.highlight ? "font-semibold text-cj-gold-bright" : "text-cj-gold"
+            }`}
           >
             {link.label}
           </Link>
@@ -48,6 +50,7 @@ export default function Navbar() {
       <div className="flex items-center gap-3">
         {!loading && isAuthenticated ? (
           <>
+            <JamStreakWidget compact />
             <Link
               href="/profile"
               className="hidden items-center gap-1 text-xs uppercase tracking-widest text-cj-gold sm:flex"

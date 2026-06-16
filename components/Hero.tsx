@@ -25,13 +25,18 @@ export default function Hero() {
         </p>
 
         <div className="mt-10 flex flex-wrap gap-4">
-          <Link href="/echo-roulette">
+          <Link href="/community">
             <Button variant="primary" size="lg">
+              Enter the Community
+            </Button>
+          </Link>
+          <Link href="/echo-roulette">
+            <Button variant="secondary" size="lg">
               Try as Guest
             </Button>
           </Link>
           <Link href="/register">
-            <Button variant="secondary" size="lg">
+            <Button variant="ghost" size="lg">
               Join the Rebellion
             </Button>
           </Link>

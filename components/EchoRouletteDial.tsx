@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Loader2, Mic } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -49,6 +49,14 @@ export default function EchoRouletteDial({
     isInitiator,
     webrtcActive
   );
+
+  useEffect(() => {
+    if (matchStatus === "matched" && user?.id) {
+      import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
+        trackWeeklyActivity(user.id, "echo_roulette")
+      );
+    }
+  }, [matchStatus, user?.id]);
 
   const updateFromPointer = useCallback(
     (clientX: number, clientY: number) => {

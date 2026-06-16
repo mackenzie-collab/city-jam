@@ -58,8 +58,13 @@ export default function BlindEchoRoom() {
     if (matchStatus === "matched" && phase !== "session" && phase !== "decision" && phase !== "done") {
       setPhase("session");
       setTimeLeft(SESSION_DURATION_SEC);
+      if (user?.id) {
+        import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
+          trackWeeklyActivity(user.id, "blind_echo")
+        );
+      }
     }
-  }, [matchStatus, phase]);
+  }, [matchStatus, phase, user?.id, user?.name, user?.email]);
 
   useEffect(() => {
     if (phase !== "session") return;

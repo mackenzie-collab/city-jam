@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import CommunityPreview from "@/components/CommunityPreview";
 import TwoModes from "@/components/TwoModes";
 import FourSteps from "@/components/FourSteps";
 import ZeroVisualBias from "@/components/ZeroVisualBias";
@@ -12,6 +13,7 @@ export default function HomePage() {
     <main>
       <Navbar />
       <Hero />
+      <CommunityPreview />
       <TwoModes />
       <FourSteps />
       <ZeroVisualBias />

@@ -2,29 +2,20 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  Archive,
-  Briefcase,
-  FolderKanban,
-  Headphones,
-  Plus,
-  Users,
-  Music,
-} from "lucide-react";
+import { Plus, Music } from "lucide-react";
 import FeatureShell from "@/components/FeatureShell";
 import StudioNav from "@/components/StudioNav";
+import ToolsStrip from "@/components/ToolsStrip";
+import JamStreakWidget from "@/components/JamStreakWidget";
+import ProjectKanban from "@/components/ProjectKanban";
 import EmptyState from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { createCommunityPost } from "@/lib/community";
+import { displayName, fetchProfile } from "@/lib/profiles";
 import {
   createProject,
   fetchProjects,
-  fetchProjectNeeds,
-  fetchVaultItems,
-  fetchWorkspaces,
-  fetchTasks,
-  fetchMyCircles,
-  fetchListeningRooms,
   type MusicProject,
   studioUnavailable,
 } from "@/lib/studio";
@@ -32,7 +23,6 @@ import {
 export default function StudioDashboard() {
   const { user } = useAuth();
   const [projects, setProjects] = useState<MusicProject[]>([]);
-  const [stats, setStats] = useState({ needs: 0, vault: 0, tasks: 0, circles: 0, rooms: 0 });
   const [loading, setLoading] = useState(true);
   const [showNew, setShowNew] = useState(false);
   const [form, setForm] = useState({ title: "", description: "", genre: "" });
@@ -42,27 +32,7 @@ export default function StudioDashboard() {
       setLoading(false);
       return;
     }
-    const [projs, needs, vault, workspaces, circles, rooms] = await Promise.all([
-      fetchProjects(user.id),
-      fetchProjectNeeds(),
-      fetchVaultItems(user.id),
-      fetchWorkspaces(user.id),
-      fetchMyCircles(user.id),
-      fetchListeningRooms(),
-    ]);
-    setProjects(projs);
-    let taskCount = 0;
-    for (const ws of workspaces) {
-      const tasks = await fetchTasks(ws.id);
-      taskCount += tasks.filter((t) => !t.done).length;
-    }
-    setStats({
-      needs: needs.length,
-      vault: vault.length,
-      tasks: taskCount,
-      circles: circles.length,
-      rooms: rooms.length,
-    });
+    setProjects(await fetchProjects(user.id));
     setLoading(false);
   }, [user?.id]);
 
@@ -73,44 +43,63 @@ export default function StudioDashboard() {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user?.id) return;
-    await createProject(user.id, form);
+    const project = await createProject(user.id, form);
+    try {
+      const profile = await fetchProfile(user.id);
+      const name = displayName(profile, user.name ?? user.email);
+      await createCommunityPost(user.id, name, {
+        kind: "project",
+        title: `New project: ${project.title}`,
+        body: form.description || "Started a new track on City Jam.",
+        ref_id: project.id,
+      });
+    } catch {
+      /* optional */
+    }
     setShowNew(false);
     setForm({ title: "", description: "", genre: "" });
     load();
   };
 
-  const statCards = [
-    { label: "Open Needs", value: stats.needs, href: "/project-match", icon: Briefcase },
-    { label: "Vault Items", value: stats.vault, href: "/vault", icon: Archive },
-    { label: "Open Tasks", value: stats.tasks, href: "/collab", icon: FolderKanban },
-    { label: "Circles", value: stats.circles, href: "/circles", icon: Users },
-    { label: "Listening Rooms", value: stats.rooms, href: "/listening-rooms", icon: Headphones },
-  ];
-
   return (
     <FeatureShell
       title="Studio"
       icon={Music}
-      badge="Your Workspace"
+      badge="Project Management"
       heading={
         <>
-          Your Music / <span className="text-cj-gold-bright">Studio.</span>
+          Your Music / <span className="text-cj-gold-bright">Command Center.</span>
         </>
       }
-      subtitle="Projects, vault, collab, and matchmaking — all connected in one place."
+      subtitle="Kanban board, projects, and every tool — connected to your community feed."
       maxWidth="xl"
       headerRight={
-        <Button variant="primary" size="sm" onClick={() => setShowNew(true)}>
-          <Plus className="mr-1 h-4 w-4" /> New Project
-        </Button>
+        <div className="flex gap-2">
+          <Link href="/community">
+            <Button variant="secondary" size="sm">
+              Community
+            </Button>
+          </Link>
+          <Button variant="primary" size="sm" onClick={() => setShowNew(true)}>
+            <Plus className="mr-1 h-4 w-4" /> New Project
+          </Button>
+        </div>
       }
     >
+      <div className="mb-8">
+        <JamStreakWidget />
+      </div>
+
+      <div className="mb-10">
+        <ToolsStrip title="Tools" variant="compact" />
+      </div>
+
       <div className="grid gap-8 lg:grid-cols-[200px_1fr]">
         <StudioNav />
 
-        <div>
+        <div className="space-y-10">
           {showNew && (
-            <form onSubmit={handleCreate} className="cj-card mb-8 space-y-4">
+            <form onSubmit={handleCreate} className="cj-card space-y-4">
               <p className="text-xs uppercase tracking-widest text-cj-gold-muted">New music project</p>
               <input
                 required
@@ -142,25 +131,13 @@ export default function StudioDashboard() {
             </form>
           )}
 
-          <div className="mb-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {statCards.map(({ label, value, href, icon: Icon }) => (
-              <Link key={href} href={href} className="cj-card group flex items-center gap-4 py-4 no-underline">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-cj-gold-border bg-cj-dark">
-                  <Icon className="h-5 w-5 text-cj-gold-muted group-hover:text-cj-gold" />
-                </div>
-                <div>
-                  <p className="font-display text-2xl text-cj-gold">{loading ? "—" : value}</p>
-                  <p className="text-[10px] uppercase tracking-widest text-cj-gold-muted">{label}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
+          <ProjectKanban />
 
           <div>
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-display text-xl uppercase text-cj-gold">Your Projects</h2>
-              <Link href="/collab" className="text-xs uppercase tracking-widest text-cj-gold-muted hover:text-cj-gold">
-                Open Collab
+              <h2 className="font-display text-xl uppercase text-cj-gold">All Projects</h2>
+              <Link href="/community" className="text-xs uppercase tracking-widest text-cj-gold-muted hover:text-cj-gold">
+                View Feed
               </Link>
             </div>
             {loading ? (
@@ -169,7 +146,7 @@ export default function StudioDashboard() {
               <EmptyState
                 icon={Music}
                 title="No Projects Yet"
-                description="Create a project to organize vault files, collab tasks, and needs."
+                description="Create a project — it shows on your board and community feed."
                 actionLabel="New Project"
                 onAction={() => setShowNew(true)}
               />
@@ -184,8 +161,8 @@ export default function StudioDashboard() {
                     <div>
                       <h3 className="font-display text-lg uppercase text-cj-gold">{p.title}</h3>
                       <p className="mt-1 text-xs text-cj-gold-muted">
-                        {p.genre && `${p.genre} · `}
-                        {p.description || "No description"}
+                        {(p.stage ?? "ideas").toUpperCase()}
+                        {p.genre && ` · ${p.genre}`}
                       </p>
                     </div>
                     <span className="cj-status-open">{p.status}</span>

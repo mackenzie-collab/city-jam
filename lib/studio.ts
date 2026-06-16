@@ -105,6 +105,7 @@ export interface MusicProject {
   description: string;
   genre: string;
   status: string;
+  stage?: string;
   created_at: string;
 }
 
@@ -138,7 +139,7 @@ export async function fetchProject(id: string): Promise<MusicProject | null> {
 export async function updateProject(
   id: string,
   ownerId: string,
-  input: Partial<Pick<MusicProject, "title" | "description" | "genre" | "status">>
+  input: Partial<Pick<MusicProject, "title" | "description" | "genre" | "status" | "stage">>
 ): Promise<MusicProject> {
   const { data, error } = await db()
     .from("music_projects")
