@@ -1,8 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { Headphones, Plus, Search } from "lucide-react";
 import FeatureShell from "@/components/FeatureShell";
+import StudioNav from "@/components/StudioNav";
 import EmptyState from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -59,7 +61,12 @@ export default function ListeningRooms() {
           </Button>
         ) : undefined
       }
+      maxWidth="xl"
     >
+      <div className="grid gap-8 lg:grid-cols-[200px_1fr]">
+        <StudioNav />
+
+        <div>
       <div className="relative">
         <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-cj-gold-muted" />
         <input
@@ -128,14 +135,18 @@ export default function ListeningRooms() {
                     {room.artist}
                     {room.album ? ` · ${room.album}` : ""}
                   </p>
-                  <Button variant="secondary" size="sm" className="mt-3">
-                    Join
-                  </Button>
+                  <Link href={`/listening-rooms/${room.id}`}>
+                    <Button variant="secondary" size="sm" className="mt-3">
+                      Join
+                    </Button>
+                  </Link>
                 </div>
               </div>
             ))}
           </div>
         )}
+      </div>
+        </div>
       </div>
     </FeatureShell>
   );

@@ -33,7 +33,7 @@ export async function fetchProjectNeeds(role?: string): Promise<ProjectNeed[]> {
 
 export async function createProjectNeed(
   authorId: string,
-  input: { title: string; role: string; genre: string }
+  input: { title: string; role: string; genre: string; project_id?: string }
 ): Promise<ProjectNeed> {
   const { data, error } = await db()
     .from("project_needs")
@@ -42,6 +42,58 @@ export async function createProjectNeed(
     .single();
   if (error) throw error;
   return data;
+}
+
+export async function closeProjectNeed(id: string, authorId: string): Promise<void> {
+  const { error } = await db()
+    .from("project_needs")
+    .update({ status: "closed" })
+    .eq("id", id)
+    .eq("author_id", authorId);
+  if (error) throw error;
+}
+
+// ─── Project Applications ────────────────────────────────────
+
+export interface ProjectApplication {
+  id: string;
+  need_id: string;
+  applicant_id: string;
+  message: string;
+  status: string;
+  created_at: string;
+}
+
+export async function applyToNeed(
+  needId: string,
+  applicantId: string,
+  message: string
+): Promise<ProjectApplication> {
+  const { data, error } = await db()
+    .from("project_applications")
+    .upsert({ need_id: needId, applicant_id: applicantId, message, status: "pending" })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchApplications(needId: string): Promise<ProjectApplication[]> {
+  const { data, error } = await db()
+    .from("project_applications")
+    .select("*")
+    .eq("need_id", needId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function updateApplicationStatus(
+  id: string,
+  status: "accepted" | "declined"
+): Promise<void> {
+  const { error } = await db().from("project_applications").update({ status }).eq("id", id);
+  if (error) throw error;
 }
 
 // ─── Music Projects ──────────────────────────────────────────
@@ -77,6 +129,33 @@ export async function createProject(
   return data;
 }
 
+export async function fetchProject(id: string): Promise<MusicProject | null> {
+  const { data, error } = await db().from("music_projects").select("*").eq("id", id).maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+export async function updateProject(
+  id: string,
+  ownerId: string,
+  input: Partial<Pick<MusicProject, "title" | "description" | "genre" | "status">>
+): Promise<MusicProject> {
+  const { data, error } = await db()
+    .from("music_projects")
+    .update({ ...input, updated_at: new Date().toISOString() })
+    .eq("id", id)
+    .eq("owner_id", ownerId)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteProject(id: string, ownerId: string): Promise<void> {
+  const { error } = await db().from("music_projects").delete().eq("id", id).eq("owner_id", ownerId);
+  if (error) throw error;
+}
+
 // ─── Vault ───────────────────────────────────────────────────
 
 export interface VaultItem {
@@ -86,6 +165,9 @@ export interface VaultItem {
   title: string;
   kind: string;
   notes: string;
+  file_url?: string | null;
+  file_size?: number | null;
+  mime_type?: string | null;
   created_at: string;
 }
 
@@ -101,7 +183,15 @@ export async function fetchVaultItems(userId: string): Promise<VaultItem[]> {
 
 export async function createVaultItem(
   userId: string,
-  input: { title: string; kind: string; notes?: string; project_id?: string }
+  input: {
+    title: string;
+    kind: string;
+    notes?: string;
+    project_id?: string;
+    file_url?: string;
+    file_size?: number;
+    mime_type?: string;
+  }
 ): Promise<VaultItem> {
   const { data, error } = await db()
     .from("vault_items")
@@ -112,9 +202,21 @@ export async function createVaultItem(
   return data;
 }
 
-export async function deleteVaultItem(id: string, userId: string): Promise<void> {
+export async function deleteVaultItem(id: string, userId: string): Promise<VaultItem | null> {
+  const { data } = await db().from("vault_items").select("*").eq("id", id).eq("user_id", userId).maybeSingle();
   const { error } = await db().from("vault_items").delete().eq("id", id).eq("user_id", userId);
   if (error) throw error;
+  return data;
+}
+
+export async function fetchVaultItemsByProject(projectId: string): Promise<VaultItem[]> {
+  const { data, error } = await db()
+    .from("vault_items")
+    .select("*")
+    .eq("project_id", projectId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
 }
 
 // ─── Collab ──────────────────────────────────────────────────
@@ -183,6 +285,32 @@ export async function toggleTask(id: string, done: boolean): Promise<void> {
   if (error) throw error;
 }
 
+export async function deleteTask(id: string): Promise<void> {
+  const { error } = await db().from("collab_tasks").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteWorkspace(id: string, ownerId: string): Promise<void> {
+  const { error } = await db().from("collab_workspaces").delete().eq("id", id).eq("owner_id", ownerId);
+  if (error) throw error;
+}
+
+export async function fetchWorkspace(id: string): Promise<CollabWorkspace | null> {
+  const { data, error } = await db().from("collab_workspaces").select("*").eq("id", id).maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchWorkspacesByProject(projectId: string): Promise<CollabWorkspace[]> {
+  const { data, error } = await db()
+    .from("collab_workspaces")
+    .select("*")
+    .eq("project_id", projectId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}
+
 // ─── Circles ─────────────────────────────────────────────────
 
 export interface Circle {
@@ -246,6 +374,46 @@ export async function fetchCircleMemberCount(circleId: string): Promise<number> 
   return count ?? 0;
 }
 
+export async function fetchCircle(id: string): Promise<Circle | null> {
+  const { data, error } = await db().from("circles").select("*").eq("id", id).maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+export interface CirclePost {
+  id: string;
+  circle_id: string;
+  author_id: string;
+  display_name: string;
+  body: string;
+  created_at: string;
+}
+
+export async function fetchCirclePosts(circleId: string): Promise<CirclePost[]> {
+  const { data, error } = await db()
+    .from("circle_posts")
+    .select("*")
+    .eq("circle_id", circleId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function createCirclePost(
+  circleId: string,
+  authorId: string,
+  displayName: string,
+  body: string
+): Promise<CirclePost> {
+  const { data, error } = await db()
+    .from("circle_posts")
+    .insert({ circle_id: circleId, author_id: authorId, display_name: displayName, body })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
 // ─── Listening Rooms ─────────────────────────────────────────
 
 export interface ListeningRoom {
@@ -272,6 +440,54 @@ export async function createListeningRoom(
   const { data, error } = await db()
     .from("listening_rooms")
     .insert({ creator_id: creatorId, ...input })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchListeningRoom(id: string): Promise<ListeningRoom | null> {
+  const { data, error } = await db().from("listening_rooms").select("*").eq("id", id).maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+export interface RoomReaction {
+  id: string;
+  room_id: string;
+  user_id: string;
+  display_name: string;
+  timestamp_sec: number;
+  body: string;
+  created_at: string;
+}
+
+export async function fetchRoomReactions(roomId: string): Promise<RoomReaction[]> {
+  const { data, error } = await db()
+    .from("listening_room_reactions")
+    .select("*")
+    .eq("room_id", roomId)
+    .order("timestamp_sec");
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function addRoomReaction(
+  roomId: string,
+  userId: string,
+  displayName: string,
+  timestampSec: number,
+  body: string
+): Promise<RoomReaction> {
+  const { data, error } = await db()
+    .from("listening_room_reactions")
+    .insert({
+      room_id: roomId,
+      user_id: userId,
+      display_name: displayName,
+      timestamp_sec: timestampSec,
+      body,
+    })
     .select()
     .single();
   if (error) throw error;

@@ -1,8 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { Users, Plus, Copy } from "lucide-react";
 import FeatureShell from "@/components/FeatureShell";
+import StudioNav from "@/components/StudioNav";
 import AuthBanner from "@/components/AuthBanner";
 import EmptyState from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
@@ -87,12 +89,17 @@ export default function CirclesList() {
         </>
       }
       subtitle="Invite-only groups built around a sound, a city, or a shared goal."
+      maxWidth="xl"
       footer={
         !isAuthenticated ? (
           <AuthBanner message="Sign in to create or join circles." returnUrl="/circles" />
         ) : undefined
       }
     >
+      <div className="grid gap-8 lg:grid-cols-[200px_1fr]">
+        <StudioNav />
+
+        <div>
       {isAuthenticated && (
         <div className="mb-8 flex flex-wrap gap-3">
           <Button variant="primary" onClick={() => setShowCreate(true)}>
@@ -147,7 +154,11 @@ export default function CirclesList() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {circles.map((c) => (
-            <div key={c.id} className="cj-card">
+            <Link
+              key={c.id}
+              href={`/circles/${c.id}`}
+              className="cj-card block no-underline transition-colors hover:border-cj-gold/50"
+            >
               <h3 className="font-display text-xl uppercase text-cj-gold">{c.name}</h3>
               <p className="mt-2 text-sm text-cj-gold-muted">{c.description || "No description"}</p>
               <div className="mt-4 flex items-center justify-between text-[10px] uppercase tracking-widest text-cj-gold-muted">
@@ -155,15 +166,20 @@ export default function CirclesList() {
                 <button
                   type="button"
                   className="flex items-center gap-1 text-cj-gold hover:opacity-80"
-                  onClick={() => navigator.clipboard.writeText(c.invite_code)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigator.clipboard.writeText(c.invite_code);
+                  }}
                 >
                   <Copy className="h-3 w-3" /> {c.invite_code}
                 </button>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}
+        </div>
+      </div>
     </FeatureShell>
   );
 }

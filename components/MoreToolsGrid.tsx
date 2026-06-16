@@ -3,6 +3,11 @@ import { ArrowRight } from "lucide-react";
 
 const tools = [
   {
+    title: "Studio Hub",
+    href: "/studio",
+    description: "Your command center — projects, stats, and connected tools.",
+  },
+  {
     title: "Signal Map",
     href: "/signal-map",
     description: "See musicians online globally. Neighborhood-level only.",
