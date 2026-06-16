@@ -54,6 +54,9 @@ export default function CircleDetail({ circleId }: { circleId: string }) {
     e.preventDefault();
     if (!user?.id || !body.trim()) return;
     await createCirclePost(circleId, user.id, name, body.trim());
+    import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
+      trackWeeklyActivity(user.id, "circle_post")
+    );
     setBody("");
     load();
   };

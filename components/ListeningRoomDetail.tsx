@@ -50,13 +50,19 @@ export default function ListeningRoomDetail({ roomId }: { roomId: string }) {
   useEffect(() => {
     if (!user?.id) return;
     fetchProfile(user.id).then((p) => setName(displayName(p, user.name ?? user.email)));
-  }, [user]);
+    import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
+      trackWeeklyActivity(user.id, "listening_room")
+    );
+  }, [user?.id]);
 
   const handleReact = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user?.id || !body.trim()) return;
     try {
       await addRoomReaction(roomId, user.id, name, timestamp, body.trim());
+      import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
+        trackWeeklyActivity(user.id, "listening_room")
+      );
       setBody("");
       load();
     } catch (err) {

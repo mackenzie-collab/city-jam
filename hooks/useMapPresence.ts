@@ -63,6 +63,9 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
         await refresh();
         setVisible(true);
         setLoading(false);
+        import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
+          trackWeeklyActivity(userId, "signal_map")
+        );
       },
       () => {
         setGeoError("Location permission denied");

@@ -75,6 +75,9 @@ export default function VaultPanel() {
         project_id: form.project_id || undefined,
         ...fileMeta,
       });
+      import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
+        trackWeeklyActivity(user.id, "vault_upload")
+      );
       setShowForm(false);
       setForm({ title: "", kind: "demo", notes: "", project_id: projectParam ?? "" });
       setFile(null);

@@ -64,6 +64,9 @@ export default function CollabPanel() {
       title: newWs.trim(),
       project_id: newProjectId || undefined,
     });
+    import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
+      trackWeeklyActivity(user.id, "collab_workspace")
+    );
     setNewWs("");
     setNewProjectId("");
     setActiveId(ws.id);
@@ -74,6 +77,11 @@ export default function CollabPanel() {
     e.preventDefault();
     if (!activeId || !newTask.trim()) return;
     await createTask(activeId, newTask.trim());
+    if (user?.id) {
+      import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
+        trackWeeklyActivity(user.id, "collab_task_create")
+      );
+    }
     setNewTask("");
     loadTasks();
   };
@@ -203,7 +211,16 @@ export default function CollabPanel() {
                   <li key={t.id} className="group flex items-center gap-2">
                     <button
                       type="button"
-                      onClick={() => toggleTask(t.id, !t.done).then(loadTasks)}
+                      onClick={() => {
+                        toggleTask(t.id, !t.done).then(() => {
+                          loadTasks();
+                          if (user?.id && !t.done) {
+                            import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
+                              trackWeeklyActivity(user.id, "collab_task_complete")
+                            );
+                          }
+                        });
+                      }}
                       className="flex flex-1 items-center gap-3 rounded-lg px-2 py-2 text-left hover:bg-cj-purple/30"
                     >
                       {t.done ? (

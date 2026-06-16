@@ -57,6 +57,9 @@ export default function CommunityFeed({ showComposer = true }: { showComposer?: 
     setPosting(true);
     try {
       await createCommunityPost(user.id, name, { body: body.trim(), kind: "post" });
+      import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
+        trackWeeklyActivity(user.id, "community_post")
+      );
       setBody("");
       load();
     } finally {

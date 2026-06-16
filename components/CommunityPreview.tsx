@@ -46,9 +46,9 @@ export default function CommunityPreview() {
           </div>
           <div className="cj-card flex flex-col justify-center gap-6">
             <div>
-              <p className="font-display text-4xl text-cj-gold">Jam Streaks</p>
+              <p className="font-display text-4xl text-cj-gold">Jam Streak</p>
               <p className="mt-2 text-sm text-cj-gold-muted">
-                Jam daily on Blind Echo or Echo Roulette. Build your streak. Show up on the leaderboard.
+                Stay active each week — jam, collab, or post. Build your weekly streak and climb the leaderboard.
               </p>
             </div>
             <div>
