@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cj-purple: #5a0090;
+  --cj-purple-dark: #3d0066;
+  --cj-purple-card: #1a0030;
+  --cj-purple-continent: #2a0050;
+  --cj-purple-map: #0a0010;
+  --cj-gold: #c9a800;
+  --cj-gold-bright: #d4a017;
+  --cj-gold-dot: #d4a000;
+  --cj-gold-muted: rgba(201, 168, 0, 0.6);
+  --cj-gold-border: rgba(201, 168, 0, 0.3);
+  --cj-dark: #0d0d0d;
+}
+
+@layer base {
+  body {
+    @apply bg-cj-purple font-body text-cj-gold antialiased;
+  }
+}
+
+@layer components {
+  .cj-badge {
+    @apply inline-block border border-cj-gold-border px-4 py-1.5 text-xs uppercase tracking-widest text-cj-gold;
+  }
+
+  .cj-btn-primary {
+    @apply rounded bg-cj-gold px-6 py-3 text-sm font-semibold uppercase tracking-widest text-cj-purple-card transition-opacity hover:opacity-90;
+  }
+
+  .cj-btn-secondary {
+    @apply rounded border border-cj-gold px-6 py-3 text-sm font-semibold uppercase tracking-widest text-cj-gold transition-opacity hover:opacity-80;
+  }
+
+  .cj-btn-ghost {
+    @apply text-sm uppercase tracking-widest text-cj-gold transition-opacity hover:opacity-70;
+  }
+
+  .cj-card {
+    @apply rounded-xl border border-cj-gold-border bg-cj-purple-card p-8;
+  }
+
+  .cj-heading-display {
+    @apply font-display uppercase leading-none tracking-wide text-cj-gold;
+  }
+
+  .cj-input {
+    @apply w-full rounded-lg border border-cj-gold-border bg-cj-dark px-4 py-3 pl-11 text-cj-gold placeholder:text-cj-gold-muted focus:border-cj-gold focus:outline-none;
+  }
+
+  .cj-auth-card {
+    @apply rounded-2xl border border-cj-gold-border bg-cj-purple-card p-10;
+  }
+
+  .cj-pill {
+    @apply rounded-full border border-cj-gold px-4 py-1.5 text-[10px] uppercase tracking-widest text-cj-gold transition-colors hover:bg-cj-gold/10;
+  }
+
+  .cj-pill-active {
+    @apply border-cj-gold bg-cj-gold text-cj-purple-card hover:bg-cj-gold;
+  }
+
+  .cj-tag {
+    @apply rounded border border-cj-gold-border px-2 py-0.5 text-[10px] uppercase tracking-widest text-cj-gold-muted;
+  }
+
+  .cj-status-open {
+    @apply rounded border border-cj-gold/40 bg-cj-gold/10 px-3 py-1 text-[10px] uppercase tracking-widest text-cj-gold-bright;
+  }
+
+  .cj-page {
+    @apply min-h-screen bg-cj-purple;
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}

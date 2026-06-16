@@ -1,0 +1,278 @@
+import { getSupabase } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { nearestCity, drifterAlias, CITY_DOTS, cityBySlug } from "@/lib/signal-map-data";
+
+export type MatchMode = "blind-echo" | "echo-roulette";
+
+export interface MatchResult {
+  status: "waiting" | "matched" | "error" | "offline";
+  sessionId?: string;
+  isInitiator?: boolean;
+  partnerId?: string;
+  message?: string;
+}
+
+export async function tryMatch(
+  userId: string,
+  mode: MatchMode,
+  frequency?: number
+): Promise<MatchResult> {
+  if (!isSupabaseConfigured()) {
+    return {
+      status: "offline",
+      message: "Supabase not configured — see DEPLOY.md",
+    };
+  }
+
+  const supabase = getSupabase();
+  if (!supabase) return { status: "error", message: "No Supabase client" };
+
+  const { data, error } = await supabase.rpc("try_match", {
+    p_user_id: userId,
+    p_mode: mode,
+    p_frequency: frequency ?? null,
+  });
+
+  if (error) {
+    return { status: "error", message: error.message };
+  }
+
+  const result = data as {
+    status: string;
+    session_id?: string;
+    is_initiator?: boolean;
+    partner_id?: string;
+  };
+
+  if (result.status === "matched") {
+    return {
+      status: "matched",
+      sessionId: result.session_id,
+      isInitiator: result.is_initiator ?? false,
+      partnerId: result.partner_id,
+    };
+  }
+
+  return { status: "waiting" };
+}
+
+export async function cancelMatch(userId: string): Promise<void> {
+  const supabase = getSupabase();
+  if (!supabase) return;
+  await supabase
+    .from("match_queue")
+    .delete()
+    .eq("user_id", userId)
+    .eq("status", "waiting");
+}
+
+export function subscribeToMatch(
+  userId: string,
+  onMatched: (sessionId: string, isInitiator: boolean) => void
+): () => void {
+  const supabase = getSupabase();
+  if (!supabase) return () => {};
+
+  const channel = supabase
+    .channel(`match:${userId}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "match_queue",
+        filter: `user_id=eq.${userId}`,
+      },
+      (payload) => {
+        const row = payload.new as {
+          status: string;
+          session_id?: string;
+          is_initiator?: boolean;
+        };
+        if (row.status === "matched" && row.session_id) {
+          onMatched(row.session_id, row.is_initiator ?? false);
+        }
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}
+
+export async function submitDecision(
+  sessionId: string,
+  userId: string,
+  decision: "transmit" | "fade"
+): Promise<void> {
+  const supabase = getSupabase();
+  if (!supabase) return;
+  await supabase.from("session_decisions").upsert({
+    session_id: sessionId,
+    user_id: userId,
+    decision,
+  });
+}
+
+export async function getSessionDecisions(
+  sessionId: string
+): Promise<{ user_id: string; decision: string }[]> {
+  const supabase = getSupabase();
+  if (!supabase) return [];
+  const { data } = await supabase
+    .from("session_decisions")
+    .select("user_id, decision")
+    .eq("session_id", sessionId);
+  return data ?? [];
+}
+
+export function subscribeToDecisions(
+  sessionId: string,
+  onUpdate: () => void
+): () => void {
+  const supabase = getSupabase();
+  if (!supabase) return () => {};
+
+  const channel = supabase
+    .channel(`decisions:${sessionId}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "session_decisions",
+        filter: `session_id=eq.${sessionId}`,
+      },
+      () => onUpdate()
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}
+
+export interface MapPresenceRow {
+  user_id: string;
+  lng: number;
+  lat: number;
+  city_slug: string | null;
+  alias: string | null;
+  updated_at: string;
+}
+
+export interface CityOnlineSummary {
+  slug: string;
+  name: string;
+  coordinates: [number, number];
+  onlineCount: number;
+  drifters: string[];
+  hub?: boolean;
+}
+
+/** Round to ~11 km — neighborhood level, not exact address */
+export function roundCoordinate(value: number): number {
+  return Math.round(value * 10) / 10;
+}
+
+const PRESENCE_TTL_MS = 15 * 60 * 1000;
+
+function isFresh(updatedAt: string): boolean {
+  return Date.now() - new Date(updatedAt).getTime() < PRESENCE_TTL_MS;
+}
+
+export async function upsertMapPresence(
+  userId: string,
+  lng: number,
+  lat: number
+): Promise<void> {
+  const supabase = getSupabase();
+  if (!supabase) return;
+  const city = nearestCity(lng, lat);
+  await supabase.from("map_presence").upsert({
+    user_id: userId,
+    lng: roundCoordinate(lng),
+    lat: roundCoordinate(lat),
+    city_slug: city.slug,
+    alias: drifterAlias(userId),
+    updated_at: new Date().toISOString(),
+  });
+}
+
+export async function fetchMapPresence(): Promise<MapPresenceRow[]> {
+  const supabase = getSupabase();
+  if (!supabase) return [];
+  const { data } = await supabase.from("map_presence").select("*");
+  return (data ?? []).filter((r) => isFresh(r.updated_at));
+}
+
+export function aggregateCityOnline(
+  rows: MapPresenceRow[],
+  excludeUserId?: string
+): CityOnlineSummary[] {
+  const byCity = new Map<string, { drifters: string[] }>();
+
+  for (const row of rows) {
+    if (excludeUserId && row.user_id === excludeUserId) continue;
+    if (!row.city_slug) continue;
+    const entry = byCity.get(row.city_slug) ?? { drifters: [] };
+    entry.drifters.push(row.alias ?? drifterAlias(row.user_id));
+    byCity.set(row.city_slug, entry);
+  }
+
+  return CITY_DOTS.map((city) => {
+    const entry = byCity.get(city.slug);
+    return {
+      slug: city.slug,
+      name: city.name,
+      coordinates: city.coordinates,
+      onlineCount: entry?.drifters.length ?? 0,
+      drifters: entry?.drifters ?? [],
+      hub: city.hub,
+    };
+  }).sort((a, b) => b.onlineCount - a.onlineCount);
+}
+
+export function getYourCity(
+  rows: MapPresenceRow[],
+  userId: string
+): CityOnlineSummary | null {
+  const row = rows.find((r) => r.user_id === userId);
+  if (!row?.city_slug) return null;
+  const city = cityBySlug(row.city_slug);
+  if (!city) return null;
+  const inCity = rows.filter((r) => r.city_slug === row.city_slug);
+  return {
+    slug: city.slug,
+    name: city.name,
+    coordinates: city.coordinates,
+    onlineCount: inCity.length,
+    drifters: inCity.map((r) => r.alias ?? drifterAlias(r.user_id)),
+    hub: city.hub,
+  };
+}
+
+export function subscribeToMapPresence(onUpdate: () => void): () => void {
+  const supabase = getSupabase();
+  if (!supabase) return () => {};
+
+  const channel = supabase
+    .channel("map-presence")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "map_presence" },
+      () => onUpdate()
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}
+
+export async function removeMapPresence(userId: string): Promise<void> {
+  const supabase = getSupabase();
+  if (!supabase) return;
+  await supabase.from("map_presence").delete().eq("user_id", userId);
+}
