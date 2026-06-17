@@ -57,6 +57,17 @@ export async function fetchCommunityPosts(limit = 30): Promise<FeedItem[]> {
   return (data ?? []).map(mapPost);
 }
 
+export async function fetchUserPosts(userId: string, limit = 8): Promise<FeedItem[]> {
+  const { data, error } = await db()
+    .from("community_posts")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return (data ?? []).map(mapPost);
+}
+
 function mapPost(row: Record<string, unknown>): FeedItem {
   const kind = (row.kind as FeedKind) ?? "post";
   const ref = (row.ref_id as string) || undefined;

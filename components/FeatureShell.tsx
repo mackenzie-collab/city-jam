@@ -1,6 +1,8 @@
 "use client";
 
 import { LucideIcon } from "lucide-react";
+import AppChrome from "@/components/AppChrome";
+import AppTrail from "@/components/AppTrail";
 import PageHeader from "@/components/PageHeader";
 
 type ShellVariant = "purple" | "map" | "hall";
@@ -23,6 +25,9 @@ interface FeatureShellProps {
   children: React.ReactNode;
   footer?: React.ReactNode;
   maxWidth?: "md" | "lg" | "xl" | "full";
+  /** Set false when AppChrome is already provided by a parent wrapper */
+  withChrome?: boolean;
+  showTrail?: boolean;
 }
 
 const MAX = {
@@ -44,17 +49,21 @@ export default function FeatureShell({
   children,
   footer,
   maxWidth = "lg",
+  withChrome = true,
+  showTrail = true,
 }: FeatureShellProps) {
-  return (
+  const shell = (
     <div className={`min-h-screen ${BG[variant]} ${footer ? "pb-24" : ""}`}>
       <PageHeader
         title={title}
         icon={icon}
         showDot={showDot}
         dark={variant === "hall"}
+        backHref="/community"
         rightElement={headerRight}
       />
       <div className={`mx-auto px-6 py-10 ${MAX[maxWidth]}`}>
+        {showTrail && <AppTrail />}
         {badge && <span className="cj-badge mb-6">{badge}</span>}
         <div className="cj-heading-display text-4xl md:text-5xl lg:text-6xl">{heading}</div>
         {subtitle && (
@@ -67,4 +76,6 @@ export default function FeatureShell({
       {footer}
     </div>
   );
+
+  return withChrome ? <AppChrome>{shell}</AppChrome> : shell;
 }

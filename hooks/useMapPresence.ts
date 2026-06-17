@@ -15,11 +15,14 @@ import {
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { nearestCity } from "@/lib/signal-map-data";
 
+const MAP_HIDDEN_KEY = "cj-map-hidden";
+
 export function useMapPresence(userId: string | undefined, isAuthenticated: boolean) {
   const [rows, setRows] = useState<MapPresenceRow[]>([]);
   const [geoError, setGeoError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [autoAttempted, setAutoAttempted] = useState(false);
 
   const refresh = useCallback(async () => {
     if (!isSupabaseConfigured()) return;
@@ -63,6 +66,9 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
         await refresh();
         setVisible(true);
         setLoading(false);
+        if (typeof sessionStorage !== "undefined") {
+          sessionStorage.removeItem(MAP_HIDDEN_KEY);
+        }
         import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
           trackWeeklyActivity(userId, "signal_map")
         );
@@ -76,7 +82,12 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
   }, [userId, isAuthenticated, refresh]);
 
   const hideFromMap = useCallback(async () => {
-    if (userId) await removeMapPresence(userId);
+    if (userId) {
+      if (typeof sessionStorage !== "undefined") {
+        sessionStorage.setItem(MAP_HIDDEN_KEY, userId);
+      }
+      await removeMapPresence(userId);
+    }
     setVisible(false);
     await refresh();
   }, [userId, refresh]);
@@ -85,6 +96,17 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
     refresh();
     return subscribeToMapPresence(refresh);
   }, [refresh]);
+
+  useEffect(() => {
+    if (!userId || !isAuthenticated || autoAttempted || visible || loading) return;
+    if (!isSupabaseConfigured()) return;
+    if (typeof sessionStorage !== "undefined" && sessionStorage.getItem(MAP_HIDDEN_KEY) === userId) {
+      setAutoAttempted(true);
+      return;
+    }
+    setAutoAttempted(true);
+    appearOnMap();
+  }, [userId, isAuthenticated, autoAttempted, visible, loading, appearOnMap]);
 
   return {
     cities,

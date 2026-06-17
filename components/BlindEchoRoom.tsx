@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { Loader2, Mic, MicOff, UserX } from "lucide-react";
+import AppChrome from "@/components/AppChrome";
+import AppTrail from "@/components/AppTrail";
 import PageHeader from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -120,14 +122,17 @@ export default function BlindEchoRoom() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-cj-purple">
-        <p className="text-cj-gold-muted">Loading...</p>
-      </div>
+      <AppChrome>
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <p className="text-cj-gold-muted">Loading...</p>
+        </div>
+      </AppChrome>
     );
   }
 
   if (!isAuthenticated) {
     return (
+      <AppChrome>
       <div
         className="min-h-screen"
         style={{
@@ -135,7 +140,10 @@ export default function BlindEchoRoom() {
             "radial-gradient(ellipse at center, #6B1FA0 0%, #3D0066 50%, #1A0030 100%)",
         }}
       >
-        <PageHeader title="Blind Echo" showDot />
+        <PageHeader title="Blind Echo" showDot backHref="/community" />
+        <div className="mx-auto max-w-md px-6 pt-4">
+          <AppTrail />
+        </div>
         <div className="mx-auto flex max-w-md flex-col items-center px-6 py-20 text-center">
           <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-cj-purple-card">
             <UserX className="h-8 w-8 text-cj-gold-muted" />
@@ -157,10 +165,12 @@ export default function BlindEchoRoom() {
           </div>
         </div>
       </div>
+      </AppChrome>
     );
   }
 
   return (
+    <AppChrome>
     <div
       className="min-h-screen"
       style={{
@@ -168,7 +178,10 @@ export default function BlindEchoRoom() {
           "radial-gradient(ellipse at center, #6B1FA0 0%, #3D0066 50%, #1A0030 100%)",
       }}
     >
-      <PageHeader title="Blind Echo" showDot />
+      <PageHeader title="Blind Echo" showDot backHref="/community" />
+      <div className="mx-auto max-w-lg px-6 pt-4">
+        <AppTrail />
+      </div>
       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <audio ref={remoteAudioRef} autoPlay playsInline className="hidden" />
 
@@ -327,5 +340,6 @@ export default function BlindEchoRoom() {
         )}
       </div>
     </div>
+    </AppChrome>
   );
 }

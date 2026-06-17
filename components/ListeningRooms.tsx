@@ -135,10 +135,11 @@ export default function ListeningRooms() {
                     {room.artist}
                     {room.album ? ` · ${room.album}` : ""}
                   </p>
-                  <Link href={`/listening-rooms/${room.id}`}>
-                    <Button variant="secondary" size="sm" className="mt-3">
-                      Join
-                    </Button>
+                  <Link
+                    href={`/listening-rooms/${room.id}`}
+                    className="cj-btn-secondary mt-3 inline-block px-4 py-2 text-xs no-underline"
+                  >
+                    Join Room
                   </Link>
                 </div>
               </div>

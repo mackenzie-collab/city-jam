@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { Headphones, MessageSquare, Clock } from "lucide-react";
+import { Headphones, MessageSquare, Clock, Users } from "lucide-react";
 import FeatureShell from "@/components/FeatureShell";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -31,6 +31,13 @@ export default function ListeningRoomDetail({ roomId }: { roomId: string }) {
   const [timestamp, setTimestamp] = useState(0);
   const [name, setName] = useState("Musician");
   const [error, setError] = useState<string | null>(null);
+  const [posting, setPosting] = useState(false);
+  const [joined, setJoined] = useState(false);
+
+  const loadReactions = useCallback(async () => {
+    if (studioUnavailable()) return;
+    setReactions(await fetchRoomReactions(roomId));
+  }, [roomId]);
 
   const load = useCallback(async () => {
     if (studioUnavailable()) {
@@ -39,13 +46,20 @@ export default function ListeningRoomDetail({ roomId }: { roomId: string }) {
     }
     const r = await fetchListeningRoom(roomId);
     setRoom(r);
-    setReactions(await fetchRoomReactions(roomId));
+    await loadReactions();
     setLoading(false);
-  }, [roomId]);
+    if (r) setJoined(true);
+  }, [roomId, loadReactions]);
 
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    if (studioUnavailable() || !joined) return;
+    const interval = setInterval(loadReactions, 5000);
+    return () => clearInterval(interval);
+  }, [joined, loadReactions]);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -53,20 +67,24 @@ export default function ListeningRoomDetail({ roomId }: { roomId: string }) {
     import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
       trackWeeklyActivity(user.id, "listening_room")
     );
-  }, [user?.id]);
+  }, [user?.id, user?.name, user?.email]);
 
   const handleReact = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user?.id || !body.trim()) return;
+    setPosting(true);
+    setError(null);
     try {
-      await addRoomReaction(roomId, user.id, name, timestamp, body.trim());
+      const reaction = await addRoomReaction(roomId, user.id, name, timestamp, body.trim());
+      setReactions((prev) => [...prev, reaction].sort((a, b) => a.timestamp_sec - b.timestamp_sec));
       import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
         trackWeeklyActivity(user.id, "listening_room")
       );
       setBody("");
-      load();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to post reaction");
+    } finally {
+      setPosting(false);
     }
   };
 
@@ -96,20 +114,33 @@ export default function ListeningRoomDetail({ roomId }: { roomId: string }) {
       badge="Listening Room"
       heading={room.title}
       subtitle={[room.artist, room.album].filter(Boolean).join(" · ") || "Shared listening session"}
+      headerRight={
+        joined ? (
+          <span className="cj-status-open">Live</span>
+        ) : undefined
+      }
     >
       <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
         <div>
           <div className="cj-card flex min-h-[200px] flex-col items-center justify-center gap-4 py-12">
             <Headphones className="h-16 w-16 text-cj-gold-muted" />
             <p className="text-center text-sm text-cj-gold-muted">
-              Drop reactions at the moment that hits. Paste a Spotify/YouTube link in chat below
-              or listen together on your own player.
+              {joined
+                ? "You're in the room. Drop reactions at the moment that hits — listen on your player and mark timestamps below."
+                : "Join to listen together and drop timestamped reactions."}
             </p>
-            <div className="flex gap-2">
-              <Link href="/listening-rooms">
-                <Button variant="secondary" size="sm">
-                  All Rooms
-                </Button>
+            <div className="flex flex-wrap justify-center gap-2">
+              <Link
+                href="/listening-rooms"
+                className="cj-btn-secondary inline-block px-4 py-2 text-xs no-underline"
+              >
+                All Rooms
+              </Link>
+              <Link
+                href="/community"
+                className="inline-flex items-center gap-1 text-xs uppercase tracking-widest text-cj-gold-muted hover:text-cj-gold"
+              >
+                <Users className="h-3 w-3" /> Community
               </Link>
             </div>
           </div>
@@ -117,6 +148,7 @@ export default function ListeningRoomDetail({ roomId }: { roomId: string }) {
           <div className="mt-8">
             <h2 className="mb-4 flex items-center gap-2 font-display text-lg uppercase text-cj-gold">
               <MessageSquare className="h-5 w-5" /> Reactions
+              <span className="text-xs font-normal text-cj-gold-muted">({reactions.length})</span>
             </h2>
             {reactions.length === 0 ? (
               <p className="text-sm text-cj-gold-muted">No reactions yet — be the first.</p>
@@ -128,7 +160,16 @@ export default function ListeningRoomDetail({ roomId }: { roomId: string }) {
                       <Clock className="h-3 w-3" />
                       {formatTimestamp(r.timestamp_sec)}
                       <span>·</span>
-                      <span>{r.display_name || "Musician"}</span>
+                      {r.user_id ? (
+                        <Link
+                          href={`/profile?user=${r.user_id}`}
+                          className="text-cj-gold hover:underline"
+                        >
+                          {r.display_name || "Musician"}
+                        </Link>
+                      ) : (
+                        <span>{r.display_name || "Musician"}</span>
+                      )}
                     </div>
                     <p className="mt-2 text-sm text-cj-gold">{r.body}</p>
                   </li>
@@ -143,7 +184,9 @@ export default function ListeningRoomDetail({ roomId }: { roomId: string }) {
           {isAuthenticated ? (
             <form onSubmit={handleReact} className="space-y-3">
               <div>
-                <label className="text-[10px] uppercase text-cj-gold-muted">Timestamp (seconds)</label>
+                <label className="text-[10px] uppercase text-cj-gold-muted">
+                  Timestamp (seconds)
+                </label>
                 <input
                   type="number"
                   min={0}
@@ -160,13 +203,16 @@ export default function ListeningRoomDetail({ roomId }: { roomId: string }) {
                 className="cj-input !pl-4 min-h-[100px]"
               />
               {error && <p className="text-xs text-red-400">{error}</p>}
-              <Button type="submit" variant="primary" className="w-full">
-                Post Reaction
+              <Button type="submit" variant="primary" className="w-full" disabled={posting}>
+                {posting ? "Posting..." : "Post Reaction"}
               </Button>
             </form>
           ) : (
             <p className="text-sm text-cj-gold-muted">
-              <Link href={`/login?returnUrl=/listening-rooms/${roomId}`} className="text-cj-gold underline">
+              <Link
+                href={`/login?returnUrl=/listening-rooms/${roomId}`}
+                className="text-cj-gold underline"
+              >
                 Sign in
               </Link>{" "}
               to drop reactions.

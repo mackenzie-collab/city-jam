@@ -109,7 +109,12 @@ export default function CommunityFeed({ showComposer = true }: { showComposer?: 
             const inner = (
               <>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-display uppercase text-cj-gold">{item.display_name}</span>
+                  <Link
+                    href={`/profile?user=${item.user_id}`}
+                    className="font-display uppercase text-cj-gold no-underline hover:underline"
+                  >
+                    {item.display_name}
+                  </Link>
                   <span className={`cj-tag ${FEED_KIND_COLOR[item.kind]}`}>{FEED_KIND_LABEL[item.kind]}</span>
                   <span className="text-[10px] text-cj-gold-muted">{timeAgo(item.created_at)}</span>
                 </div>

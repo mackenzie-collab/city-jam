@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import AppChrome from "@/components/AppChrome";
 import { useAuth } from "@/hooks/useAuth";
 
 interface ProtectedRouteProps {
@@ -24,11 +25,13 @@ export default function ProtectedRoute({
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-cj-purple">
-        <p className="font-display text-2xl uppercase tracking-widest text-cj-gold-muted">
-          Loading...
-        </p>
-      </div>
+      <AppChrome>
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <p className="font-display text-2xl uppercase tracking-widest text-cj-gold-muted">
+            Loading...
+          </p>
+        </div>
+      </AppChrome>
     );
   }
 
