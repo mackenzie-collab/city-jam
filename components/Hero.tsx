@@ -1,5 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { STOCK } from "@/lib/brand-assets";
 
 const stats = [
   { value: "100%", label: "Audio-Only" },
@@ -9,8 +11,19 @@ const stats = [
 
 export default function Hero() {
   return (
-    <section className="relative flex min-h-screen flex-col justify-center bg-cj-purple px-6 py-24 md:px-8">
-      <div className="mx-auto max-w-6xl">
+    <section className="relative flex min-h-screen flex-col justify-center overflow-hidden px-6 py-24 md:px-8">
+      <Image
+        src={STOCK.hero}
+        alt={STOCK.heroAlt}
+        fill
+        priority
+        className="object-cover object-center"
+        sizes="100vw"
+      />
+      <div className="absolute inset-0 bg-cj-purple/85" aria-hidden />
+      <div className="absolute inset-0 bg-gradient-to-t from-cj-purple via-cj-purple/60 to-cj-purple/40" aria-hidden />
+
+      <div className="relative mx-auto max-w-6xl">
         <span className="cj-badge mb-8">The rebellion starts here</span>
 
         <h1 className="cj-heading-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl">

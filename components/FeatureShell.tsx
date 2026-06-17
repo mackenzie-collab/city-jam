@@ -16,6 +16,7 @@ const BG: Record<ShellVariant, string> = {
 interface FeatureShellProps {
   title: string;
   icon?: LucideIcon;
+  iconSrc?: string;
   showDot?: boolean;
   variant?: ShellVariant;
   headerRight?: React.ReactNode;
@@ -40,6 +41,7 @@ const MAX = {
 export default function FeatureShell({
   title,
   icon,
+  iconSrc,
   showDot,
   variant = "purple",
   headerRight,
@@ -57,6 +59,7 @@ export default function FeatureShell({
       <PageHeader
         title={title}
         icon={icon}
+        iconSrc={iconSrc}
         showDot={showDot}
         dark={variant === "hall"}
         backHref="/community"

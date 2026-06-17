@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { LogOut, User } from "lucide-react";
+import { LogOut } from "lucide-react";
+import BrandLogo from "@/components/BrandLogo";
+import CjIcon from "@/components/CjIcon";
 import { Button } from "@/components/ui/button";
 import JamStreakWidget from "@/components/JamStreakWidget";
+import { ICONS } from "@/lib/brand-assets";
 import { useAuth } from "@/hooks/useAuth";
 
 const navLinks = [
@@ -26,12 +29,7 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 flex w-full items-center justify-between bg-cj-purple-dark px-6 py-4 md:px-8">
-      <Link
-        href={isAuthenticated ? "/community" : "/"}
-        className="font-display text-2xl font-bold tracking-wide text-cj-gold md:text-3xl"
-      >
-        CITY<span className="mx-1 opacity-60">/</span>JAM
-      </Link>
+      <BrandLogo href={isAuthenticated ? "/community" : "/"} iconSize={32} />
 
       <div className="hidden items-center gap-5 lg:flex">
         {navLinks.map((link) => (
@@ -55,7 +53,7 @@ export default function Navbar() {
               href="/profile"
               className="hidden items-center gap-1 text-xs uppercase tracking-widest text-cj-gold sm:flex"
             >
-              <User className="h-3 w-3" />
+              <CjIcon src={ICONS.profile} alt="" size={14} />
               {user?.name ?? user?.email?.split("@")[0]}
             </Link>
             <Button variant="ghost" size="sm" onClick={handleLogout} aria-label="Log out">

@@ -1,8 +1,10 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { UserPlus } from "lucide-react";
+import Image from "next/image";
+import BrandLogo from "@/components/BrandLogo";
 import AuthCard from "@/components/AuthCard";
+import { STOCK } from "@/lib/brand-assets";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function RegisterContent() {
@@ -30,22 +32,33 @@ export default function RegisterContent() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-cj-purple px-6 py-12">
-      <div className="mb-8 flex h-14 w-14 items-center justify-center rounded-xl bg-cj-gold">
-        <UserPlus className="h-7 w-7 text-cj-purple-card" />
-      </div>
-      <h1 className="cj-heading-display text-4xl md:text-5xl">
-        Create Your Account
-      </h1>
-      <p className="mt-2 text-sm text-cj-gold-muted">
-        Join the rebellion. No photos required.
-      </p>
-      <div className="mt-10 w-full max-w-md">
-        <AuthCard
-          mode="register"
-          onSubmit={handleSubmit}
-          onGoogle={handleGoogle}
+    <div className="flex min-h-screen flex-col lg:flex-row">
+      <div className="relative hidden min-h-screen flex-1 lg:block">
+        <Image
+          src={STOCK.community}
+          alt={STOCK.communityAlt}
+          fill
+          className="object-cover"
+          sizes="50vw"
+          priority
         />
+        <div className="absolute inset-0 bg-cj-purple/70" />
+      </div>
+      <div className="flex flex-1 flex-col items-center justify-center bg-cj-purple px-6 py-12">
+        <BrandLogo showWordmark iconSize={48} className="mb-8" />
+        <h1 className="cj-heading-display text-4xl md:text-5xl">
+          Create Your Account
+        </h1>
+        <p className="mt-2 text-sm text-cj-gold-muted">
+          Join the rebellion. No photos required.
+        </p>
+        <div className="mt-10 w-full max-w-md">
+          <AuthCard
+            mode="register"
+            onSubmit={handleSubmit}
+            onGoogle={handleGoogle}
+          />
+        </div>
       </div>
     </div>
   );

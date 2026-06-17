@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import MusicianGallery from "@/components/MusicianGallery";
 import CommunityPreview from "@/components/CommunityPreview";
 import TwoModes from "@/components/TwoModes";
 import FourSteps from "@/components/FourSteps";
@@ -13,6 +14,7 @@ export default function HomePage() {
     <main>
       <Navbar />
       <Hero />
+      <MusicianGallery />
       <CommunityPreview />
       <TwoModes />
       <FourSteps />

@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { fetchCommunityFeed, type FeedItem } from "@/lib/community";
+import { STOCK } from "@/lib/brand-assets";
 
 export default function CommunityPreview() {
   const [items, setItems] = useState<FeedItem[]>([]);
@@ -44,25 +46,36 @@ export default function CommunityPreview() {
               ))
             )}
           </div>
-          <div className="cj-card flex flex-col justify-center gap-6">
-            <div>
-              <p className="font-display text-4xl text-cj-gold">Jam Streak</p>
-              <p className="mt-2 text-sm text-cj-gold-muted">
-                Stay active each week — jam, collab, or post. Build your weekly streak and climb the leaderboard.
-              </p>
+          <div className="space-y-6">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-cj-gold-border">
+              <Image
+                src={STOCK.community}
+                alt={STOCK.communityAlt}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
             </div>
-            <div>
-              <p className="font-display text-4xl text-cj-gold">Project Board</p>
-              <p className="mt-2 text-sm text-cj-gold-muted">
-                Ideas → Writing → Recording → Mixing → Release. Drag tracks through your pipeline.
-              </p>
+            <div className="cj-card flex flex-col justify-center gap-6">
+              <div>
+                <p className="font-display text-4xl text-cj-gold">Jam Streak</p>
+                <p className="mt-2 text-sm text-cj-gold-muted">
+                  Stay active each week — jam, collab, or post. Build your weekly streak and climb the leaderboard.
+                </p>
+              </div>
+              <div>
+                <p className="font-display text-4xl text-cj-gold">Project Board</p>
+                <p className="mt-2 text-sm text-cj-gold-muted">
+                  Ideas → Writing → Recording → Mixing → Release. Drag tracks through your pipeline.
+                </p>
+              </div>
+              <Link
+                href="/community"
+                className="inline-flex items-center gap-2 text-sm uppercase tracking-widest text-cj-gold hover:opacity-80"
+              >
+                Enter Community <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
-            <Link
-              href="/community"
-              className="inline-flex items-center gap-2 text-sm uppercase tracking-widest text-cj-gold hover:opacity-80"
-            >
-              Enter Community <ArrowRight className="h-4 w-4" />
-            </Link>
           </div>
         </div>
       </div>

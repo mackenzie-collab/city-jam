@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import CjIcon from "@/components/CjIcon";
+import { TOOL_ICONS } from "@/lib/brand-assets";
 
 const tools = [
   {
@@ -62,6 +64,12 @@ export default function MoreToolsGrid() {
               href={tool.href}
               className="group cj-card block transition-all hover:border-cj-gold/60 hover:bg-cj-purple-card/80"
             >
+              <CjIcon
+                src={TOOL_ICONS[tool.href]}
+                alt=""
+                size={28}
+                className="mb-4 opacity-80 group-hover:opacity-100"
+              />
               <h3 className="font-display text-2xl uppercase text-cj-gold">
                 {tool.title}
               </h3>

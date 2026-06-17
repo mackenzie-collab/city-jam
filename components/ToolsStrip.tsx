@@ -1,26 +1,17 @@
 import Link from "next/link";
-import {
-  Archive,
-  Briefcase,
-  FolderKanban,
-  Headphones,
-  Map,
-  Mic2,
-  Radio,
-  Users,
-  LayoutDashboard,
-} from "lucide-react";
+import CjIcon from "@/components/CjIcon";
+import { TOOL_ICONS } from "@/lib/brand-assets";
 
 export const TOOLS = [
-  { href: "/studio", label: "Studio", icon: LayoutDashboard, desc: "Projects & PM board" },
-  { href: "/project-match", label: "Project Match", icon: Briefcase, desc: "Find collaborators" },
-  { href: "/vault", label: "Vault", icon: Archive, desc: "Upload demos & stems" },
-  { href: "/collab", label: "Collab", icon: FolderKanban, desc: "Task boards" },
-  { href: "/circles", label: "Circles", icon: Users, desc: "Private groups" },
-  { href: "/listening-rooms", label: "Rooms", icon: Headphones, desc: "Listen together" },
-  { href: "/signal-map", label: "Signal Map", icon: Map, desc: "Who's online" },
-  { href: "/blind-echo", label: "Blind Echo", icon: Mic2, desc: "7-min audio match" },
-  { href: "/echo-roulette", label: "Echo Roulette", icon: Radio, desc: "Spin & connect" },
+  { href: "/studio", label: "Studio", desc: "Projects & PM board" },
+  { href: "/project-match", label: "Project Match", desc: "Find collaborators" },
+  { href: "/vault", label: "Vault", desc: "Upload demos & stems" },
+  { href: "/collab", label: "Collab", desc: "Task boards" },
+  { href: "/circles", label: "Circles", desc: "Private groups" },
+  { href: "/listening-rooms", label: "Rooms", desc: "Listen together" },
+  { href: "/signal-map", label: "Signal Map", desc: "Who's online" },
+  { href: "/blind-echo", label: "Blind Echo", desc: "7-min audio match" },
+  { href: "/echo-roulette", label: "Echo Roulette", desc: "Spin & connect" },
 ] as const;
 
 interface ToolsStripProps {
@@ -44,7 +35,7 @@ export default function ToolsStrip({ variant = "full", title = "Your Tools" }: T
             : "grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
         }
       >
-        {TOOLS.map(({ href, label, icon: Icon, desc }) => (
+        {TOOLS.map(({ href, label, desc }) => (
           <Link
             key={href}
             href={href}
@@ -55,7 +46,12 @@ export default function ToolsStrip({ variant = "full", title = "Your Tools" }: T
             }
           >
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-cj-gold-border bg-cj-dark group-hover:border-cj-gold/50">
-              <Icon className="h-5 w-5 text-cj-gold-muted group-hover:text-cj-gold" />
+              <CjIcon
+                src={TOOL_ICONS[href]}
+                alt=""
+                size={22}
+                className="opacity-80 group-hover:opacity-100"
+              />
             </div>
             <div className={variant === "compact" ? "" : "min-w-0"}>
               <p className="text-sm font-semibold uppercase tracking-wide text-cj-gold">{label}</p>

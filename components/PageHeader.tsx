@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { ArrowLeft, LucideIcon } from "lucide-react";
+import CjIcon from "@/components/CjIcon";
 
 interface PageHeaderProps {
   title: string;
   backHref?: string;
   icon?: LucideIcon;
+  iconSrc?: string;
   rightElement?: React.ReactNode;
   showDot?: boolean;
   dark?: boolean;
@@ -16,6 +18,7 @@ export default function PageHeader({
   title,
   backHref = "/",
   icon: Icon,
+  iconSrc,
   rightElement,
   showDot = false,
   dark = false,
@@ -35,7 +38,11 @@ export default function PageHeader({
       </Link>
 
       <div className="flex items-center gap-2">
-        {Icon && <Icon className="h-4 w-4 text-cj-gold" />}
+        {iconSrc ? (
+          <CjIcon src={iconSrc} alt="" size={16} />
+        ) : (
+          Icon && <Icon className="h-4 w-4 text-cj-gold" />
+        )}
         {showDot && (
           <span className="h-2 w-2 rounded-full bg-cj-gold-bright animate-pulse-dot" />
         )}

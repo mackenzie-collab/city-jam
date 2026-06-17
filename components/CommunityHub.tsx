@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Users, Map, Flame } from "lucide-react";
+import { Flame } from "lucide-react";
+import CjIcon from "@/components/CjIcon";
 import FeatureShell from "@/components/FeatureShell";
 import ToolsStrip from "@/components/ToolsStrip";
 import JamStreakWidget from "@/components/JamStreakWidget";
@@ -10,6 +11,7 @@ import DiscoveryPanel from "@/components/DiscoveryPanel";
 import ProjectKanban from "@/components/ProjectKanban";
 import AuthBanner from "@/components/AuthBanner";
 import { Button } from "@/components/ui/button";
+import { ICONS } from "@/lib/brand-assets";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
 import { fetchStreakLeaderboard, type JamStreak } from "@/lib/streaks";
@@ -25,7 +27,7 @@ export default function CommunityHub() {
   return (
     <FeatureShell
       title="Community"
-      icon={Users}
+      iconSrc={ICONS.band}
       badge="The Scene"
       heading={
         <>
@@ -70,7 +72,7 @@ export default function CommunityHub() {
               >
                 <div>
                   <p className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-cj-gold-muted">
-                    <Map className="h-3 w-3" /> Live Map
+                    <CjIcon src={ICONS.globeSound} alt="" size={12} /> Live Map
                   </p>
                   <p className="mt-3 font-display text-2xl uppercase text-cj-gold">Who&apos;s Online</p>
                   <p className="mt-2 text-xs text-cj-gold-muted">See musicians on the map near you</p>
