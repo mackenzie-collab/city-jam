@@ -56,6 +56,7 @@ export const ICONS = {
   search: "/icons/24_search.png",
   profile: "/icons/26_profile_user.png",
   chat: "/icons/27_chat_message.png",
+  home: "/icons/29_home.png",
   jamMatch: "/icons/30_jam_session_match.png",
 } as const;
 

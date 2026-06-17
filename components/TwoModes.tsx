@@ -24,16 +24,16 @@ const modes = [
 
 export default function TwoModes() {
   return (
-    <section className="bg-cj-purple px-6 py-24 md:px-8">
+    <section className="cj-section bg-cj-purple">
       <div className="mx-auto max-w-6xl">
-        <span className="cj-badge mb-6">Pick Your Frequency</span>
-        <h2 className="cj-heading-display text-5xl md:text-7xl">
+        <span className="cj-badge mb-4 sm:mb-6">Pick Your Frequency</span>
+        <h2 className="cj-heading-display text-4xl sm:text-5xl md:text-7xl">
           Two Modes.
           <br />
           <span className="text-cj-gold-bright">One Truth.</span>
         </h2>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
+        <div className="mt-8 grid gap-4 sm:mt-12 sm:gap-6 md:grid-cols-2">
           {modes.map((mode) => (
             <div
               key={mode.title}
@@ -43,14 +43,16 @@ export default function TwoModes() {
                 <CjIcon src={mode.icon} alt="" size={32} />
                 <span className="cj-badge text-[10px]">{mode.tag}</span>
               </div>
-              <h3 className="font-display text-3xl uppercase text-cj-gold">
+              <h3 className="font-display text-2xl uppercase text-cj-gold sm:text-3xl">
                 {mode.title}
               </h3>
               <p className="mt-4 flex-1 text-sm leading-relaxed text-cj-gold-muted">
                 {mode.description}
               </p>
-              <Link href={mode.href} className="mt-8">
-                <Button variant="secondary">Enter</Button>
+              <Link href={mode.href} className="mt-6 block no-underline sm:mt-8">
+                <Button variant="secondary" className="w-full sm:w-auto">
+                  Enter
+                </Button>
               </Link>
             </div>
           ))}

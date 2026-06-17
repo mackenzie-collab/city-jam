@@ -56,7 +56,7 @@
   }
 
   .cj-card {
-    @apply rounded-xl border border-cj-gold-border bg-cj-purple-card p-8;
+    @apply rounded-xl border border-cj-gold-border bg-cj-purple-card p-5 sm:p-6 md:p-8;
   }
 
   .cj-heading-display {
@@ -68,7 +68,41 @@
   }
 
   .cj-auth-card {
-    @apply rounded-2xl border border-cj-gold-border bg-cj-purple-card p-10;
+    @apply rounded-2xl border border-cj-gold-border bg-cj-purple-card p-6 sm:p-8 md:p-10;
+  }
+
+  .cj-section {
+    @apply px-4 py-16 sm:px-6 sm:py-20 md:px-8 md:py-24;
+  }
+
+  .cj-mobile-cta-stack {
+    @apply flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center;
+  }
+
+  .cj-mobile-cta-stack > a,
+  .cj-mobile-cta-stack > button {
+    @apply w-full sm:w-auto;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(201, 168, 0, 0.35) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-cj-gold/40;
+  }
+
+  .snap-x-mandatory {
+    scroll-snap-type: x mandatory;
+  }
+
+  .snap-start {
+    scroll-snap-align: start;
   }
 
   .cj-pill {

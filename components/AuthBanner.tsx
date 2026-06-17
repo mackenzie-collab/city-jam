@@ -19,7 +19,7 @@ export default function AuthBanner({ message, returnUrl }: AuthBannerProps) {
     : "/login";
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-between gap-4 border-t border-cj-gold-border bg-cj-purple-card px-6 py-4">
+    <div className="fixed bottom-0 left-0 right-0 z-40 hidden items-center justify-between gap-4 border-t border-cj-gold-border bg-cj-purple-card px-6 py-4 md:flex">
       <p className="text-sm text-cj-gold-muted">{message}</p>
       <Link href={loginHref}>
         <Button variant="primary" size="sm">

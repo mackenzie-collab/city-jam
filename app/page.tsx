@@ -1,4 +1,4 @@
-import Navbar from "@/components/Navbar";
+import MarketingShell from "@/components/MarketingShell";
 import Hero from "@/components/Hero";
 import MusicianGallery from "@/components/MusicianGallery";
 import CommunityPreview from "@/components/CommunityPreview";
@@ -11,17 +11,18 @@ import Footer from "@/components/Footer";
 
 export default function HomePage() {
   return (
-    <main>
-      <Navbar />
-      <Hero />
-      <MusicianGallery />
-      <CommunityPreview />
-      <TwoModes />
-      <FourSteps />
-      <ZeroVisualBias />
-      <MoreToolsGrid />
-      <GuestModeCTA />
-      <Footer />
-    </main>
+    <MarketingShell>
+      <main>
+        <Hero />
+        <MusicianGallery />
+        <CommunityPreview />
+        <TwoModes />
+        <FourSteps />
+        <ZeroVisualBias />
+        <MoreToolsGrid />
+        <GuestModeCTA />
+        <Footer />
+      </main>
+    </MarketingShell>
   );
 }

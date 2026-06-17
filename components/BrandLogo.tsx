@@ -27,8 +27,8 @@ export default function BrandLogo({
         priority
       />
       {showWordmark && (
-        <span className="font-display text-2xl font-bold tracking-wide text-cj-gold md:text-3xl">
-          CITY<span className="mx-1 opacity-60">/</span>JAM
+        <span className="font-display text-lg font-bold tracking-wide text-cj-gold sm:text-2xl md:text-3xl">
+          CITY<span className="mx-0.5 opacity-60 sm:mx-1">/</span>JAM
         </span>
       )}
     </span>

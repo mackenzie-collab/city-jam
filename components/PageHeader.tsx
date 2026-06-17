@@ -25,7 +25,7 @@ export default function PageHeader({
 }: PageHeaderProps) {
   return (
     <header
-      className={`sticky top-0 z-50 flex items-center justify-between px-6 py-4 ${
+      className={`sticky top-0 z-50 flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 ${
         dark ? "bg-cj-dark border-b border-cj-gold-border" : "bg-cj-purple-dark"
       }`}
     >

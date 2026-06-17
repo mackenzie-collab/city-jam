@@ -1,9 +1,9 @@
 export default function ZeroVisualBias() {
   return (
-    <section className="bg-cj-purple px-6 py-24 md:px-8">
+    <section className="cj-section bg-cj-purple">
       <div className="mx-auto max-w-4xl">
-        <span className="cj-badge mb-6">Our Promise</span>
-        <h2 className="cj-heading-display text-center text-5xl md:text-8xl">
+        <span className="cj-badge mb-4 sm:mb-6">Our Promise</span>
+        <h2 className="cj-heading-display text-center text-4xl sm:text-5xl md:text-8xl">
           Zero Visual Bias.
         </h2>
         <p className="mt-8 text-center text-base leading-relaxed text-cj-gold-muted md:text-lg">

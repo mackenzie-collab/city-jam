@@ -48,16 +48,16 @@ const tools = [
 
 export default function MoreToolsGrid() {
   return (
-    <section className="bg-cj-purple-dark px-6 py-24 md:px-8">
+    <section className="cj-section bg-cj-purple-dark">
       <div className="mx-auto max-w-6xl">
-        <span className="cj-badge mb-6">Explore</span>
-        <h2 className="cj-heading-display text-5xl md:text-7xl">
+        <span className="cj-badge mb-4 sm:mb-6">Explore</span>
+        <h2 className="cj-heading-display text-4xl sm:text-5xl md:text-7xl">
           More Tools.
           <br />
           <span className="text-cj-gold-bright">Your Scene.</span>
         </h2>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
           {tools.map((tool) => (
             <Link
               key={tool.title}

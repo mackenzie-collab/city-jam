@@ -15,10 +15,10 @@ export default function CommunityPreview() {
   }, []);
 
   return (
-    <section className="bg-cj-purple px-6 py-24 md:px-8">
+    <section className="cj-section bg-cj-purple">
       <div className="mx-auto max-w-6xl">
-        <span className="cj-badge mb-6">The Community</span>
-        <h2 className="cj-heading-display text-5xl md:text-7xl">
+        <span className="cj-badge mb-4 sm:mb-6">The Community</span>
+        <h2 className="cj-heading-display text-4xl sm:text-5xl md:text-7xl">
           Not Solo.
           <br />
           <span className="text-cj-gold-bright">A Scene.</span>
@@ -28,8 +28,18 @@ export default function CommunityPreview() {
           actually connect.
         </p>
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-2">
-          <div className="space-y-3">
+        <div className="mt-8 grid gap-6 lg:mt-10 lg:grid-cols-2">
+          <div className="relative order-2 aspect-[16/10] overflow-hidden rounded-lg border border-cj-gold-border sm:aspect-[4/3] lg:order-1 lg:hidden">
+            <Image
+              src={STOCK.community}
+              alt={STOCK.communityAlt}
+              fill
+              className="object-cover"
+              sizes="100vw"
+            />
+          </div>
+
+          <div className="order-1 space-y-3 lg:order-2">
             {items.length === 0 ? (
               <div className="cj-card py-6 text-center text-sm text-cj-gold-muted">
                 Join to see the live feed
@@ -46,8 +56,9 @@ export default function CommunityPreview() {
               ))
             )}
           </div>
-          <div className="space-y-6">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-cj-gold-border">
+
+          <div className="order-3 space-y-4 sm:space-y-6 lg:order-3">
+            <div className="relative hidden aspect-[4/3] overflow-hidden rounded-lg border border-cj-gold-border lg:block">
               <Image
                 src={STOCK.community}
                 alt={STOCK.communityAlt}
@@ -56,22 +67,22 @@ export default function CommunityPreview() {
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
             </div>
-            <div className="cj-card flex flex-col justify-center gap-6">
+            <div className="cj-card grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
               <div>
-                <p className="font-display text-4xl text-cj-gold">Jam Streak</p>
+                <p className="font-display text-3xl text-cj-gold sm:text-4xl">Jam Streak</p>
                 <p className="mt-2 text-sm text-cj-gold-muted">
                   Stay active each week — jam, collab, or post. Build your weekly streak and climb the leaderboard.
                 </p>
               </div>
               <div>
-                <p className="font-display text-4xl text-cj-gold">Project Board</p>
+                <p className="font-display text-3xl text-cj-gold sm:text-4xl">Project Board</p>
                 <p className="mt-2 text-sm text-cj-gold-muted">
                   Ideas → Writing → Recording → Mixing → Release. Drag tracks through your pipeline.
                 </p>
               </div>
               <Link
                 href="/community"
-                className="inline-flex items-center gap-2 text-sm uppercase tracking-widest text-cj-gold hover:opacity-80"
+                className="inline-flex min-h-11 items-center gap-2 text-sm uppercase tracking-widest text-cj-gold hover:opacity-80 sm:col-span-2 lg:col-span-1"
               >
                 Enter Community <ArrowRight className="h-4 w-4" />
               </Link>

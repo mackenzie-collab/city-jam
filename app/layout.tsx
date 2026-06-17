@@ -1,5 +1,5 @@
 import { Bebas_Neue, Inter } from "next/font/google";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import LiveConfigBanner from "@/components/LiveConfigBanner";
 
@@ -13,6 +13,13 @@ const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#3D0066",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://city-jam.vercel.app"),

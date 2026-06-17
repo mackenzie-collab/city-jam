@@ -65,7 +65,7 @@ export default function FeatureShell({
         backHref="/community"
         rightElement={headerRight}
       />
-      <div className={`mx-auto px-6 py-10 ${MAX[maxWidth]}`}>
+      <div className={`mx-auto px-4 py-8 sm:px-6 sm:py-10 ${MAX[maxWidth]}`}>
         {showTrail && <AppTrail />}
         {badge && <span className="cj-badge mb-6">{badge}</span>}
         <div className="cj-heading-display text-4xl md:text-5xl lg:text-6xl">{heading}</div>
