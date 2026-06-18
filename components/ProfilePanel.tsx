@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { User, Sparkles, Users } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { User, Sparkles, Users, Trash2 } from "lucide-react";
 import FeatureShell from "@/components/FeatureShell";
 import JamStreakWidget, { BadgeGallery } from "@/components/JamStreakWidget";
 import ToolsStrip from "@/components/ToolsStrip";
@@ -37,7 +38,7 @@ function timeAgo(iso: string): string {
 }
 
 export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
-  const { user } = useAuth();
+  const { user, deleteAccount } = useAuth();
   const targetId = viewUserId ?? user?.id;
   const isOwnProfile = !viewUserId || viewUserId === user?.id;
 
@@ -60,6 +61,11 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
   const [error, setError] = useState<string | null>(null);
   const [streak, setStreak] = useState<JamStreak | null>(null);
   const [activity, setActivity] = useState<FeedItem[]>([]);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const router = useRouter();
 
   const load = useCallback(async () => {
     if (!targetId) {
@@ -153,6 +159,20 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
       status_artist: preset.artist ?? "",
       status_mood: preset.mood ?? ("" as StatusMood),
     });
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user?.id || deleteConfirm !== "DELETE") return;
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      await deleteAccount();
+      router.push("/");
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : "Account deletion failed");
+    } finally {
+      setDeleting(false);
+    }
   };
 
   return (
@@ -453,6 +473,56 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
                   </li>
                 ))}
               </ul>
+            </section>
+          )}
+
+          {isOwnProfile && (
+            <section className="cj-card border-red-500/30">
+              <p className="flex items-center gap-2 text-xs uppercase tracking-widest text-red-300/80">
+                <Trash2 className="h-4 w-4" /> Delete account
+              </p>
+              <p className="mt-2 text-sm text-cj-gold-muted">
+                Permanently removes your profile, map presence, match queue entries, community posts,
+                vault metadata, and local session data. This cannot be undone.
+              </p>
+              {!deleteOpen ? (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="mt-4 border-red-500/40 text-red-300"
+                  onClick={() => setDeleteOpen(true)}
+                >
+                  Delete my account
+                </Button>
+              ) : (
+                <div className="mt-4 space-y-3">
+                  <p className="text-xs text-cj-gold-muted">
+                    Type <strong className="text-cj-gold">DELETE</strong> to confirm.
+                  </p>
+                  <input
+                    value={deleteConfirm}
+                    onChange={(e) => setDeleteConfirm(e.target.value)}
+                    className="cj-input !pl-4"
+                    placeholder="DELETE"
+                    autoComplete="off"
+                  />
+                  {deleteError && <p className="text-xs text-red-400">{deleteError}</p>}
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      className="border-red-500/40 text-red-300"
+                      disabled={deleteConfirm !== "DELETE" || deleting}
+                      onClick={handleDeleteAccount}
+                    >
+                      {deleting ? "Deleting..." : "Confirm deletion"}
+                    </Button>
+                    <Button type="button" variant="secondary" onClick={() => setDeleteOpen(false)}>
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              )}
             </section>
           )}
         </div>

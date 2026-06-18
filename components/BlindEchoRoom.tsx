@@ -6,6 +6,7 @@ import { Loader2, Mic, MicOff, UserX } from "lucide-react";
 import AppChrome from "@/components/AppChrome";
 import AppTrail from "@/components/AppTrail";
 import PageHeader from "@/components/PageHeader";
+import PermissionNotice, { MIC_CONSENT_KEY, hasStoredConsent, storeConsent } from "@/components/PermissionNotice";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useMatchSession } from "@/hooks/useMatchSession";
@@ -54,7 +55,12 @@ export default function BlindEchoRoom() {
   const [decision, setDecision] = useState<"transmit" | "fade" | null>(null);
   const [partnerDecision, setPartnerDecision] = useState<string | null>(null);
   const [mutualTransmit, setMutualTransmit] = useState(false);
+  const [micConsented, setMicConsented] = useState(false);
   const streakTracked = useRef(false);
+
+  useEffect(() => {
+    setMicConsented(hasStoredConsent(MIC_CONSENT_KEY));
+  }, []);
 
   useEffect(() => {
     if (matchStatus === "searching") setPhase("searching");
@@ -222,13 +228,41 @@ export default function BlindEchoRoom() {
               High Intent · 7 Minutes · Live Audio
             </p>
             <h1 className="cj-heading-display mt-4 text-4xl">Ready to Echo?</h1>
-            <p className="mt-4 text-sm text-cj-gold-muted">
-              You&apos;ll be matched anonymously with another musician. Allow
-              mic access when prompted. At the end: transmit or fade.
-            </p>
-            <Button variant="primary" className="mt-10" onClick={handleEnter}>
-              Enter the Room
-            </Button>
+            {!micConsented ? (
+              <div className="mt-8 w-full">
+                <PermissionNotice
+                  title="Microphone access"
+                  learnMoreHref="/privacy"
+                  acceptLabel="I understand — continue"
+                  onAccept={() => {
+                    storeConsent(MIC_CONSENT_KEY);
+                    setMicConsented(true);
+                  }}
+                  body={
+                    <>
+                      <p>
+                        Blind Echo matches you with another musician for a live audio session. Your
+                        browser will ask for microphone access when the session starts.
+                      </p>
+                      <p>
+                        Audio is transmitted in real time via WebRTC. We do not record sessions on
+                        our servers unless you separately upload to the Vault.
+                      </p>
+                    </>
+                  }
+                />
+              </div>
+            ) : (
+              <>
+                <p className="mt-4 text-sm text-cj-gold-muted">
+                  You&apos;ll be matched anonymously with another musician. Allow mic access when
+                  prompted. At the end: transmit or fade.
+                </p>
+                <Button variant="primary" className="mt-10" onClick={handleEnter}>
+                  Enter the Room
+                </Button>
+              </>
+            )}
           </>
         )}
 

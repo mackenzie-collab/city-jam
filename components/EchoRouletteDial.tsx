@@ -6,6 +6,7 @@ import { Loader2, Mic } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useMatchSession } from "@/hooks/useMatchSession";
 import { useWebRTC } from "@/hooks/useWebRTC";
+import PermissionNotice, { MIC_CONSENT_KEY, hasStoredConsent, storeConsent } from "@/components/PermissionNotice";
 import { Button } from "@/components/ui/button";
 import {
   FM_CHANNELS,
@@ -30,6 +31,12 @@ export default function EchoRouletteDial({
   const [angle, setAngle] = useState(() => freqToAngle(104.2));
   const [locked, setLocked] = useState(false);
   const [connecting, setConnecting] = useState(false);
+  const [micConsented, setMicConsented] = useState(false);
+  const [showMicNotice, setShowMicNotice] = useState(false);
+
+  useEffect(() => {
+    setMicConsented(hasStoredConsent(MIC_CONSENT_KEY));
+  }, []);
 
   const snappedFreq = snapToNearestChannel(frequency);
   const {
@@ -103,6 +110,10 @@ export default function EchoRouletteDial({
 
   const handleConnect = async () => {
     if (connecting || matchStatus === "searching") return;
+    if (!hasStoredConsent(MIC_CONSENT_KEY)) {
+      setShowMicNotice(true);
+      return;
+    }
     setConnecting(true);
     await startSearch();
     setConnecting(false);
@@ -239,6 +250,32 @@ export default function EchoRouletteDial({
                   Stop
                 </Button>
               </div>
+            ) : showMicNotice ? (
+              <PermissionNotice
+                title="Microphone access"
+                learnMoreHref="/privacy"
+                acceptLabel="I understand — connect"
+                onDecline={() => setShowMicNotice(false)}
+                onAccept={() => {
+                  storeConsent(MIC_CONSENT_KEY);
+                  setMicConsented(true);
+                  setShowMicNotice(false);
+                  void (async () => {
+                    setConnecting(true);
+                    await startSearch();
+                    setConnecting(false);
+                  })();
+                }}
+                body={
+                  <>
+                    <p>
+                      Echo Roulette connects you with another musician on this frequency. Your browser
+                      will request microphone access for the live session.
+                    </p>
+                    <p>Audio is peer-to-peer via WebRTC and is not stored on our servers.</p>
+                  </>
+                }
+              />
             ) : (
               <>
                 <p className="text-sm text-cj-gold-muted">

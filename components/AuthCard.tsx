@@ -167,6 +167,18 @@ export default function AuthCard({ mode, onSubmit, onGoogle }: AuthCardProps) {
           </>
         )}
       </p>
+
+      <p className="mt-4 text-center text-[10px] leading-relaxed text-cj-gold-muted">
+        By continuing, you agree to our{" "}
+        <Link href="/terms" className="text-cj-gold hover:underline">
+          Terms
+        </Link>{" "}
+        and{" "}
+        <Link href="/privacy" className="text-cj-gold hover:underline">
+          Privacy Policy
+        </Link>
+        .
+      </p>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { MessageCircle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ReportButton from "@/components/ReportButton";
 import { useAuth } from "@/hooks/useAuth";
 import { displayName, fetchProfile } from "@/lib/profiles";
 import {
@@ -117,6 +118,7 @@ export default function CommunityFeed({ showComposer = true }: { showComposer?: 
                   </Link>
                   <span className={`cj-tag ${FEED_KIND_COLOR[item.kind]}`}>{FEED_KIND_LABEL[item.kind]}</span>
                   <span className="text-[10px] text-cj-gold-muted">{timeAgo(item.created_at)}</span>
+                  <ReportButton contentType="community_post" contentId={item.id} className="ml-auto" />
                 </div>
                 {item.title && <p className="mt-2 font-display text-sm uppercase text-cj-gold-bright">{item.title}</p>}
                 <p className="mt-1 text-sm leading-relaxed text-cj-gold-muted">{item.body}</p>

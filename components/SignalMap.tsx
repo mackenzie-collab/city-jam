@@ -6,6 +6,7 @@ import Link from "next/link";
 import AppChrome from "@/components/AppChrome";
 import AppTrail from "@/components/AppTrail";
 import PageHeader from "@/components/PageHeader";
+import PermissionNotice, { GEO_CONSENT_KEY, storeConsent } from "@/components/PermissionNotice";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useMapPresence } from "@/hooks/useMapPresence";
@@ -32,6 +33,8 @@ export default function SignalMap() {
     loading,
     appearOnMap,
     hideFromMap,
+    needsGeoConsent,
+    dismissGeoConsent,
   } = useMapPresence(user?.id, isAuthenticated);
 
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
@@ -114,6 +117,33 @@ export default function SignalMap() {
           </aside>
 
           <div className="absolute bottom-0 left-0 right-0 z-20 flex flex-wrap items-center justify-between gap-3 border-t border-cj-gold-border bg-cj-purple-card/95 px-6 py-4 backdrop-blur-sm">
+            {needsGeoConsent && (
+              <div className="absolute bottom-full left-4 right-4 mb-3">
+                <PermissionNotice
+                  title="Show your city on the map"
+                  learnMoreHref="/privacy"
+                  onAccept={() => {
+                    storeConsent(GEO_CONSENT_KEY);
+                    dismissGeoConsent();
+                    appearOnMap();
+                  }}
+                  onDecline={dismissGeoConsent}
+                  acceptLabel="Allow city-level location"
+                  body={
+                    <>
+                      <p>
+                        City Jam uses your device location only to place you in the nearest city on
+                        the Signal Map — never your exact address.
+                      </p>
+                      <p>
+                        Coordinates are rounded before storage. You can hide yourself at any time
+                        with &ldquo;Hide Me.&rdquo;
+                      </p>
+                    </>
+                  }
+                />
+              </div>
+            )}
             <div className="text-xs text-cj-gold-muted">
               {visible && yourCity ? (
                 <p>

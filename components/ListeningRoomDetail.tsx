@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Headphones, MessageSquare, Clock, Users } from "lucide-react";
 import FeatureShell from "@/components/FeatureShell";
 import { Button } from "@/components/ui/button";
+import ReportButton from "@/components/ReportButton";
 import { useAuth } from "@/hooks/useAuth";
 import { displayName, fetchProfile } from "@/lib/profiles";
 import {
@@ -156,7 +157,7 @@ export default function ListeningRoomDetail({ roomId }: { roomId: string }) {
               <ul className="space-y-3">
                 {reactions.map((r) => (
                   <li key={r.id} className="cj-card py-3">
-                    <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-cj-gold-muted">
+                    <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-widest text-cj-gold-muted">
                       <Clock className="h-3 w-3" />
                       {formatTimestamp(r.timestamp_sec)}
                       <span>·</span>
@@ -170,6 +171,7 @@ export default function ListeningRoomDetail({ roomId }: { roomId: string }) {
                       ) : (
                         <span>{r.display_name || "Musician"}</span>
                       )}
+                      <ReportButton contentType="room_reaction" contentId={r.id} className="ml-auto" />
                     </div>
                     <p className="mt-2 text-sm text-cj-gold">{r.body}</p>
                   </li>

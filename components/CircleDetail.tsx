@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Copy, Users, MessageSquare } from "lucide-react";
 import FeatureShell from "@/components/FeatureShell";
 import { Button } from "@/components/ui/button";
+import ReportButton from "@/components/ReportButton";
 import { useAuth } from "@/hooks/useAuth";
 import { displayName, fetchProfile } from "@/lib/profiles";
 import {
@@ -138,7 +139,10 @@ export default function CircleDetail({ circleId }: { circleId: string }) {
             <li key={p.id} className="cj-card py-4">
               <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-cj-gold-muted">
                 <span>{p.display_name || "Musician"}</span>
-                <span>{new Date(p.created_at).toLocaleString()}</span>
+                <div className="flex items-center gap-3">
+                  <span>{new Date(p.created_at).toLocaleString()}</span>
+                  <ReportButton contentType="circle_post" contentId={p.id} />
+                </div>
               </div>
               <p className="mt-2 text-sm leading-relaxed text-cj-gold">{p.body}</p>
             </li>

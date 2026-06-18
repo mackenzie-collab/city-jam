@@ -10,6 +10,7 @@ import {
   registerWithEmail,
   setAuthUser,
 } from "@/lib/auth";
+import { deleteUserAccount } from "@/lib/account-deletion";
 
 export function useAuth() {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -43,6 +44,13 @@ export function useAuth() {
     setUser(null);
   }, []);
 
+  const deleteAccount = useCallback(async () => {
+    if (!user?.id) return null;
+    const result = await deleteUserAccount(user.id);
+    setUser(null);
+    return result;
+  }, [user?.id]);
+
   return {
     user,
     loading,
@@ -51,6 +59,7 @@ export function useAuth() {
     register,
     googleLogin,
     logout,
+    deleteAccount,
   };
 }
 

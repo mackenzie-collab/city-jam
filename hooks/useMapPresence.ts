@@ -14,6 +14,7 @@ import {
 } from "@/lib/matchmaking";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { nearestCity } from "@/lib/signal-map-data";
+import { GEO_CONSENT_KEY, hasStoredConsent } from "@/components/PermissionNotice";
 
 const MAP_HIDDEN_KEY = "cj-map-hidden";
 
@@ -23,6 +24,7 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [autoAttempted, setAutoAttempted] = useState(false);
+  const [needsGeoConsent, setNeedsGeoConsent] = useState(false);
 
   const refresh = useCallback(async () => {
     if (!isSupabaseConfigured()) return;
@@ -45,6 +47,10 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
 
   const appearOnMap = useCallback(async () => {
     if (!userId || !isAuthenticated) return;
+    if (!hasStoredConsent(GEO_CONSENT_KEY)) {
+      setNeedsGeoConsent(true);
+      return;
+    }
     if (!isSupabaseConfigured()) {
       setGeoError("Configure Supabase to appear on the map");
       return;
@@ -100,6 +106,10 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
   useEffect(() => {
     if (!userId || !isAuthenticated || autoAttempted || visible || loading) return;
     if (!isSupabaseConfigured()) return;
+    if (!hasStoredConsent(GEO_CONSENT_KEY)) {
+      setAutoAttempted(true);
+      return;
+    }
     if (typeof sessionStorage !== "undefined" && sessionStorage.getItem(MAP_HIDDEN_KEY) === userId) {
       setAutoAttempted(true);
       return;
@@ -118,6 +128,8 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
     appearOnMap,
     hideFromMap,
     isLive: isSupabaseConfigured(),
+    needsGeoConsent,
+    dismissGeoConsent: () => setNeedsGeoConsent(false),
   };
 }
 
