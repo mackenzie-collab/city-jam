@@ -42,7 +42,10 @@ export default function CommunityPreview() {
           <div className="order-1 space-y-3 lg:order-2">
             {items.length === 0 ? (
               <div className="cj-card py-6 text-center text-sm text-cj-gold-muted">
-                Join to see the live feed
+                <p>The scene is warming up.</p>
+                <Link href="/community" className="mt-3 inline-block text-xs uppercase tracking-widest text-cj-gold underline">
+                  Enter Community →
+                </Link>
               </div>
             ) : (
               items.map((item) => (

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Flame } from "lucide-react";
+import { Flame, Users } from "lucide-react";
 import CjIcon from "@/components/CjIcon";
 import FeatureShell from "@/components/FeatureShell";
 import ToolsStrip from "@/components/ToolsStrip";
@@ -57,12 +57,10 @@ export default function CommunityHub() {
         ) : undefined
       }
     >
-      <div className="mb-10">
-        <ToolsStrip title="All Tools — Jump In" />
-      </div>
-
       <div className="grid gap-8 xl:grid-cols-[1fr_320px]">
         <div className="space-y-10">
+          <CommunityFeed showComposer={isAuthenticated} />
+
           {isAuthenticated && (
             <div className="grid gap-4 sm:grid-cols-2">
               <JamStreakWidget />
@@ -86,7 +84,7 @@ export default function CommunityHub() {
 
           {isAuthenticated && <DiscoveryPanel />}
 
-          <CommunityFeed showComposer={isAuthenticated} />
+          <ToolsStrip title="All Tools — Jump In" />
         </div>
 
         <aside className="space-y-6">
@@ -108,6 +106,22 @@ export default function CommunityHub() {
               </ol>
             )}
           </div>
+
+          <Link
+            href="/circles"
+            className="cj-card block no-underline transition-colors hover:border-cj-gold/50"
+          >
+            <p className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-cj-gold-muted">
+              <Users className="h-3 w-3" /> Private Circles
+            </p>
+            <p className="mt-3 font-display text-xl uppercase text-cj-gold">Your Crew</p>
+            <p className="mt-2 text-xs text-cj-gold-muted">
+              Invite-only groups for shared focus — create or join with a code.
+            </p>
+            <span className="mt-4 inline-block text-xs uppercase tracking-widest text-cj-gold">
+              Open Circles →
+            </span>
+          </Link>
 
           <div className="cj-card space-y-3">
             <p className="text-[10px] uppercase tracking-widest text-cj-gold-muted">Quick Jam</p>

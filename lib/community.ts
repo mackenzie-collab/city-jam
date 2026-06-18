@@ -26,6 +26,11 @@ export function communityUnavailable() {
   return !isSupabaseConfigured() || !getSupabase();
 }
 
+/** Only persisted community_posts rows can be reported (not merged needs/rooms). */
+export function isReportableFeedItem(item: FeedItem): boolean {
+  return !item.id.startsWith("need-") && !item.id.startsWith("room-");
+}
+
 export async function createCommunityPost(
   userId: string,
   displayName: string,
@@ -123,7 +128,7 @@ export async function fetchCommunityFeed(limit = 40): Promise<FeedItem[]> {
   if (communityUnavailable()) return [];
 
   const [posts, needs, rooms] = await Promise.all([
-    fetchCommunityPosts(limit).catch(() => [] as FeedItem[]),
+    fetchCommunityPosts(limit),
     fetchProjectNeeds().catch(() => [] as ProjectNeed[]),
     fetchListeningRooms().catch(() => [] as ListeningRoom[]),
   ]);
