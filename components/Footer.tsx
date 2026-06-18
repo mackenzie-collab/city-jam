@@ -1,13 +1,12 @@
 import Link from "next/link";
+import BrandLogo from "@/components/BrandLogo";
 
 export default function Footer() {
   return (
     <footer className="border-t border-cj-gold-border bg-cj-purple-dark px-4 py-12 sm:px-6 sm:py-16 md:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8">
-          <p className="font-display text-4xl tracking-wide text-cj-gold md:text-5xl">
-            CITY<span className="mx-1 opacity-60">/</span>JAM
-          </p>
+          <BrandLogo size={80} />
           <p className="mt-4 max-w-md text-sm text-cj-gold-muted">
             An app for musicians. Not fans. Not listeners. Make music fun again.
           </p>
@@ -31,6 +30,18 @@ export default function Footer() {
           </Link>
           <Link href="/listening-rooms" className="hover:text-cj-gold">
             Listening Rooms
+          </Link>
+        </div>
+
+        <div className="mt-8 flex flex-wrap gap-6 text-xs uppercase tracking-widest text-cj-gold-muted">
+          <Link href="/privacy" className="hover:text-cj-gold">
+            Privacy
+          </Link>
+          <Link href="/terms" className="hover:text-cj-gold">
+            Terms
+          </Link>
+          <Link href="/contact" className="hover:text-cj-gold">
+            Contact
           </Link>
         </div>
 

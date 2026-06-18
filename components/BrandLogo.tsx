@@ -6,31 +6,25 @@ import { cn } from "@/lib/utils";
 interface BrandLogoProps {
   href?: string;
   className?: string;
-  showWordmark?: boolean;
-  iconSize?: number;
+  /** Square logo size in px (logo is 1:1). */
+  size?: number;
 }
 
 export default function BrandLogo({
   href,
   className,
-  showWordmark = true,
-  iconSize = 36,
+  size = 36,
 }: BrandLogoProps) {
   const content = (
-    <span className={cn("inline-flex items-center gap-2.5", className)}>
+    <span className={cn("inline-flex shrink-0", className)}>
       <Image
         src={BRAND.logo}
         alt={BRAND.logoAlt}
-        width={iconSize}
-        height={iconSize}
-        className="object-contain"
+        width={size}
+        height={size}
+        className="aspect-square object-contain"
         priority
       />
-      {showWordmark && (
-        <span className="font-display text-lg font-bold tracking-wide text-cj-gold sm:text-2xl md:text-3xl">
-          CITY<span className="mx-0.5 opacity-60 sm:mx-1">/</span>JAM
-        </span>
-      )}
     </span>
   );
 

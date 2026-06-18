@@ -1,5 +1,5 @@
 export const BRAND = {
-  logo: "/icons/30_jam_session_match.png",
+  logo: "/brand/city-jam-logo.png",
   logoAlt: "City Jam",
 } as const;
 

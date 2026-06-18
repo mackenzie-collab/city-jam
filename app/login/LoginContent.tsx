@@ -53,7 +53,7 @@ export default function LoginContent() {
 
       <div className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6 sm:py-12 lg:py-12">
         <div className="w-full max-w-md text-center">
-          <BrandLogo showWordmark iconSize={40} className="mb-6 justify-center sm:mb-8" />
+          <BrandLogo size={120} className="mb-6 justify-center sm:mb-8" />
           <h1 className="cj-heading-display text-3xl sm:text-4xl md:text-5xl">Welcome Back</h1>
           <p className="mt-2 text-sm text-cj-gold-muted">Log in to your account</p>
           <div className="mt-8 sm:mt-10">

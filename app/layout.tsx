@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   description:
     "Audio-first, anonymous musician matchmaking. No photos, no follower counts, no algorithms.",
   icons: {
-    icon: "/icons/30_jam_session_match.png",
+    icon: "/brand/city-jam-logo.png",
   },
   openGraph: {
     title: "City Jam — Make Music Fun Again",
