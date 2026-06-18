@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="border-t border-cj-gold-border bg-cj-purple-dark px-4 py-12 sm:px-6 sm:py-16 md:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8">
-          <BrandLogo size={80} />
+          <BrandLogo href="/" size={96} />
           <p className="mt-4 max-w-md text-sm text-cj-gold-muted">
             An app for musicians. Not fans. Not listeners. Make music fun again.
           </p>

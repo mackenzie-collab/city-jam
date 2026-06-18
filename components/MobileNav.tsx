@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import BrandLogo from "@/components/BrandLogo";
 import CjIcon from "@/components/CjIcon";
-import { ICONS, MOBILE_NAV_ICONS } from "@/lib/brand-assets";
+import { BRAND, ICONS, MOBILE_NAV_ICONS } from "@/lib/brand-assets";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -16,7 +17,7 @@ const AUTH_TABS = [
 ];
 
 const GUEST_TABS = [
-  { href: "/", label: "Home", icon: ICONS.home },
+  { href: "/", label: "Home", icon: BRAND.logo },
   { href: "/community", label: "Scene", icon: ICONS.band },
   { href: "/signal-map", label: "Map", icon: ICONS.globeSound },
   { href: "/echo-roulette", label: "Jam", icon: ICONS.frequencyDial },
@@ -48,12 +49,19 @@ export default function MobileNav() {
                 active ? "text-cj-gold" : "text-cj-gold-muted"
               )}
             >
-              <CjIcon
-                src={icon}
-                alt=""
-                size={24}
-                className={cn(active ? "opacity-100" : "opacity-60")}
-              />
+              {icon === BRAND.logo ? (
+                <BrandLogo
+                  size={26}
+                  className={cn(active ? "opacity-100" : "opacity-60")}
+                />
+              ) : (
+                <CjIcon
+                  src={icon}
+                  alt=""
+                  size={24}
+                  className={cn(active ? "opacity-100" : "opacity-60")}
+                />
+              )}
               <span className="max-w-[4rem] truncate">{label}</span>
             </Link>
           );

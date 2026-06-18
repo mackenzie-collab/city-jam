@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import BrandLogo from "@/components/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { STOCK } from "@/lib/brand-assets";
 
@@ -20,10 +21,11 @@ export default function Hero() {
         className="object-cover object-[center_30%] sm:object-center"
         sizes="100vw"
       />
-      <div className="absolute inset-0 bg-cj-purple/88 sm:bg-cj-purple/85" aria-hidden />
-      <div className="absolute inset-0 bg-gradient-to-t from-cj-purple via-cj-purple/70 to-cj-purple/50 sm:via-cj-purple/60 sm:to-cj-purple/40" aria-hidden />
+      <div className="absolute inset-0 bg-cj-purple-dark/90 sm:bg-cj-purple-dark/88" aria-hidden />
+      <div className="absolute inset-0 bg-gradient-to-t from-cj-purple-dark via-cj-purple-dark/75 to-cj-purple-dark/55 sm:via-cj-purple-dark/65 sm:to-cj-purple-dark/45" aria-hidden />
 
       <div className="relative mx-auto w-full max-w-6xl">
+        <BrandLogo size={112} className="mb-6 justify-center sm:mb-8" priority />
         <span className="cj-badge mb-6 sm:mb-8">The rebellion starts here</span>
 
         <h1 className="cj-heading-display text-5xl sm:text-6xl md:text-8xl lg:text-9xl">

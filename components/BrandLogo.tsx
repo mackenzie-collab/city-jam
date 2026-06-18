@@ -8,12 +8,14 @@ interface BrandLogoProps {
   className?: string;
   /** Square logo size in px (logo is 1:1). */
   size?: number;
+  priority?: boolean;
 }
 
 export default function BrandLogo({
   href,
   className,
   size = 36,
+  priority = false,
 }: BrandLogoProps) {
   const content = (
     <span className={cn("inline-flex shrink-0", className)}>
@@ -22,8 +24,8 @@ export default function BrandLogo({
         alt={BRAND.logoAlt}
         width={size}
         height={size}
-        className="aspect-square object-contain"
-        priority
+        className="aspect-square object-contain drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
+        priority={priority}
       />
     </span>
   );

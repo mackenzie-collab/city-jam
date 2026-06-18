@@ -44,7 +44,8 @@ export default function Navbar() {
           </button>
           <BrandLogo
             href={isAuthenticated ? "/community" : "/"}
-            size={32}
+            size={40}
+            priority
           />
         </div>
 

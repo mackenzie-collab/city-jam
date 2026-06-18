@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { X } from "lucide-react";
+import BrandLogo from "@/components/BrandLogo";
 import CjIcon from "@/components/CjIcon";
 import { Button } from "@/components/ui/button";
 import { ICONS, TOOL_ICONS } from "@/lib/brand-assets";
@@ -56,7 +57,7 @@ export default function MobileMenu({
       />
       <div className="absolute right-0 top-0 flex h-full w-[min(100%,20rem)] flex-col border-l border-cj-gold-border bg-cj-purple-dark shadow-2xl">
         <div className="flex items-center justify-between border-b border-cj-gold-border px-5 py-4">
-          <p className="font-display text-lg uppercase tracking-widest text-cj-gold">Menu</p>
+          <BrandLogo size={32} />
           <button
             type="button"
             onClick={onClose}
