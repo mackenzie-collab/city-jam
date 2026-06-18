@@ -77,7 +77,7 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
         setGeoError("Location permission denied");
         setLoading(false);
       },
-      { enableHighAccuracy: false, maximumAge: 60000, timeout: 10000 }
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }
     );
   }, [userId, isAuthenticated, refresh]);
 

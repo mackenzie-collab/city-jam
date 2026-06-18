@@ -131,7 +131,7 @@ export default function StudioDashboard() {
             </form>
           )}
 
-          <ProjectKanban />
+          <ProjectKanban projects={projects} onProjectsUpdated={load} />
 
           <div>
             <div className="mb-4 flex items-center justify-between">

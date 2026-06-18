@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   cancelMatch,
+  leaveMatch,
+  pollMatchStatus,
   subscribeToMatch,
   tryMatch,
   type MatchMode,
@@ -22,6 +24,14 @@ export function useMatchSession(
   const [isInitiator, setIsInitiator] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const applyMatch = useCallback((result: MatchResult) => {
+    if (result.status === "matched" && result.sessionId) {
+      setSessionId(result.sessionId);
+      setIsInitiator(result.isInitiator ?? false);
+      setStatus("matched");
+    }
+  }, []);
+
   const startSearch = useCallback(async () => {
     if (!userId) return;
     if (!isSupabaseConfigured()) {
@@ -36,9 +46,7 @@ export function useMatchSession(
     const result: MatchResult = await tryMatch(userId, mode, frequency);
 
     if (result.status === "matched" && result.sessionId) {
-      setSessionId(result.sessionId);
-      setIsInitiator(result.isInitiator ?? false);
-      setStatus("matched");
+      applyMatch(result);
     } else if (result.status === "waiting") {
       setStatus("searching");
     } else if (result.status === "offline") {
@@ -48,10 +56,10 @@ export function useMatchSession(
       setStatus("error");
       setError(result.message ?? "Match failed");
     }
-  }, [userId, mode, frequency]);
+  }, [userId, mode, frequency, applyMatch]);
 
   const cancel = useCallback(async () => {
-    if (userId) await cancelMatch(userId);
+    if (userId) await leaveMatch(userId);
     setStatus("idle");
     setSessionId(null);
     setIsInitiator(false);
@@ -60,12 +68,22 @@ export function useMatchSession(
   useEffect(() => {
     if (!userId || status !== "searching") return;
 
-    return subscribeToMatch(userId, (sid, initiator) => {
+    const unsub = subscribeToMatch(userId, (sid, initiator) => {
       setSessionId(sid);
       setIsInitiator(initiator);
       setStatus("matched");
     });
-  }, [userId, status]);
+
+    const interval = setInterval(async () => {
+      const polled = await pollMatchStatus(userId);
+      if (polled) applyMatch(polled);
+    }, 2000);
+
+    return () => {
+      unsub();
+      clearInterval(interval);
+    };
+  }, [userId, status, applyMatch]);
 
   useEffect(() => {
     return () => {

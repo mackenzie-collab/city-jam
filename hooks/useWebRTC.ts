@@ -28,14 +28,31 @@ export function useWebRTC(
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const remoteAudioRef = useRef<HTMLAudioElement | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
+  const iceQueueRef = useRef<RTCIceCandidateInit[]>([]);
+  const remoteSetRef = useRef(false);
 
   const cleanup = useCallback(() => {
     localStreamRef.current?.getTracks().forEach((t) => t.stop());
     localStreamRef.current = null;
     pcRef.current?.close();
     pcRef.current = null;
+    iceQueueRef.current = [];
+    remoteSetRef.current = false;
     setConnected(false);
     setAudioReady(false);
+  }, []);
+
+  const flushIceQueue = useCallback(async (pc: RTCPeerConnection) => {
+    if (!pc.remoteDescription) return;
+    const pending = [...iceQueueRef.current];
+    iceQueueRef.current = [];
+    for (const candidate of pending) {
+      try {
+        await pc.addIceCandidate(candidate);
+      } catch {
+        /* ignore stale candidates */
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -68,8 +85,9 @@ export function useWebRTC(
 
     pc.onconnectionstatechange = () => {
       if (pc.connectionState === "connected") setConnected(true);
-      if (pc.connectionState === "failed") {
-        setError("Connection failed — try again");
+      if (pc.connectionState === "failed" || pc.connectionState === "disconnected") {
+        setError("Connection lost — try again");
+        setConnected(false);
       }
     };
 
@@ -78,36 +96,52 @@ export function useWebRTC(
         remoteAudioRef.current.srcObject = event.streams[0];
         remoteAudioRef.current.play().catch(() => {});
       }
-      setConnected(true);
     };
 
-    channel.on("broadcast", { event: "signal" }, async ({ payload }) => {
-      const msg = payload as SignalPayload;
+    const handleSignal = async (msg: SignalPayload) => {
       if (msg.from === userId) return;
 
       try {
         if (msg.type === "offer" && msg.sdp) {
           await pc.setRemoteDescription(msg.sdp);
+          remoteSetRef.current = true;
+          await flushIceQueue(pc);
           const answer = await pc.createAnswer();
           await pc.setLocalDescription(answer);
           sendSignal({ type: "answer", sdp: answer });
         } else if (msg.type === "answer" && msg.sdp) {
           await pc.setRemoteDescription(msg.sdp);
+          remoteSetRef.current = true;
+          await flushIceQueue(pc);
+          setConnected(pc.connectionState === "connected");
         } else if (msg.type === "ice" && msg.candidate) {
-          await pc.addIceCandidate(msg.candidate);
+          if (remoteSetRef.current && pc.remoteDescription) {
+            await pc.addIceCandidate(msg.candidate);
+          } else {
+            iceQueueRef.current.push(msg.candidate);
+          }
         }
       } catch {
         setError("Signaling error");
       }
+    };
+
+    channel.on("broadcast", { event: "signal" }, async ({ payload }) => {
+      await handleSignal(payload as SignalPayload);
     });
+
+    const sendOffer = async () => {
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      sendSignal({ type: "offer", sdp: offer });
+    };
 
     const start = async () => {
       try {
+        await channel.subscribe();
+
         const stream = await navigator.mediaDevices.getUserMedia({
-          audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-          },
+          audio: { echoCancellation: true, noiseSuppression: true },
           video: false,
         });
         if (cancelled) {
@@ -118,12 +152,16 @@ export function useWebRTC(
         stream.getTracks().forEach((track) => pc.addTrack(track, stream));
         setAudioReady(true);
 
-        await channel.subscribe();
-
         if (isInitiator) {
-          const offer = await pc.createOffer();
-          await pc.setLocalDescription(offer);
-          sendSignal({ type: "offer", sdp: offer });
+          await sendOffer();
+          const retry = setInterval(() => {
+            if (cancelled || pc.connectionState === "connected" || pc.remoteDescription) {
+              clearInterval(retry);
+              return;
+            }
+            sendOffer().catch(() => {});
+          }, 3000);
+          setTimeout(() => clearInterval(retry), 30000);
         }
       } catch {
         setError("Microphone access denied — allow mic to connect");
@@ -137,7 +175,7 @@ export function useWebRTC(
       supabase.removeChannel(channel);
       cleanup();
     };
-  }, [sessionId, userId, isInitiator, enabled, cleanup]);
+  }, [sessionId, userId, isInitiator, enabled, cleanup, flushIceQueue]);
 
   return { connected, audioReady, error, remoteAudioRef, cleanup };
 }

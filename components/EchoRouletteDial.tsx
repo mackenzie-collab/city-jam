@@ -43,7 +43,7 @@ export default function EchoRouletteDial({
   } = useMatchSession(user?.id, "echo-roulette", locked ? snappedFreq : undefined);
 
   const webrtcActive = matchStatus === "matched" && !!sessionId;
-  const { connected, remoteAudioRef, error: rtcError } = useWebRTC(
+  const { connected, remoteAudioRef, error: rtcError, cleanup: cleanupRtc } = useWebRTC(
     sessionId,
     user?.id ?? "",
     isInitiator,
@@ -94,9 +94,18 @@ export default function EchoRouletteDial({
     setLocked(true);
   };
 
+  const handleDisconnect = async () => {
+    cleanupRtc();
+    setConnecting(false);
+    setLocked(false);
+    await cancel();
+  };
+
   const handleConnect = async () => {
+    if (connecting || matchStatus === "searching") return;
     setConnecting(true);
     await startSearch();
+    setConnecting(false);
   };
 
   const channelIndex = FM_CHANNELS.indexOf(snappedFreq);
@@ -189,8 +198,13 @@ export default function EchoRouletteDial({
         )}
 
         {connected && (
-          <div className="mt-4 flex items-center justify-center gap-2 text-xs uppercase tracking-widest text-cj-gold-bright">
-            <Mic className="h-3 w-3" /> Live on {snappedFreq} FM
+          <div className="mt-4 space-y-3">
+            <div className="flex items-center justify-center gap-2 text-xs uppercase tracking-widest text-cj-gold-bright">
+              <Mic className="h-3 w-3" /> Live on {snappedFreq} FM
+            </div>
+            <Button variant="secondary" size="sm" onClick={handleDisconnect}>
+              Disconnect
+            </Button>
           </div>
         )}
 
@@ -233,8 +247,13 @@ export default function EchoRouletteDial({
                 {(matchError || rtcError) && (
                   <p className="mt-2 text-xs text-amber-400">{matchError || rtcError}</p>
                 )}
-                <Button variant="primary" className="mt-4" onClick={handleConnect}>
-                  Connect
+                <Button
+                  variant="primary"
+                  className="mt-4"
+                  onClick={handleConnect}
+                  disabled={connecting}
+                >
+                  {connecting ? "Connecting..." : "Connect"}
                 </Button>
               </>
             )}

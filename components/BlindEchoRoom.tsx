@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Loader2, Mic, MicOff, UserX } from "lucide-react";
 import AppChrome from "@/components/AppChrome";
@@ -54,29 +54,35 @@ export default function BlindEchoRoom() {
   const [decision, setDecision] = useState<"transmit" | "fade" | null>(null);
   const [partnerDecision, setPartnerDecision] = useState<string | null>(null);
   const [mutualTransmit, setMutualTransmit] = useState(false);
+  const streakTracked = useRef(false);
 
   useEffect(() => {
     if (matchStatus === "searching") setPhase("searching");
-    if (matchStatus === "matched" && phase !== "session" && phase !== "decision" && phase !== "done") {
-      setPhase("session");
-      setTimeLeft(SESSION_DURATION_SEC);
-      if (user?.id) {
-        import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
-          trackWeeklyActivity(user.id, "blind_echo")
-        );
+    if (matchStatus === "matched" && phase !== "decision" && phase !== "done") {
+      if (phase !== "session") {
+        setPhase("session");
+        setTimeLeft(SESSION_DURATION_SEC);
       }
     }
-  }, [matchStatus, phase, user?.id, user?.name, user?.email]);
+  }, [matchStatus, phase]);
 
   useEffect(() => {
-    if (phase !== "session") return;
+    if (!connected || !user?.id || streakTracked.current) return;
+    streakTracked.current = true;
+    import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
+      trackWeeklyActivity(user.id, "blind_echo")
+    );
+  }, [connected, user?.id]);
+
+  useEffect(() => {
+    if (phase !== "session" || !connected) return;
     if (timeLeft <= 0) {
       setPhase("decision");
       return;
     }
     const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearInterval(timer);
-  }, [phase, timeLeft]);
+  }, [phase, timeLeft, connected]);
 
   useEffect(() => {
     if (!sessionId || phase !== "decision") return;
@@ -95,7 +101,12 @@ export default function BlindEchoRoom() {
     };
 
     check();
-    return subscribeToDecisions(sessionId, check);
+    const interval = setInterval(check, 2000);
+    const unsub = subscribeToDecisions(sessionId, check);
+    return () => {
+      clearInterval(interval);
+      unsub();
+    };
   }, [sessionId, phase, user?.id]);
 
   const handleEnter = useCallback(async () => {
@@ -108,11 +119,24 @@ export default function BlindEchoRoom() {
     if (sessionId && user?.id) {
       await submitDecision(sessionId, user.id, d);
     }
-    setPhase("done");
+    if (d === "fade") {
+      setPhase("done");
+    }
   };
+
+  useEffect(() => {
+    if (phase !== "decision" || !decision || decision === "fade") return;
+    if (partnerDecision === "transmit") {
+      setMutualTransmit(true);
+      setPhase("done");
+    } else if (partnerDecision === "fade") {
+      setPhase("done");
+    }
+  }, [phase, decision, partnerDecision]);
 
   const handleReset = () => {
     cancel();
+    streakTracked.current = false;
     setPhase("lobby");
     setDecision(null);
     setPartnerDecision(null);

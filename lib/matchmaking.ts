@@ -66,6 +66,31 @@ export async function cancelMatch(userId: string): Promise<void> {
     .eq("status", "waiting");
 }
 
+/** Leave queue or end an active matched session */
+export async function leaveMatch(userId: string): Promise<void> {
+  const supabase = getSupabase();
+  if (!supabase) return;
+  await supabase.from("match_queue").delete().eq("user_id", userId);
+}
+
+export async function pollMatchStatus(userId: string): Promise<MatchResult | null> {
+  const supabase = getSupabase();
+  if (!supabase) return null;
+  const { data } = await supabase
+    .from("match_queue")
+    .select("status, session_id, is_initiator")
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (data?.status === "matched" && data.session_id) {
+    return {
+      status: "matched",
+      sessionId: data.session_id,
+      isInitiator: data.is_initiator ?? false,
+    };
+  }
+  return null;
+}
+
 export function subscribeToMatch(
   userId: string,
   onMatched: (sessionId: string, isInitiator: boolean) => void
@@ -162,6 +187,11 @@ export interface MapPresenceRow {
   updated_at: string;
 }
 
+/** Resolve city from stored coords (fixes stale city_slug after hub list updates) */
+function cityForPresence(row: MapPresenceRow): string {
+  return nearestCity(Number(row.lng), Number(row.lat)).slug;
+}
+
 export interface CityOnlineSummary {
   slug: string;
   name: string;
@@ -215,10 +245,10 @@ export function aggregateCityOnline(
 
   for (const row of rows) {
     if (excludeUserId && row.user_id === excludeUserId) continue;
-    if (!row.city_slug) continue;
-    const entry = byCity.get(row.city_slug) ?? { drifters: [] };
+    const slug = cityForPresence(row);
+    const entry = byCity.get(slug) ?? { drifters: [] };
     entry.drifters.push(row.alias ?? drifterAlias(row.user_id));
-    byCity.set(row.city_slug, entry);
+    byCity.set(slug, entry);
   }
 
   return CITY_DOTS.map((city) => {
@@ -239,10 +269,11 @@ export function getYourCity(
   userId: string
 ): CityOnlineSummary | null {
   const row = rows.find((r) => r.user_id === userId);
-  if (!row?.city_slug) return null;
-  const city = cityBySlug(row.city_slug);
+  if (!row) return null;
+  const slug = cityForPresence(row);
+  const city = cityBySlug(slug);
   if (!city) return null;
-  const inCity = rows.filter((r) => r.city_slug === row.city_slug);
+  const inCity = rows.filter((r) => cityForPresence(r) === slug);
   return {
     slug: city.slug,
     name: city.name,

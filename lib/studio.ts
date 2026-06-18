@@ -147,8 +147,9 @@ export async function updateProject(
     .eq("id", id)
     .eq("owner_id", ownerId)
     .select()
-    .single();
+    .maybeSingle();
   if (error) throw error;
+  if (!data) throw new Error("Project not found or you are not the owner");
   return data;
 }
 
