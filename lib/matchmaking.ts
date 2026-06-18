@@ -80,6 +80,8 @@ export async function pollMatchStatus(userId: string): Promise<MatchResult | nul
     .from("match_queue")
     .select("status, session_id, is_initiator")
     .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(1)
     .maybeSingle();
   if (data?.status === "matched" && data.session_id) {
     return {

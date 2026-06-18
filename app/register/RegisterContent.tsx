@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import BrandLogo from "@/components/BrandLogo";
@@ -10,25 +11,39 @@ import { useAuth } from "@/hooks/useAuth";
 export default function RegisterContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { register, googleLogin } = useAuth();
+  const { register, googleLogin, error } = useAuth();
   const returnUrl = searchParams.get("returnUrl") || "/";
+  const [loading, setLoading] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
 
-  const handleSubmit = (data: {
+  const handleSubmit = async (data: {
     email: string;
     password: string;
     confirmPassword?: string;
+    displayName?: string;
   }) => {
     if (data.password !== data.confirmPassword) {
-      alert("Passwords do not match");
-      return;
+      setLocalError("Passwords do not match");
+      throw new Error("Passwords do not match");
     }
-    register(data.email, data.password);
-    router.push(returnUrl);
+    setLocalError(null);
+    setLoading(true);
+    try {
+      await register(data.email, data.password, data.displayName);
+      router.push(returnUrl);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleGoogle = () => {
-    googleLogin();
-    router.push(returnUrl);
+  const handleGoogle = async () => {
+    setLoading(true);
+    try {
+      const u = await googleLogin();
+      if (u) router.push(returnUrl);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -70,6 +85,8 @@ export default function RegisterContent() {
               mode="register"
               onSubmit={handleSubmit}
               onGoogle={handleGoogle}
+              loading={loading}
+              error={localError ?? error}
             />
           </div>
         </div>

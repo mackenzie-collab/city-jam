@@ -424,6 +424,8 @@ export interface ListeningRoom {
   title: string;
   artist: string;
   album: string;
+  audio_url: string;
+  host_user_id: string;
   created_at: string;
 }
 
@@ -437,11 +439,15 @@ export async function fetchListeningRooms(query?: string): Promise<ListeningRoom
 
 export async function createListeningRoom(
   creatorId: string,
-  input: { title: string; artist?: string; album?: string }
+  input: { title: string; artist?: string; album?: string; audio_url?: string }
 ): Promise<ListeningRoom> {
   const { data, error } = await db()
     .from("listening_rooms")
-    .insert({ creator_id: creatorId, ...input })
+    .insert({
+      creator_id: creatorId,
+      host_user_id: creatorId,
+      ...input,
+    })
     .select()
     .single();
   if (error) throw error;

@@ -10,11 +10,11 @@ import { ICONS, TOOL_ICONS } from "@/lib/brand-assets";
 import { cn } from "@/lib/utils";
 
 const PRIMARY_LINKS = [
-  { href: "/community", label: "Community", highlight: true },
-  { href: "/studio", label: "Studio" },
-  { href: "/signal-map", label: "Signal Map" },
-  { href: "/blind-echo", label: "Blind Echo" },
-  { href: "/echo-roulette", label: "Echo Roulette" },
+  { href: "/", label: "Home" },
+  { href: "/discover", label: "Discover" },
+  { href: "/scene", label: "Scene", highlight: true },
+  { href: "/jam", label: "Jam" },
+  { href: "/profile", label: "Profile" },
 ];
 
 const TOOL_LINKS = [

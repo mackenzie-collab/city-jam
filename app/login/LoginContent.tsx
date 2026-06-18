@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import BrandLogo from "@/components/BrandLogo";
@@ -7,23 +8,37 @@ import AuthCard from "@/components/AuthCard";
 import { STOCK } from "@/lib/brand-assets";
 import { useAuth } from "@/hooks/useAuth";
 
+import { resetPasswordForEmail } from "@/lib/supabase/auth";
+
 export default function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login, googleLogin } = useAuth();
+  const { login, googleLogin, error } = useAuth();
   const returnUrl = searchParams.get("returnUrl") || "/";
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (data: {
-    email: string;
-    password: string;
-  }) => {
-    login(data.email, data.password);
-    router.push(returnUrl);
+  const handleForgotPassword = async (email: string) => {
+    await resetPasswordForEmail(email);
   };
 
-  const handleGoogle = () => {
-    googleLogin();
-    router.push(returnUrl);
+  const handleSubmit = async (data: { email: string; password: string }) => {
+    setLoading(true);
+    try {
+      await login(data.email, data.password);
+      router.push(returnUrl);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogle = async () => {
+    setLoading(true);
+    try {
+      const u = await googleLogin();
+      if (u) router.push(returnUrl);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -57,7 +72,14 @@ export default function LoginContent() {
           <h1 className="cj-heading-display text-3xl sm:text-4xl md:text-5xl">Welcome Back</h1>
           <p className="mt-2 text-sm text-cj-gold-muted">Log in to your account</p>
           <div className="mt-8 sm:mt-10">
-            <AuthCard mode="login" onSubmit={handleSubmit} onGoogle={handleGoogle} />
+            <AuthCard
+              mode="login"
+              onSubmit={handleSubmit}
+              onGoogle={handleGoogle}
+              onForgotPassword={handleForgotPassword}
+              loading={loading}
+              error={error}
+            />
           </div>
         </div>
       </div>

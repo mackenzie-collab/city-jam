@@ -28,6 +28,7 @@ const config: Config = {
       fontFamily: {
         display: ["var(--font-bebas)", "Bebas Neue", "Anton", "sans-serif"],
         body: ["var(--font-inter)", "Inter", "Space Grotesk", "sans-serif"],
+        typewriter: ["var(--font-typewriter)", "Special Elite", "Courier New", "monospace"],
       },
       letterSpacing: {
         widest: "0.25em",
@@ -35,6 +36,7 @@ const config: Config = {
       animation: {
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
         ticker: "ticker 20s linear infinite",
+        spin: "spin 4s linear infinite",
       },
       keyframes: {
         "pulse-glow": {
@@ -44,6 +46,10 @@ const config: Config = {
         ticker: {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-50%)" },
+        },
+        spin: {
+          from: { transform: "rotate(0deg)" },
+          to: { transform: "rotate(360deg)" },
         },
       },
     },

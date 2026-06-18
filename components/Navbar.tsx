@@ -13,11 +13,11 @@ import { ICONS } from "@/lib/brand-assets";
 import { useAuth } from "@/hooks/useAuth";
 
 const navLinks = [
-  { href: "/community", label: "Community", highlight: true },
-  { href: "/studio", label: "Studio" },
-  { href: "/signal-map", label: "Map" },
-  { href: "/blind-echo", label: "Blind Echo" },
-  { href: "/echo-roulette", label: "Echo Roulette" },
+  { href: "/", label: "Home" },
+  { href: "/discover", label: "Discover" },
+  { href: "/scene", label: "Scene", highlight: true },
+  { href: "/jam", label: "Jam" },
+  { href: "/profile", label: "Profile" },
 ];
 
 export default function Navbar() {
@@ -25,8 +25,8 @@ export default function Navbar() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     router.push("/");
   };
 
@@ -42,11 +42,7 @@ export default function Navbar() {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <BrandLogo
-            href={isAuthenticated ? "/community" : "/"}
-            size={40}
-            priority
-          />
+          <BrandLogo href={isAuthenticated ? "/scene" : "/"} size={40} priority />
         </div>
 
         <div className="hidden items-center gap-5 lg:flex">
@@ -69,12 +65,18 @@ export default function Navbar() {
               <JamStreakWidget compact />
               <Link
                 href="/profile"
-                className="hidden items-center gap-1 text-xs uppercase tracking-widest text-cj-gold sm:flex"
+                className="relative z-10 flex items-center gap-1 text-xs uppercase tracking-widest text-cj-gold no-underline hover:opacity-80"
               >
                 <CjIcon src={ICONS.profile} alt="" size={14} />
                 {user?.name ?? user?.email?.split("@")[0]}
               </Link>
-              <Button variant="ghost" size="sm" onClick={handleLogout} aria-label="Log out" className="hidden sm:inline-flex">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLogout}
+                aria-label="Log out"
+                className="hidden sm:inline-flex"
+              >
                 <LogOut className="h-4 w-4" />
               </Button>
             </>

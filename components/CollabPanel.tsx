@@ -31,6 +31,7 @@ export default function CollabPanel() {
   const [newWs, setNewWs] = useState("");
   const [newProjectId, setNewProjectId] = useState("");
   const [newTask, setNewTask] = useState("");
+  const [taskError, setTaskError] = useState<string | null>(null);
 
   const loadWs = useCallback(async () => {
     if (!user?.id || studioUnavailable()) {
@@ -64,9 +65,6 @@ export default function CollabPanel() {
       title: newWs.trim(),
       project_id: newProjectId || undefined,
     });
-    import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
-      trackWeeklyActivity(user.id, "collab_workspace")
-    );
     setNewWs("");
     setNewProjectId("");
     setActiveId(ws.id);
@@ -75,15 +73,27 @@ export default function CollabPanel() {
 
   const addTask = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!activeId || !newTask.trim()) return;
-    await createTask(activeId, newTask.trim());
-    if (user?.id) {
-      import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
-        trackWeeklyActivity(user.id, "collab_task_create")
-      );
+    if (!activeId) {
+      setTaskError("Select or create a workspace first.");
+      return;
     }
-    setNewTask("");
-    loadTasks();
+    if (!newTask.trim()) {
+      setTaskError("Enter a task name.");
+      return;
+    }
+    setTaskError(null);
+    try {
+      await createTask(activeId, newTask.trim());
+      if (user?.id) {
+        import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
+          trackWeeklyActivity(user.id, "collab_task_create")
+        );
+      }
+      setNewTask("");
+      loadTasks();
+    } catch (err) {
+      setTaskError(err instanceof Error ? err.message : "Could not add task");
+    }
   };
 
   const doneCount = tasks.filter((t) => t.done).length;
@@ -195,6 +205,7 @@ export default function CollabPanel() {
                   />
                 </div>
               )}
+              {taskError && <p className="mb-3 text-xs text-amber-400">{taskError}</p>}
               <form onSubmit={addTask} className="mb-6 flex gap-2">
                 <input
                   placeholder="Add task — mix vocals, record bass, upload stems..."

@@ -57,13 +57,15 @@ export default function EchoRouletteDial({
     webrtcActive
   );
 
+  const streakTracked = useRef(false);
+
   useEffect(() => {
-    if (matchStatus === "matched" && user?.id) {
-      import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
-        trackWeeklyActivity(user.id, "echo_roulette")
-      );
-    }
-  }, [matchStatus, user?.id]);
+    if (!connected || !user?.id || streakTracked.current) return;
+    streakTracked.current = true;
+    import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
+      trackWeeklyActivity(user.id, "echo_roulette")
+    );
+  }, [connected, user?.id]);
 
   const updateFromPointer = useCallback(
     (clientX: number, clientY: number) => {

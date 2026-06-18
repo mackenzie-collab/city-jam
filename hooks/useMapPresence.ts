@@ -62,8 +62,13 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
       setLoading(false);
       return;
     }
+    const loadingGuard = window.setTimeout(() => {
+      setLoading(false);
+      setGeoError("Location timed out — tap Show on Map to retry");
+    }, 16000);
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
+        window.clearTimeout(loadingGuard);
         await upsertMapPresence(
           userId,
           pos.coords.longitude,
@@ -75,11 +80,9 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
         if (typeof sessionStorage !== "undefined") {
           sessionStorage.removeItem(MAP_HIDDEN_KEY);
         }
-        import("@/lib/streaks").then(({ trackWeeklyActivity }) =>
-          trackWeeklyActivity(userId, "signal_map")
-        );
       },
       () => {
+        window.clearTimeout(loadingGuard);
         setGeoError("Location permission denied");
         setLoading(false);
       },
@@ -107,6 +110,7 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
     if (!userId || !isAuthenticated || autoAttempted || visible || loading) return;
     if (!isSupabaseConfigured()) return;
     if (!hasStoredConsent(GEO_CONSENT_KEY)) {
+      setNeedsGeoConsent(true);
       setAutoAttempted(true);
       return;
     }

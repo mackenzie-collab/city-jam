@@ -1,6 +1,10 @@
 export const BRAND = {
   logo: "/brand/city-jam-logo.png",
   logoAlt: "City Jam",
+  logo2026: "/brand/2026/logo.png",
+  logo2026Inverted: "/brand/2026/logo-inverted.png",
+  logo2026InvertedYellow: "/brand/2026/logo-inverted-yellow.png",
+  logo2026Updated: "/brand/2026/cityjam_logo_updated.png",
 } as const;
 
 export const STOCK = {
@@ -74,9 +78,13 @@ export const TOOL_ICONS: Record<string, string> = {
 };
 
 export const MOBILE_NAV_ICONS: Record<string, string> = {
+  "/": ICONS.home,
+  "/discover": ICONS.search,
+  "/scene": ICONS.band,
+  "/jam": ICONS.frequencyDial,
+  "/profile": ICONS.profile,
   "/community": ICONS.band,
   "/studio": ICONS.mixingFaders,
   "/signal-map": ICONS.globeSound,
   "/blind-echo": ICONS.microphone,
-  "/profile": ICONS.profile,
 };

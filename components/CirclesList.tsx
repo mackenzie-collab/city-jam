@@ -26,6 +26,7 @@ export default function CirclesList() {
   const [showCreate, setShowCreate] = useState(false);
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
+  const [joinError, setJoinError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -68,13 +69,18 @@ export default function CirclesList() {
   };
 
   const handleJoin = async () => {
-    if (!user?.id || !joinCode.trim()) return;
+    if (!user?.id) return;
+    if (!joinCode.trim()) {
+      setJoinError("Enter an invite code to join a circle.");
+      return;
+    }
+    setJoinError(null);
     try {
       await joinCircle(user.id, joinCode.trim());
       setJoinCode("");
       load();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Invalid code");
+      setJoinError(err instanceof Error ? err.message : "Invalid code");
     }
   };
 
@@ -146,6 +152,7 @@ export default function CirclesList() {
       )}
 
       {error && <p className="mb-4 text-sm text-cj-gold-bright/90">{error}</p>}
+      {joinError && <p className="mb-4 text-sm text-amber-400">{joinError}</p>}
 
       {loading ? (
         <p className="text-center text-cj-gold-muted">Loading...</p>

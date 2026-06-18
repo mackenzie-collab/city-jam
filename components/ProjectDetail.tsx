@@ -32,6 +32,9 @@ export default function ProjectDetail({ projectId }: { projectId: string }) {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ title: "", description: "", genre: "" });
+  const [saveMsg, setSaveMsg] = useState<string | null>(null);
+  const [boardMsg, setBoardMsg] = useState<string | null>(null);
+  const [addingBoard, setAddingBoard] = useState(false);
 
   const load = useCallback(async () => {
     if (studioUnavailable()) {
@@ -67,9 +70,15 @@ export default function ProjectDetail({ projectId }: { projectId: string }) {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user?.id || !project) return;
-    await updateProject(project.id, user.id, form);
-    setEditing(false);
-    load();
+    try {
+      await updateProject(project.id, user.id, form);
+      setEditing(false);
+      setSaveMsg("Project saved.");
+      setTimeout(() => setSaveMsg(null), 2500);
+      load();
+    } catch {
+      setSaveMsg("Could not save — try again.");
+    }
   };
 
   const handleDelete = async () => {
@@ -80,8 +89,18 @@ export default function ProjectDetail({ projectId }: { projectId: string }) {
 
   const addWorkspace = async () => {
     if (!user?.id || !project) return;
-    await createWorkspace(user.id, { title: `${project.title} Board`, project_id: project.id });
-    load();
+    setAddingBoard(true);
+    setBoardMsg(null);
+    try {
+      await createWorkspace(user.id, { title: `${project.title} Board`, project_id: project.id });
+      setBoardMsg("Board created.");
+      setTimeout(() => setBoardMsg(null), 2500);
+      load();
+    } catch {
+      setBoardMsg("Could not create board — try again.");
+    } finally {
+      setAddingBoard(false);
+    }
   };
 
   if (loading) {
@@ -148,10 +167,19 @@ export default function ProjectDetail({ projectId }: { projectId: string }) {
                 onChange={(e) => setForm({ ...form, genre: e.target.value })}
                 className="cj-input !pl-4"
               />
-              <Button type="submit" variant="primary">
-                Save Changes
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button type="submit" variant="primary">
+                  Save Changes
+                </Button>
+                <Button type="button" variant="secondary" onClick={() => setEditing(false)}>
+                  Cancel
+                </Button>
+              </div>
+              {saveMsg && <p className="text-sm text-cj-gold-bright">{saveMsg}</p>}
             </form>
+          )}
+          {!editing && saveMsg && (
+            <p className="text-sm text-cj-gold-bright">{saveMsg}</p>
           )}
 
           <section>
@@ -191,11 +219,12 @@ export default function ProjectDetail({ projectId }: { projectId: string }) {
                 <FolderKanban className="h-5 w-5" /> Collab Boards
               </h2>
               {isOwner && (
-                <Button variant="secondary" size="sm" onClick={addWorkspace}>
-                  <Plus className="mr-1 h-3 w-3" /> Add Board
+                <Button variant="secondary" size="sm" onClick={addWorkspace} disabled={addingBoard}>
+                  <Plus className="mr-1 h-3 w-3" /> {addingBoard ? "Adding…" : "Add Board"}
                 </Button>
               )}
             </div>
+            {boardMsg && <p className="mb-2 text-sm text-cj-gold-bright">{boardMsg}</p>}
             {workspaces.length === 0 ? (
               <p className="text-sm text-cj-gold-muted">No collab boards yet.</p>
             ) : (

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -9,29 +10,61 @@ interface AuthCardProps {
     email: string;
     password: string;
     confirmPassword?: string;
-  }) => void;
-  onGoogle: () => void;
+    displayName?: string;
+  }) => void | Promise<void>;
+  onGoogle: () => void | Promise<void>;
+  onForgotPassword?: (email: string) => void | Promise<void>;
+  loading?: boolean;
+  error?: string | null;
 }
 
-export default function AuthCard({ mode, onSubmit, onGoogle }: AuthCardProps) {
+export default function AuthCard({
+  mode,
+  onSubmit,
+  onGoogle,
+  onForgotPassword,
+  loading = false,
+  error,
+}: AuthCardProps) {
   const isLogin = mode === "login";
+  const [localError, setLocalError] = useState<string | null>(null);
+  const [showForgot, setShowForgot] = useState(false);
+  const [forgotSent, setForgotSent] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLocalError(null);
     const form = new FormData(e.currentTarget);
-    onSubmit({
-      email: form.get("email") as string,
-      password: form.get("password") as string,
-      confirmPassword: form.get("confirmPassword") as string | undefined,
-    });
+    try {
+      await onSubmit({
+        email: form.get("email") as string,
+        password: form.get("password") as string,
+        confirmPassword: form.get("confirmPassword") as string | undefined,
+        displayName: form.get("displayName") as string | undefined,
+      });
+    } catch (err) {
+      setLocalError(err instanceof Error ? err.message : "Something went wrong");
+    }
   };
+
+  const handleGoogle = async () => {
+    setLocalError(null);
+    try {
+      await onGoogle();
+    } catch (err) {
+      setLocalError(err instanceof Error ? err.message : "Google sign-in failed");
+    }
+  };
+
+  const displayError = error ?? localError;
 
   return (
     <div className="cj-auth-card w-full max-w-md">
       <button
         type="button"
-        onClick={onGoogle}
-        className="flex w-full items-center justify-center gap-3 rounded-lg border border-cj-gold-border bg-cj-dark py-3 text-sm text-cj-gold transition-opacity hover:opacity-80"
+        onClick={handleGoogle}
+        disabled={loading}
+        className="flex w-full items-center justify-center gap-3 rounded-lg border border-cj-gold-border bg-cj-dark py-3 text-sm text-cj-gold transition-opacity hover:opacity-80 disabled:opacity-50"
       >
         <svg className="h-5 w-5" viewBox="0 0 24 24">
           <path
@@ -56,11 +89,15 @@ export default function AuthCard({ mode, onSubmit, onGoogle }: AuthCardProps) {
 
       <div className="my-6 flex items-center gap-4">
         <div className="h-px flex-1 bg-cj-gold-border" />
-        <span className="text-xs uppercase tracking-widest text-cj-gold-muted">
-          Or
-        </span>
+        <span className="text-xs uppercase tracking-widest text-cj-gold-muted">Or</span>
         <div className="h-px flex-1 bg-cj-gold-border" />
       </div>
+
+      {displayError && (
+        <p className="mb-4 rounded border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+          {displayError}
+        </p>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="relative">
@@ -81,6 +118,7 @@ export default function AuthCard({ mode, onSubmit, onGoogle }: AuthCardProps) {
             name="email"
             type="email"
             required
+            disabled={loading}
             placeholder="Email"
             className="cj-input"
           />
@@ -104,10 +142,24 @@ export default function AuthCard({ mode, onSubmit, onGoogle }: AuthCardProps) {
             name="password"
             type="password"
             required
+            disabled={loading}
             placeholder="Password"
             className="cj-input"
           />
         </div>
+
+        {!isLogin && (
+          <div className="relative">
+            <input
+              name="displayName"
+              type="text"
+              required
+              disabled={loading}
+              placeholder="Display name / artist name"
+              className="cj-input !pl-4"
+            />
+          </div>
+        )}
 
         {!isLogin && (
           <div className="relative">
@@ -128,6 +180,7 @@ export default function AuthCard({ mode, onSubmit, onGoogle }: AuthCardProps) {
               name="confirmPassword"
               type="password"
               required
+              disabled={loading}
               placeholder="Confirm Password"
               className="cj-input"
             />
@@ -136,17 +189,73 @@ export default function AuthCard({ mode, onSubmit, onGoogle }: AuthCardProps) {
 
         {isLogin && (
           <div className="text-right">
-            <button
-              type="button"
-              className="text-xs text-cj-gold-muted hover:text-cj-gold"
-            >
-              Forgot password?
-            </button>
+            {showForgot ? (
+              <div className="space-y-2 text-left">
+                <input
+                  name="forgotEmail"
+                  type="email"
+                  form="forgot-form"
+                  required
+                  disabled={loading}
+                  placeholder="Your email"
+                  className="cj-input !pl-4"
+                />
+                {forgotSent ? (
+                  <p className="text-xs text-cj-gold-bright">Check your inbox for a reset link.</p>
+                ) : (
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      disabled={loading || !onForgotPassword}
+                      onClick={async () => {
+                        const input = document.querySelector<HTMLInputElement>(
+                          'input[name="forgotEmail"]'
+                        );
+                        const email = input?.value?.trim();
+                        if (!email || !onForgotPassword) return;
+                        setLocalError(null);
+                        try {
+                          await onForgotPassword(email);
+                          setForgotSent(true);
+                        } catch (err) {
+                          setLocalError(
+                            err instanceof Error ? err.message : "Could not send reset email"
+                          );
+                        }
+                      }}
+                    >
+                      Send reset link
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setShowForgot(false);
+                        setForgotSent(false);
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="text-xs text-cj-gold-muted hover:text-cj-gold"
+                onClick={() => setShowForgot(true)}
+              >
+                Forgot password?
+              </button>
+            )}
           </div>
         )}
 
-        <Button type="submit" variant="primary" className="w-full">
-          {isLogin ? "Log In" : "Create Account"}
+        <Button type="submit" variant="primary" className="w-full" disabled={loading}>
+          {loading ? "Please wait..." : isLogin ? "Log In" : "Create Account"}
         </Button>
       </form>
 

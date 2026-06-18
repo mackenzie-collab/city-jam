@@ -1,4 +1,4 @@
-import { Bebas_Neue, Inter } from "next/font/google";
+import { Bebas_Neue, Inter, Special_Elite } from "next/font/google";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import LiveConfigBanner from "@/components/LiveConfigBanner";
@@ -12,6 +12,12 @@ const bebasNeue = Bebas_Neue({
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+});
+
+const specialElite = Special_Elite({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-typewriter",
 });
 
 export const viewport: Viewport = {
@@ -45,7 +51,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${bebasNeue.variable} ${inter.variable}`}>
+      <body className={`${bebasNeue.variable} ${inter.variable} ${specialElite.variable}`}>
         <LiveConfigBanner />
         {children}
       </body>

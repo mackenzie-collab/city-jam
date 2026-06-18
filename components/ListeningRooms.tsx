@@ -21,6 +21,7 @@ export default function ListeningRooms() {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({ title: "", artist: "", album: "" });
 
   const load = useCallback(async () => {
@@ -40,10 +41,15 @@ export default function ListeningRooms() {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user?.id) return;
-    await createListeningRoom(user.id, form);
-    setShowForm(false);
-    setForm({ title: "", artist: "", album: "" });
-    load();
+    setCreating(true);
+    try {
+      await createListeningRoom(user.id, form);
+      setShowForm(false);
+      setForm({ title: "", artist: "", album: "" });
+      await load();
+    } finally {
+      setCreating(false);
+    }
   };
 
   return (
@@ -100,8 +106,8 @@ export default function ListeningRooms() {
             className="cj-input !pl-4"
           />
           <div className="flex gap-2">
-            <Button type="submit" variant="primary">
-              Create Room
+            <Button type="submit" variant="primary" disabled={creating}>
+              {creating ? "Creating…" : "Create Room"}
             </Button>
             <Button type="button" variant="secondary" onClick={() => setShowForm(false)}>
               Cancel
@@ -135,11 +141,10 @@ export default function ListeningRooms() {
                     {room.artist}
                     {room.album ? ` · ${room.album}` : ""}
                   </p>
-                  <Link
-                    href={`/listening-rooms/${room.id}`}
-                    className="cj-btn-secondary mt-3 inline-block px-4 py-2 text-xs no-underline"
-                  >
-                    Join Room
+                  <Link href={`/listening-rooms/${room.id}`} className="mt-3 inline-block no-underline">
+                    <Button variant="secondary" size="sm" type="button">
+                      Join Room
+                    </Button>
                   </Link>
                 </div>
               </div>

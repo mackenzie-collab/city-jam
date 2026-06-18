@@ -45,6 +45,8 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [form, setForm] = useState({
     display_name: "",
+    username: "",
+    manifesto_quote: "",
     role: "OTHER",
     genre: "",
     city: "",
@@ -61,6 +63,7 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
   const [error, setError] = useState<string | null>(null);
   const [streak, setStreak] = useState<JamStreak | null>(null);
   const [activity, setActivity] = useState<FeedItem[]>([]);
+  const [coverUploading, setCoverUploading] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleting, setDeleting] = useState(false);
@@ -84,6 +87,8 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
         if (isOwnProfile) {
           setForm({
             display_name: p.display_name,
+            username: p.username ?? "",
+            manifesto_quote: p.manifesto_quote ?? "",
             role: p.role,
             genre: p.genre,
             city: p.city,
@@ -213,9 +218,9 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
             </Link>
           )
         ) : (
-          <Link href="/community">
+          <Link href="/scene">
             <Button variant="secondary" size="sm">
-              Community
+              Scene
             </Button>
           </Link>
         )
@@ -354,6 +359,39 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
 
           {isOwnProfile ? (
             <form onSubmit={handleSave} className="cj-card space-y-4">
+              {profile?.cover_image_url && (
+                <div className="relative aspect-[3/1] overflow-hidden rounded-lg cj-grain-photo">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={profile.cover_image_url} alt="" className="h-full w-full object-cover" />
+                </div>
+              )}
+              <div>
+                <label className="text-[10px] uppercase tracking-widest text-cj-gold-muted">
+                  Cover image
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="mt-1 block w-full text-xs text-cj-gold-muted"
+                  disabled={coverUploading}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file || !user?.id) return;
+                    setCoverUploading(true);
+                    setError(null);
+                    try {
+                      const { uploadCoverImage } = await import("@/lib/profiles");
+                      const url = await uploadCoverImage(user.id, file);
+                      const p = await upsertProfile(user.id, { cover_image_url: url });
+                      setProfile(p);
+                    } catch (err) {
+                      setError(err instanceof Error ? err.message : "Cover upload failed");
+                    } finally {
+                      setCoverUploading(false);
+                    }
+                  }}
+                />
+              </div>
               <div>
                 <label className="text-[10px] uppercase tracking-widest text-cj-gold-muted">
                   Display name
@@ -363,6 +401,35 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
                   value={form.display_name}
                   onChange={(e) => setForm({ ...form, display_name: e.target.value })}
                   className="cj-input !pl-4 mt-1"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase tracking-widest text-cj-gold-muted">
+                  Username
+                </label>
+                <input
+                  value={form.username}
+                  onChange={(e) =>
+                    setForm({ ...form, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "") })
+                  }
+                  placeholder="yourhandle"
+                  className="cj-input !pl-4 mt-1"
+                />
+                {form.username && (
+                  <p className="mt-1 text-[10px] text-cj-gold-muted">
+                    Public profile: /profile/{form.username}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="text-[10px] uppercase tracking-widest text-cj-gold-muted">
+                  Manifesto quote
+                </label>
+                <textarea
+                  value={form.manifesto_quote}
+                  onChange={(e) => setForm({ ...form, manifesto_quote: e.target.value })}
+                  placeholder="Your sound philosophy in one line..."
+                  className="cj-input !pl-4 mt-1 min-h-[80px] cj-typewriter"
                 />
               </div>
               <div>
@@ -437,10 +504,10 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
                 <p className="text-sm leading-relaxed text-cj-gold-muted">{profile.bio}</p>
               )}
               <Link
-                href="/community"
+                href="/scene"
                 className="inline-flex items-center gap-1 text-xs uppercase tracking-widest text-cj-gold hover:opacity-80"
               >
-                <Users className="h-3 w-3" /> Find more on Community
+                <Users className="h-3 w-3" /> Explore the Scene
               </Link>
             </div>
           ) : (

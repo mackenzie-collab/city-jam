@@ -43,7 +43,9 @@ export function useMatchSession(
     setStatus("searching");
     setError(null);
 
-    const result: MatchResult = await tryMatch(userId, mode, frequency);
+    const roundedFreq =
+      frequency != null ? Math.round(frequency * 10) / 10 : undefined;
+    const result: MatchResult = await tryMatch(userId, mode, roundedFreq);
 
     if (result.status === "matched" && result.sessionId) {
       applyMatch(result);
@@ -77,19 +79,13 @@ export function useMatchSession(
     const interval = setInterval(async () => {
       const polled = await pollMatchStatus(userId);
       if (polled) applyMatch(polled);
-    }, 2000);
+    }, 1000);
 
     return () => {
       unsub();
       clearInterval(interval);
     };
   }, [userId, status, applyMatch]);
-
-  useEffect(() => {
-    return () => {
-      if (userId) cancelMatch(userId);
-    };
-  }, [userId]);
 
   return {
     status,

@@ -43,7 +43,7 @@ export function clearAuthUser(): void {
   localStorage.removeItem(AUTH_KEY);
 }
 
-export function loginWithEmail(email: string, _password: string): AuthUser {
+function demoLoginWithEmail(email: string): AuthUser {
   const user: AuthUser = {
     id: getOrCreateUserId(),
     email,
@@ -53,11 +53,61 @@ export function loginWithEmail(email: string, _password: string): AuthUser {
   return user;
 }
 
-export function registerWithEmail(email: string, _password: string): AuthUser {
-  return loginWithEmail(email, _password);
+export async function loginWithEmail(email: string, password: string): Promise<AuthUser> {
+  const { supabaseAuthAvailable, signInWithEmail, mapSupabaseUser } = await import(
+    "@/lib/supabase/auth"
+  );
+  if (supabaseAuthAvailable()) {
+    const { user } = await signInWithEmail(email, password);
+    if (!user) throw new Error("Sign in failed");
+    const mapped = mapSupabaseUser(user);
+    setAuthUser(mapped);
+    return mapped;
+  }
+  return demoLoginWithEmail(email);
 }
 
-export function loginWithGoogle(): AuthUser {
+export async function registerWithEmail(
+  email: string,
+  password: string,
+  displayName?: string
+): Promise<AuthUser> {
+  const { supabaseAuthAvailable, signUpWithEmail, mapSupabaseUser } = await import(
+    "@/lib/supabase/auth"
+  );
+  if (supabaseAuthAvailable()) {
+    const { user } = await signUpWithEmail(email, password);
+    if (!user) throw new Error("Sign up failed");
+    const mapped = mapSupabaseUser(user);
+    if (displayName?.trim()) mapped.name = displayName.trim();
+    setAuthUser(mapped);
+    const { ensureUsername, upsertProfile } = await import("@/lib/profiles");
+    await ensureUsername(user.id, mapped.name ?? email.split("@")[0]).catch(() => undefined);
+    await upsertProfile(user.id, {
+      display_name: mapped.name ?? displayName?.trim() ?? email.split("@")[0],
+    }).catch(() => undefined);
+    return mapped;
+  }
+  const user = demoLoginWithEmail(email);
+  if (displayName?.trim()) user.name = displayName.trim();
+  setAuthUser(user);
+  return user;
+}
+
+export async function loginWithGoogle(): Promise<AuthUser | null> {
+  const { supabaseAuthAvailable, signInWithGoogle, mapSupabaseUser, getSession } = await import(
+    "@/lib/supabase/auth"
+  );
+  if (supabaseAuthAvailable()) {
+    await signInWithGoogle();
+    const session = await getSession();
+    if (session?.user) {
+      const mapped = mapSupabaseUser(session.user);
+      setAuthUser(mapped);
+      return mapped;
+    }
+    return null;
+  }
   const user: AuthUser = {
     id: getOrCreateUserId(),
     email: "musician@gmail.com",
@@ -65,4 +115,29 @@ export function loginWithGoogle(): AuthUser {
   };
   setAuthUser(user);
   return user;
+}
+
+export async function logoutUser(): Promise<void> {
+  const { supabaseAuthAvailable, signOut } = await import("@/lib/supabase/auth");
+  if (supabaseAuthAvailable()) {
+    await signOut();
+  }
+  clearAuthUser();
+}
+
+export async function restoreSession(): Promise<AuthUser | null> {
+  const { supabaseAuthAvailable, getSession, mapSupabaseUser } = await import(
+    "@/lib/supabase/auth"
+  );
+  if (supabaseAuthAvailable()) {
+    const session = await getSession();
+    if (session?.user) {
+      const mapped = mapSupabaseUser(session.user);
+      setAuthUser(mapped);
+      return mapped;
+    }
+    clearAuthUser();
+    return null;
+  }
+  return getAuthUser();
 }

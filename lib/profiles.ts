@@ -17,6 +17,10 @@ export interface UserProfile {
   status_mood: StatusMood;
   status_updated_at: string | null;
   updated_at: string;
+  username: string;
+  manifesto_quote: string;
+  cover_image_url: string;
+  featured_track_id: string | null;
 }
 
 export interface ProfileStatusInput {
@@ -50,7 +54,67 @@ export function profilesUnavailable() {
   return !isSupabaseConfigured() || !getSupabase();
 }
 
+const DEMO_PROFILES: UserProfile[] = [
+  {
+    user_id: "demo-user-1",
+    display_name: "Night Operator",
+    username: "nightoperator",
+    role: "PRODUCER",
+    genre: "ELECTRONIC",
+    city: "Berlin",
+    bio: "Modular synth. No masters.",
+    avatar_url: "",
+    status_text: "In the lab layering drones",
+    status_artist: "",
+    status_mood: "recording",
+    status_updated_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    manifesto_quote: "Sound is the only honest language.",
+    cover_image_url: "/images/09_electronic_dj.png",
+    featured_track_id: "demo-1",
+  },
+  {
+    user_id: "demo-user-2",
+    display_name: "Keys & Smoke",
+    username: "keysandsmoke",
+    role: "KEYS",
+    genre: "JAZZ",
+    city: "New Orleans",
+    bio: "Piano in dim rooms.",
+    avatar_url: "",
+    status_text: "Looking for a drummer",
+    status_artist: "",
+    status_mood: "open-to-collab",
+    status_updated_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    manifesto_quote: "Every note is a confession.",
+    cover_image_url: "/images/07_jazz_pianist.png",
+    featured_track_id: "demo-2",
+  },
+  {
+    user_id: "demo-user-3",
+    display_name: "Beat Architect",
+    username: "beatarchitect",
+    role: "VOCALS",
+    genre: "HIP-HOP",
+    city: "London",
+    bio: "Beatboxer turned producer.",
+    avatar_url: "",
+    status_text: "Writing new material",
+    status_artist: "",
+    status_mood: "writing",
+    status_updated_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    manifesto_quote: "The city speaks in rhythm.",
+    cover_image_url: "/images/05_beatboxer.png",
+    featured_track_id: "demo-3",
+  },
+];
+
 export async function fetchProfile(userId: string): Promise<UserProfile | null> {
+  if (profilesUnavailable()) {
+    return DEMO_PROFILES.find((p) => p.user_id === userId) ?? null;
+  }
   const { data, error } = await db()
     .from("user_profiles")
     .select("*")
@@ -127,6 +191,9 @@ export async function fetchProfiles(userIds: string[]): Promise<Record<string, U
 }
 
 export async function fetchActiveProfiles(limit = 50): Promise<UserProfile[]> {
+  if (profilesUnavailable()) {
+    return DEMO_PROFILES.slice(0, limit);
+  }
   const { data, error } = await db()
     .from("user_profiles")
     .select("*")
@@ -137,6 +204,21 @@ export async function fetchActiveProfiles(limit = 50): Promise<UserProfile[]> {
   return data ?? [];
 }
 
+export async function syncAuthProfile(userId: string, displayName: string): Promise<void> {
+  if (profilesUnavailable()) return;
+  const existing = await fetchProfile(userId);
+  const placeholder = new Set(["", "Musician", "Guest Musician", "Guest"]);
+  const name = displayName?.trim();
+  if (!name || placeholder.has(name)) return;
+
+  if (!existing || placeholder.has(existing.display_name)) {
+    await upsertProfile(userId, { display_name: name });
+  }
+  if (!existing?.username) {
+    await ensureUsername(userId, name);
+  }
+}
+
 export function displayName(profile: UserProfile | null, fallback?: string): string {
   return profile?.display_name || fallback || "Musician";
 }
@@ -144,4 +226,65 @@ export function displayName(profile: UserProfile | null, fallback?: string): str
 export function formatStatus(profile: UserProfile | null): string | null {
   if (!profile?.status_text) return null;
   return profile.status_text;
+}
+
+function slugify(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "")
+    .slice(0, 24) || "musician";
+}
+
+export async function fetchProfileByUsername(username: string): Promise<UserProfile | null> {
+  if (profilesUnavailable()) {
+    return DEMO_PROFILES.find((p) => p.username === username) ?? null;
+  }
+  const { data, error } = await db()
+    .from("user_profiles")
+    .select("*")
+    .eq("username", username)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+export async function ensureUsername(userId: string, displayName: string): Promise<string> {
+  const existing = await fetchProfile(userId);
+  if (existing?.username) return existing.username;
+
+  let base = slugify(displayName);
+  let candidate = base;
+  let attempt = 0;
+
+  while (attempt < 10) {
+    const taken = await fetchProfileByUsername(candidate);
+    if (!taken || taken.user_id === userId) {
+      await upsertProfile(userId, { display_name: displayName, username: candidate });
+      return candidate;
+    }
+    attempt += 1;
+    candidate = `${base}${attempt}`;
+  }
+
+  const fallback = `${base}${Date.now().toString(36).slice(-4)}`;
+  await upsertProfile(userId, { display_name: displayName, username: fallback });
+  return fallback;
+}
+
+export async function uploadCoverImage(userId: string, file: File): Promise<string> {
+  const supabase = getSupabase();
+  if (!supabase) throw new Error("Storage not configured");
+
+  const ext = file.name.split(".").pop() ?? "jpg";
+  const path = `${userId}/${crypto.randomUUID()}.${ext}`;
+
+  const { error } = await supabase.storage.from("covers").upload(path, file, {
+    cacheControl: "3600",
+    upsert: false,
+    contentType: file.type || "image/jpeg",
+  });
+  if (error) throw error;
+
+  const { data } = supabase.storage.from("covers").getPublicUrl(path);
+  return data.publicUrl;
 }

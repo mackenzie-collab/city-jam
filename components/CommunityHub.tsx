@@ -15,13 +15,23 @@ import { ICONS } from "@/lib/brand-assets";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
 import { fetchStreakLeaderboard, type JamStreak } from "@/lib/streaks";
+import { fetchProfiles } from "@/lib/profiles";
 
 export default function CommunityHub() {
   const { user, isAuthenticated } = useAuth();
   const [leaders, setLeaders] = useState<JamStreak[]>([]);
+  const [leaderNames, setLeaderNames] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    fetchStreakLeaderboard(5).then(setLeaders);
+    fetchStreakLeaderboard(5).then(async (rows) => {
+      setLeaders(rows);
+      const profiles = await fetchProfiles(rows.map((r) => r.user_id));
+      const names: Record<string, string> = {};
+      for (const id of Object.keys(profiles)) {
+        names[id] = profiles[id].display_name || profiles[id].username || "Musician";
+      }
+      setLeaderNames(names);
+    });
   }, []);
 
   return (
@@ -99,7 +109,9 @@ export default function CommunityHub() {
                 {leaders.map((s, i) => (
                   <li key={s.user_id} className="flex items-center justify-between text-sm">
                     <span className="text-cj-gold-muted">#{i + 1}</span>
-                    <span className="flex-1 px-2 text-cj-gold">Musician</span>
+                    <span className="flex-1 px-2 text-cj-gold">
+                      {leaderNames[s.user_id] ?? "Musician"}
+                    </span>
                     <span className="font-display text-cj-gold-bright">{s.current_week_streak}w</span>
                   </li>
                 ))}

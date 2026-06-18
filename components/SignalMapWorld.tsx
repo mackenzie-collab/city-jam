@@ -163,9 +163,13 @@ export default function SignalMapWorld({
                 onMouseEnter={(e) => updateTooltip(e, city.slug)}
                 onMouseMove={(e) => updateTooltip(e, city.slug)}
                 onMouseLeave={() => setHovered(null)}
-                onClick={() => onSelectCity?.(selectedCity === city.slug ? null : city.slug)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelectCity?.(selectedCity === city.slug ? null : city.slug);
+                }}
                 style={{ cursor: "pointer" }}
               >
+                <circle r={18} fill="transparent" />
                 {pulse && (
                   <circle
                     r={online > 0 ? 12 + online * 2 : 10}

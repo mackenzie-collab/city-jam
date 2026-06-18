@@ -1,5 +1,5 @@
-import CommunityHub from "@/components/CommunityHub";
+import { redirect } from "next/navigation";
 
 export default function CommunityPage() {
-  return <CommunityHub />;
+  redirect("/scene");
 }

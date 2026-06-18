@@ -67,7 +67,7 @@ export default function SignalMap() {
             }}
           />
 
-          <div className="relative z-[5] h-full w-full px-2 py-2 md:px-4">
+          <div className="relative z-[15] h-full w-full px-2 py-2 md:px-4">
             <SignalMapWorld
               cities={cities}
               selectedCity={selectedCity}

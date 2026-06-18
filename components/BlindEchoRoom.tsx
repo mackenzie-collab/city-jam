@@ -237,6 +237,7 @@ export default function BlindEchoRoom() {
                   onAccept={() => {
                     storeConsent(MIC_CONSENT_KEY);
                     setMicConsented(true);
+                    void handleEnter();
                   }}
                   body={
                     <>
@@ -273,8 +274,8 @@ export default function BlindEchoRoom() {
               Scanning for Signal...
             </h1>
             <p className="mt-4 text-sm text-cj-gold-muted">
-              Waiting for another musician to enter. Have a friend join on the
-              same deployed URL.
+              Waiting for another musician on a different account. Open a second
+              browser (or incognito), sign in as someone else, and enter the room.
             </p>
             {matchError && (
               <p className="mt-4 text-sm text-amber-400">{matchError}</p>

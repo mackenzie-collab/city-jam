@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -33,10 +34,12 @@ export default function ProjectKanban({
   onProjectsUpdated,
 }: ProjectKanbanProps) {
   const { user } = useAuth();
+  const router = useRouter();
   const [internalProjects, setInternalProjects] = useState<MusicProject[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const dragIdRef = useRef<string | null>(null);
+  const draggedRef = useRef(false);
 
   const projects = externalProjects ?? internalProjects;
 
@@ -125,25 +128,26 @@ export default function ProjectKanban({
                     <div
                       draggable
                       onDragStart={(e) => {
+                        draggedRef.current = false;
                         dragIdRef.current = p.id;
                         e.dataTransfer.setData(DRAG_MIME, p.id);
                         e.dataTransfer.effectAllowed = "move";
                       }}
+                      onDrag={(e) => {
+                        if (e.clientX !== 0 || e.clientY !== 0) draggedRef.current = true;
+                      }}
                       onDragEnd={() => {
                         dragIdRef.current = null;
                       }}
-                      className="cursor-grab rounded-lg border border-cj-gold-border bg-cj-purple-card px-3 py-2 transition-colors hover:border-cj-gold/50 active:cursor-grabbing"
+                      onClick={() => {
+                        if (!draggedRef.current) router.push(`/studio/projects/${p.id}`);
+                      }}
+                      className="cursor-pointer rounded-lg border border-cj-gold-border bg-cj-purple-card px-3 py-2 transition-colors hover:border-cj-gold/50 active:cursor-grabbing"
                     >
-                      <Link
-                        href={`/studio/projects/${p.id}`}
-                        className="block no-underline"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <p className="text-sm font-semibold uppercase text-cj-gold">{p.title}</p>
-                        {p.genre && (
-                          <p className="mt-0.5 text-[10px] text-cj-gold-muted">{p.genre}</p>
-                        )}
-                      </Link>
+                      <p className="text-sm font-semibold uppercase text-cj-gold">{p.title}</p>
+                      {p.genre && (
+                        <p className="mt-0.5 text-[10px] text-cj-gold-muted">{p.genre}</p>
+                      )}
                       <div className="relative mt-2 md:hidden">
                         <label className="sr-only" htmlFor={`stage-${p.id}`}>
                           Move {p.title}
