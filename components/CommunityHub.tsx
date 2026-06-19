@@ -75,17 +75,17 @@ export default function CommunityHub() {
             <div className="grid gap-4 sm:grid-cols-2">
               <JamStreakWidget />
               <Link
-                href="/signal-map"
+                href="/blind-echo"
                 className="cj-card flex flex-col justify-between no-underline transition-colors hover:border-cj-gold/50"
               >
                 <div>
                   <p className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-cj-gold-muted">
-                    <CjIcon src={ICONS.globeSound} alt="" size={12} /> Live Map
+                    <CjIcon src={ICONS.microphone} alt="" size={12} /> Live Match
                   </p>
-                  <p className="mt-3 font-display text-2xl uppercase text-cj-gold">Who&apos;s Online</p>
-                  <p className="mt-2 text-xs text-cj-gold-muted">See musicians on the map near you</p>
+                  <p className="mt-3 font-display text-2xl uppercase text-cj-gold">Blind Echo</p>
+                  <p className="mt-2 text-xs text-cj-gold-muted">7-minute anonymous audio sessions</p>
                 </div>
-                <span className="mt-4 text-xs uppercase tracking-widest text-cj-gold">Open Map →</span>
+                <span className="mt-4 text-xs uppercase tracking-widest text-cj-gold">Enter Room →</span>
               </Link>
             </div>
           )}

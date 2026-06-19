@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { Compass, Map, Briefcase, User, Radio } from "lucide-react";
+import { Compass, Mic, Briefcase, User, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { discoverMusicians, discoveryUnavailable, type DiscoverMatch } from "@/lib/discovery";
@@ -117,10 +117,10 @@ export default function DiscoveryPanel() {
                   <Briefcase className="h-3 w-3" /> Match
                 </Link>
                 <Link
-                  href="/signal-map"
+                  href="/blind-echo"
                   className="cj-btn-secondary inline-flex items-center gap-1 px-3 py-1.5 text-[10px] no-underline"
                 >
-                  <Map className="h-3 w-3" /> Map
+                  <Mic className="h-3 w-3" /> Echo
                 </Link>
               </div>
             </li>

@@ -13,8 +13,8 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-wrap gap-6 text-xs uppercase tracking-widest text-cj-gold-muted">
-          <Link href="/signal-map" className="hover:text-cj-gold">
-            Signal Map
+          <Link href="/community" className="hover:text-cj-gold">
+            Community
           </Link>
           <Link href="/project-match" className="hover:text-cj-gold">
             Project Match

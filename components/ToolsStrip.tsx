@@ -9,7 +9,6 @@ export const TOOLS = [
   { href: "/collab", label: "Collab", desc: "Task boards" },
   { href: "/circles", label: "Circles", desc: "Private groups" },
   { href: "/listening-rooms", label: "Rooms", desc: "Listen together" },
-  { href: "/signal-map", label: "Signal Map", desc: "Who's online" },
   { href: "/blind-echo", label: "Blind Echo", desc: "7-min audio match" },
   { href: "/echo-roulette", label: "Echo Roulette", desc: "Spin & connect" },
 ] as const;

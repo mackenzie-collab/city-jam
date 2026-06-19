@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import BrandLogo from "@/components/BrandLogo";
+import SignalMapAmbient from "@/components/SignalMapAmbient";
 import { Button } from "@/components/ui/button";
 import { STOCK } from "@/lib/brand-assets";
 
@@ -23,6 +24,7 @@ export default function Hero() {
       />
       <div className="absolute inset-0 bg-cj-purple-dark/90 sm:bg-cj-purple-dark/88" aria-hidden />
       <div className="absolute inset-0 bg-gradient-to-t from-cj-purple-dark via-cj-purple-dark/75 to-cj-purple-dark/55 sm:via-cj-purple-dark/65 sm:to-cj-purple-dark/45" aria-hidden />
+      <SignalMapAmbient className="mix-blend-screen" opacity={0.32} />
 
       <div className="relative mx-auto w-full max-w-6xl">
         <BrandLogo size={112} className="mb-6 justify-center sm:mb-8" priority />

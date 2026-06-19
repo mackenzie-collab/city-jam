@@ -22,7 +22,6 @@ const LABELS: Record<string, string> = {
   "/project-match": "Project Match",
   "/circles": "Circles",
   "/listening-rooms": "Listening Rooms",
-  "/signal-map": "Signal Map",
   "/blind-echo": "Blind Echo",
   "/echo-roulette": "Echo Roulette",
 };

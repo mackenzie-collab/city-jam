@@ -10,7 +10,6 @@ import {
   Users,
   FolderKanban,
   Radio,
-  Map,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -22,7 +21,6 @@ const LINKS = [
   { href: "/collab", label: "Collab", icon: FolderKanban },
   { href: "/listening-rooms", label: "Listening Rooms", icon: Headphones },
   { href: "/circles", label: "Circles", icon: Users },
-  { href: "/signal-map", label: "Signal Map", icon: Map },
   { href: "/echo-roulette", label: "Echo Roulette", icon: Radio },
 ];
 

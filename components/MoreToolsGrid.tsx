@@ -15,9 +15,9 @@ const tools = [
     description: "Your command center — projects, stats, and connected tools.",
   },
   {
-    title: "Signal Map",
-    href: "/signal-map",
-    description: "See musicians online globally. Neighborhood-level only.",
+    title: "Blind Echo",
+    href: "/blind-echo",
+    description: "Anonymous 7-minute audio sessions — match by sound alone.",
   },
   {
     title: "Project Match",

@@ -59,7 +59,7 @@ export default function ScenePageContent() {
               <Zap className="h-4 w-4" /> Quick Jam
             </p>
             <p className="text-sm text-cj-gold-muted">
-              Blind Echo, Echo Roulette, Signal Map — connect through sound in seconds.
+              Blind Echo and Echo Roulette — connect through sound in seconds.
             </p>
             <Link href="/jam" className="cj-btn-primary inline-block text-xs no-underline">
               Open Jam Hub

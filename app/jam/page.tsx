@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Mic, Globe, Radio } from "lucide-react";
+import { Mic, Radio } from "lucide-react";
 import FeatureShell from "@/components/FeatureShell";
 import { ICONS } from "@/lib/brand-assets";
 
@@ -16,12 +16,6 @@ const JAM_TOOLS = [
     desc: "Spin the dial and connect with a random musician.",
     icon: Radio,
   },
-  {
-    href: "/signal-map",
-    label: "Signal Map",
-    desc: "See who's live on the map and drop into their orbit.",
-    icon: Globe,
-  },
 ];
 
 export default function JamPage() {
@@ -35,7 +29,7 @@ export default function JamPage() {
           Pick Your / <span className="text-cj-gold-bright">Jam Mode.</span>
         </>
       }
-      subtitle="Blind Echo, Echo Roulette, and Signal Map — three ways to connect through sound."
+      subtitle="Blind Echo and Echo Roulette — two ways to connect through sound."
       maxWidth="md"
     >
       <div className="grid gap-4 sm:grid-cols-1">

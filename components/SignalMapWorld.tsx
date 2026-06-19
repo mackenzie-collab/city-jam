@@ -23,6 +23,8 @@ interface SignalMapWorldProps {
   selectedCity?: string | null;
   onSelectCity?: (slug: string | null) => void;
   yourCitySlug?: string | null;
+  /** Non-interactive ambient mode — hub pulses only, no tooltips or clicks. */
+  decorative?: boolean;
 }
 
 export default function SignalMapWorld({
@@ -30,6 +32,7 @@ export default function SignalMapWorld({
   selectedCity,
   onSelectCity,
   yourCitySlug,
+  decorative = false,
 }: SignalMapWorldProps) {
   const [hovered, setHovered] = useState<string | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
@@ -44,11 +47,11 @@ export default function SignalMapWorld({
     }
   };
 
-  const activeSlug = hovered ?? selectedCity;
-  const activeCity = cities.find((c) => c.slug === activeSlug);
+  const activeSlug = decorative ? null : (hovered ?? selectedCity);
+  const activeCity = decorative ? null : cities.find((c) => c.slug === activeSlug);
 
   return (
-    <div className="relative h-full w-full">
+    <div className={decorative ? "relative h-full w-full pointer-events-none" : "relative h-full w-full"}>
       {activeCity && (
         <div
           className="pointer-events-none absolute z-30 min-w-[140px] rounded border border-cj-gold-border bg-cj-purple-card px-3 py-2 shadow-lg"
@@ -151,31 +154,36 @@ export default function SignalMapWorld({
         ))}
 
         {CITY_DOTS.map((city) => {
-          const online = countBySlug[city.slug] ?? 0;
-          const isYou = yourCitySlug === city.slug;
-          const isActive = activeSlug === city.slug;
+          const online = decorative ? (city.hub ? 1 : 0) : (countBySlug[city.slug] ?? 0);
+          const isYou = !decorative && yourCitySlug === city.slug;
+          const isActive = !decorative && activeSlug === city.slug;
           const r = city.hub ? 6 : 4;
-          const pulse = online > 0 || city.hub;
+          const pulse = decorative ? city.hub : online > 0 || city.hub;
+          const showGlow = decorative ? city.hub : online > 0;
 
           return (
             <Marker key={city.slug} coordinates={city.coordinates}>
               <g
-                onMouseEnter={(e) => updateTooltip(e, city.slug)}
-                onMouseMove={(e) => updateTooltip(e, city.slug)}
-                onMouseLeave={() => setHovered(null)}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onSelectCity?.(selectedCity === city.slug ? null : city.slug);
-                }}
-                style={{ cursor: "pointer" }}
+                onMouseEnter={decorative ? undefined : (e) => updateTooltip(e, city.slug)}
+                onMouseMove={decorative ? undefined : (e) => updateTooltip(e, city.slug)}
+                onMouseLeave={decorative ? undefined : () => setHovered(null)}
+                onClick={
+                  decorative
+                    ? undefined
+                    : (e) => {
+                        e.stopPropagation();
+                        onSelectCity?.(selectedCity === city.slug ? null : city.slug);
+                      }
+                }
+                style={decorative ? undefined : { cursor: "pointer" }}
               >
-                <circle r={18} fill="transparent" />
+                {!decorative && <circle r={18} fill="transparent" />}
                 {pulse && (
                   <circle
-                    r={online > 0 ? 12 + online * 2 : 10}
+                    r={decorative ? 14 : online > 0 ? 12 + online * 2 : 10}
                     fill="#D4A000"
-                    opacity={online > 0 ? 0.2 : 0.1}
-                    className={online > 0 ? "animate-pulse-glow" : undefined}
+                    opacity={decorative ? 0.18 : online > 0 ? 0.2 : 0.1}
+                    className={showGlow ? "animate-pulse-glow" : undefined}
                   />
                 )}
                 <circle
@@ -183,10 +191,10 @@ export default function SignalMapWorld({
                   fill={isYou ? "#D4A017" : "#D4A000"}
                   stroke={isActive || isYou ? "#D4A017" : "transparent"}
                   strokeWidth={isYou ? 2 : 0}
-                  filter={online > 0 ? "url(#dot-glow)" : undefined}
-                  opacity={online > 0 ? 1 : 0.45}
+                  filter={showGlow ? "url(#dot-glow)" : undefined}
+                  opacity={decorative ? (city.hub ? 0.85 : 0.3) : online > 0 ? 1 : 0.45}
                 />
-                {online > 0 && (
+                {!decorative && online > 0 && (
                   <text
                     y={-14}
                     textAnchor="middle"

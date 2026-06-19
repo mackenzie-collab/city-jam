@@ -7,6 +7,7 @@ import AppChrome from "@/components/AppChrome";
 import AppTrail from "@/components/AppTrail";
 import PageHeader from "@/components/PageHeader";
 import PermissionNotice, { MIC_CONSENT_KEY, hasStoredConsent, storeConsent } from "@/components/PermissionNotice";
+import SignalMapAmbient from "@/components/SignalMapAmbient";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useMatchSession } from "@/hooks/useMatchSession";
@@ -268,22 +269,25 @@ export default function BlindEchoRoom() {
         )}
 
         {phase === "searching" && (
-          <>
-            <Loader2 className="h-12 w-12 animate-spin text-cj-gold" />
-            <h1 className="cj-heading-display mt-6 text-2xl">
-              Scanning for Signal...
-            </h1>
-            <p className="mt-4 text-sm text-cj-gold-muted">
-              Waiting for another musician on a different account. Open a second
-              browser (or incognito), sign in as someone else, and enter the room.
-            </p>
-            {matchError && (
-              <p className="mt-4 text-sm text-amber-400">{matchError}</p>
-            )}
-            <Button variant="secondary" className="mt-8" onClick={handleReset}>
-              Cancel
-            </Button>
-          </>
+          <div className="relative w-full">
+            <SignalMapAmbient className="absolute -inset-x-6 -top-12 bottom-0 opacity-50" opacity={0.55} />
+            <div className="relative z-10">
+              <Loader2 className="mx-auto h-12 w-12 animate-spin text-cj-gold" />
+              <h1 className="cj-heading-display mt-6 text-2xl">
+                Scanning for Signal...
+              </h1>
+              <p className="mt-4 text-sm text-cj-gold-muted">
+                Waiting for another musician on a different account. Open a second
+                browser (or incognito), sign in as someone else, and enter the room.
+              </p>
+              {matchError && (
+                <p className="mt-4 text-sm text-amber-400">{matchError}</p>
+              )}
+              <Button variant="secondary" className="mt-8" onClick={handleReset}>
+                Cancel
+              </Button>
+            </div>
+          </div>
         )}
 
         {phase === "session" && (

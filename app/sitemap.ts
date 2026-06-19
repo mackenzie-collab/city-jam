@@ -9,7 +9,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/terms",
     "/contact",
     "/community",
-    "/signal-map",
     "/project-match",
     "/blind-echo",
     "/echo-roulette",
