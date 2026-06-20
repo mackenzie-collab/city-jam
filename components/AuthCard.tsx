@@ -202,6 +202,11 @@ export default function AuthCard({
       </p>
 
       <p className="mt-4 text-center text-[10px] leading-relaxed text-cj-gold-muted">
+        Email sign-up works now. Google/Facebook/Apple need a one-time Supabase setup (see{" "}
+        <code className="text-cj-gold/90">docs/AUTH_SETUP.md</code> in the repo).
+      </p>
+
+      <p className="mt-2 text-center text-[10px] leading-relaxed text-cj-gold-muted">
         By continuing, you agree to our <Link href="/terms" className="text-cj-gold hover:underline">Terms</Link> and{" "}
         <Link href="/privacy" className="text-cj-gold hover:underline">Privacy Policy</Link>.
       </p>

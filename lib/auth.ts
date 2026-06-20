@@ -1,5 +1,7 @@
 "use client";
 
+import { friendlyAuthError } from "@/lib/supabase/auth-errors";
+
 const AUTH_KEY = "city-jam-auth";
 const USER_ID_KEY = "city-jam-user-id";
 
@@ -7,6 +9,17 @@ export interface AuthUser {
   id: string;
   email: string;
   name?: string;
+}
+
+/** Thrown when sign-up succeeds but email confirmation is required before login. */
+export class EmailConfirmationRequiredError extends Error {
+  readonly email: string;
+
+  constructor(email: string) {
+    super("Check your email to confirm your account, then log in.");
+    this.name = "EmailConfirmationRequiredError";
+    this.email = email;
+  }
 }
 
 function isDemoAuthAllowed(): boolean {
@@ -70,11 +83,15 @@ async function supabaseReady(): Promise<boolean> {
 export async function loginWithEmail(email: string, password: string): Promise<AuthUser> {
   if (await supabaseReady()) {
     const { signInWithEmail, mapSupabaseUser } = await import("@/lib/supabase/auth");
-    const { user } = await signInWithEmail(email, password);
-    if (!user) throw new Error("Sign in failed");
-    const mapped = mapSupabaseUser(user);
-    setAuthUser(mapped);
-    return mapped;
+    try {
+      const { user } = await signInWithEmail(email, password);
+      if (!user) throw new Error("Sign in failed");
+      const mapped = mapSupabaseUser(user);
+      setAuthUser(mapped);
+      return mapped;
+    } catch (err) {
+      throw new Error(friendlyAuthError(err));
+    }
   }
   if (!isDemoAuthAllowed()) {
     throw new Error("Sign-in requires Supabase — configure env vars for production.");
@@ -89,17 +106,29 @@ export async function registerWithEmail(
 ): Promise<AuthUser> {
   if (await supabaseReady()) {
     const { signUpWithEmail, mapSupabaseUser } = await import("@/lib/supabase/auth");
-    const { user } = await signUpWithEmail(email, password);
-    if (!user) throw new Error("Sign up failed");
-    const mapped = mapSupabaseUser(user);
-    if (displayName?.trim()) mapped.name = displayName.trim();
-    setAuthUser(mapped);
-    const { ensureUsername, upsertProfile } = await import("@/lib/profiles");
-    await ensureUsername(user.id, mapped.name ?? email.split("@")[0]).catch(() => undefined);
-    await upsertProfile(user.id, {
-      display_name: mapped.name ?? displayName?.trim() ?? email.split("@")[0],
-    }).catch(() => undefined);
-    return mapped;
+    try {
+      const { user, session } = await signUpWithEmail(email, password);
+      if (!user) throw new Error("Sign up failed");
+
+      const mapped = mapSupabaseUser(user);
+      if (displayName?.trim()) mapped.name = displayName.trim();
+
+      const { ensureUsername, upsertProfile } = await import("@/lib/profiles");
+      await ensureUsername(user.id, mapped.name ?? email.split("@")[0]).catch(() => undefined);
+      await upsertProfile(user.id, {
+        display_name: mapped.name ?? displayName?.trim() ?? email.split("@")[0],
+      }).catch(() => undefined);
+
+      if (!session) {
+        throw new EmailConfirmationRequiredError(email);
+      }
+
+      setAuthUser(mapped);
+      return mapped;
+    } catch (err) {
+      if (err instanceof EmailConfirmationRequiredError) throw err;
+      throw new Error(friendlyAuthError(err));
+    }
   }
   if (!isDemoAuthAllowed()) {
     throw new Error("Registration requires Supabase — configure env vars for production.");
@@ -126,10 +155,14 @@ export async function loginWithOAuth(
     setAuthUser(user);
     return null;
   }
-  const auth = await import("@/lib/supabase/auth");
-  if (provider === "google") await auth.signInWithGoogle(returnPath);
-  else if (provider === "facebook") await auth.signInWithFacebook(returnPath);
-  else await auth.signInWithApple(returnPath);
+  try {
+    const auth = await import("@/lib/supabase/auth");
+    if (provider === "google") await auth.signInWithGoogle(returnPath);
+    else if (provider === "facebook") await auth.signInWithFacebook(returnPath);
+    else await auth.signInWithApple(returnPath);
+  } catch (err) {
+    throw new Error(friendlyAuthError(err));
+  }
   return null;
 }
 

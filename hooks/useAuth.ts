@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   AuthUser,
+  EmailConfirmationRequiredError,
   getAuthUser,
   loginWithEmail,
   loginWithOAuth,
@@ -74,6 +75,7 @@ export function useAuth() {
       setUser(u);
       return u;
     } catch (err) {
+      if (err instanceof EmailConfirmationRequiredError) throw err;
       const msg = err instanceof Error ? err.message : "Registration failed";
       setError(msg);
       throw err;

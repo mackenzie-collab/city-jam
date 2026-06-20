@@ -24,9 +24,23 @@ export async function signInWithEmail(email: string, password: string) {
 export async function signUpWithEmail(email: string, password: string) {
   const supabase = getSupabase();
   if (!supabase) throw new Error("Supabase not configured");
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent("/profile")}`,
+    },
+  });
   if (error) throw error;
   return data;
+}
+
+export async function resendSignupConfirmation(email: string) {
+  const supabase = getSupabase();
+  if (!supabase) throw new Error("Supabase not configured");
+  const { error } = await supabase.auth.resend({ type: "signup", email });
+  if (error) throw error;
 }
 
 export async function signInWithOAuth(
@@ -56,6 +70,9 @@ export async function signInWithOAuth(
     options,
   });
   if (error) throw error;
+  if (data.url && typeof window !== "undefined") {
+    window.location.assign(data.url);
+  }
   return data;
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import BrandLogo from "@/components/BrandLogo";
@@ -8,6 +8,7 @@ import AuthCard from "@/components/AuthCard";
 import { STOCK } from "@/lib/brand-assets";
 import { useAuth } from "@/hooks/useAuth";
 import { resetPasswordForEmail } from "@/lib/supabase/auth";
+import { friendlyAuthError } from "@/lib/supabase/auth-errors";
 
 export default function LoginContent() {
   const router = useRouter();
@@ -15,6 +16,12 @@ export default function LoginContent() {
   const { login, oauthLogin, error } = useAuth();
   const returnUrl = searchParams.get("returnUrl") || "/";
   const [loading, setLoading] = useState(false);
+
+  const callbackError = useMemo(() => {
+    const raw = searchParams.get("error_description") ?? searchParams.get("error");
+    if (!raw) return null;
+    return friendlyAuthError(decodeURIComponent(raw.replace(/\+/g, " ")));
+  }, [searchParams]);
 
   const handleForgotPassword = async (email: string) => {
     await resetPasswordForEmail(email);
@@ -61,7 +68,7 @@ export default function LoginContent() {
               onOAuth={handleOAuth}
               onForgotPassword={handleForgotPassword}
               loading={loading}
-              error={error}
+              error={callbackError ?? error}
             />
           </div>
         </div>
