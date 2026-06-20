@@ -1,18 +1,35 @@
-import { Bebas_Neue, Inter, Special_Elite } from "next/font/google";
+import {
+  Instrument_Serif,
+  Barlow_Condensed,
+  Inter,
+  JetBrains_Mono,
+  Special_Elite,
+} from "next/font/google";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import LiveConfigBanner from "@/components/LiveConfigBanner";
 import Providers from "@/components/Providers";
 
-const bebasNeue = Bebas_Neue({
+const instrumentSerif = Instrument_Serif({
   weight: "400",
   subsets: ["latin"],
-  variable: "--font-bebas",
+  variable: "--font-display",
+});
+
+const barlowCondensed = Barlow_Condensed({
+  weight: ["400", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-headline",
 });
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
 });
 
 const specialElite = Special_Elite({
@@ -25,7 +42,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#3D0066",
+  themeColor: "#1E0B2C",
 };
 
 export const metadata: Metadata = {
@@ -52,7 +69,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="dark" suppressHydrationWarning>
-      <body className={`${bebasNeue.variable} ${inter.variable} ${specialElite.variable}`}>
+      <body
+        className={`${instrumentSerif.variable} ${barlowCondensed.variable} ${inter.variable} ${jetbrainsMono.variable} ${specialElite.variable}`}
+      >
         <Providers>
           <LiveConfigBanner />
           {children}

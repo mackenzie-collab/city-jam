@@ -16,18 +16,14 @@ export default function EmptyState({
   description,
   actionLabel,
   onAction,
-  dark = false,
 }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center py-16 text-center">
-      <div
-        className={`mb-6 flex h-16 w-16 items-center justify-center rounded-xl border border-cj-gold-border ${
-          dark ? "bg-cj-purple-card" : "bg-cj-purple-card"
-        }`}
-      >
-        <Icon className="h-8 w-8 text-cj-gold-muted" />
+      <div className="relative mb-6 flex h-16 w-16 items-center justify-center">
+        <div className="cj-record-spinner" aria-hidden />
+        <Icon className="absolute h-6 w-6 text-cj-gold-muted" aria-hidden />
       </div>
-      <p className="font-display text-2xl uppercase tracking-widest text-cj-gold-muted">
+      <p className="font-headline text-2xl uppercase tracking-nav text-cj-gold-muted">
         {title}
       </p>
       {description && (

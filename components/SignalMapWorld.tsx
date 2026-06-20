@@ -198,9 +198,9 @@ export default function SignalMapWorld({
                   <text
                     y={-14}
                     textAnchor="middle"
-                    fill="#C9A800"
+                    fill="#C9962A"
                     fontSize={9}
-                    fontFamily="var(--font-bebas), sans-serif"
+                    fontFamily="var(--font-headline), sans-serif"
                     letterSpacing="0.1em"
                   >
                     {online}

@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { LogOut, Menu } from "lucide-react";
-import BrandLogo from "@/components/BrandLogo";
+import VinylLogo from "@/components/VinylLogo";
 import MobileMenu from "@/components/MobileMenu";
 import CjIcon from "@/components/CjIcon";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,6 @@ import JamStreakWidget from "@/components/JamStreakWidget";
 import ThemeToggle from "@/components/ThemeToggle";
 import { ICONS } from "@/lib/brand-assets";
 import { useAuth } from "@/hooks/useAuth";
-import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -36,8 +35,8 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 flex w-full items-center justify-between gap-3 bg-cj-purple-dark px-4 py-3 sm:px-6 sm:py-4 md:px-8">
-        <div className="flex min-w-0 items-center gap-2">
+      <nav className="cj-tonearm-rail sticky top-0 z-50 flex w-full items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4 md:px-8">
+        <div className="relative z-10 flex min-w-0 items-center gap-2">
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
@@ -46,38 +45,40 @@ export default function Navbar() {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <BrandLogo href={isAuthenticated ? "/scene" : "/"} size={40} priority />
+          <VinylLogo href={isAuthenticated ? "/scene" : "/"} size={40} priority />
         </div>
 
-        <div className="hidden items-center gap-5 lg:flex">
+        <div className="relative z-10 hidden items-center gap-5 lg:flex">
           {navLinks.map((link) => {
             const active =
               pathname === link.href ||
               (link.href !== "/" && pathname.startsWith(`${link.href}/`)) ||
               (link.href === "/scene" && pathname.startsWith("/community"));
             return (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "text-xs uppercase tracking-widest no-underline transition-opacity hover:opacity-70",
-                active || link.highlight ? "font-semibold text-cj-gold-bright cj-nav-tab-active" : "text-cj-gold"
-              )}
-            >
-              {link.label}
-            </Link>
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "text-xs uppercase tracking-nav no-underline transition-opacity hover:opacity-80",
+                  active || link.highlight
+                    ? "font-semibold text-label-cream cj-nav-tab-active"
+                    : "text-label-cream/80"
+                )}
+              >
+                {link.label}
+              </Link>
             );
           })}
         </div>
 
-        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+        <div className="relative z-10 flex shrink-0 items-center gap-2 sm:gap-3">
           <ThemeToggle compact />
           {!loading && isAuthenticated ? (
             <>
               <JamStreakWidget compact />
               <Link
                 href="/profile"
-                className="relative z-10 flex items-center gap-1 text-xs uppercase tracking-widest text-cj-gold no-underline hover:opacity-80"
+                className="relative z-10 flex items-center gap-1 text-xs uppercase tracking-nav text-label-cream no-underline hover:opacity-80"
               >
                 <CjIcon src={ICONS.profile} alt="" size={14} />
                 {user?.name ?? user?.email?.split("@")[0]}
@@ -94,17 +95,14 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Link
-                href="/login"
-                className="hidden text-xs uppercase tracking-widest text-cj-gold transition-opacity hover:opacity-70 sm:inline"
-              >
+              <Link href="/login" className="cj-sign-in-ghost hidden sm:inline-flex">
                 Sign in
               </Link>
               <Link href="/register" className="no-underline">
-                <Button variant="primary" size="sm" className="px-3 text-[10px] sm:px-4 sm:text-xs">
+                <span className="cj-label-sticker px-3 text-[10px] sm:px-4 sm:text-xs">
                   <span className="sm:hidden">Join</span>
                   <span className="hidden sm:inline">Join the rebellion</span>
-                </Button>
+                </span>
               </Link>
             </>
           )}

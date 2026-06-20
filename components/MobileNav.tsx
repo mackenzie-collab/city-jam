@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import BrandLogo from "@/components/BrandLogo";
+import VinylLogo from "@/components/VinylLogo";
 import CjIcon from "@/components/CjIcon";
 import { BRAND, ICONS, MOBILE_NAV_ICONS } from "@/lib/brand-assets";
 import { cn } from "@/lib/utils";
@@ -29,8 +29,8 @@ export default function MobileNav() {
   }));
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-cj-gold-border bg-cj-purple-dark/95 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur-md md:hidden">
-      <div className="flex justify-around px-1 pt-2">
+    <nav className="cj-tonearm-rail fixed bottom-0 left-0 right-0 z-50 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur-md md:hidden">
+      <div className="relative z-10 flex justify-around px-1 pt-2">
         {tabs.map(({ href, label, icon }) => {
           const active =
             pathname === href ||
@@ -44,12 +44,12 @@ export default function MobileNav() {
               key={href}
               href={linkHref}
               className={cn(
-                "flex min-h-11 min-w-[3.5rem] flex-1 flex-col items-center justify-center gap-0.5 px-1 py-1 text-[9px] uppercase tracking-wider no-underline",
+                "flex min-h-11 min-w-[3.5rem] flex-1 flex-col items-center justify-center gap-0.5 px-1 py-1 text-[9px] uppercase tracking-nav no-underline",
                 active ? "text-cj-gold-bright cj-nav-tab-active" : "text-cj-gold-muted"
               )}
             >
               {icon === BRAND.logo ? (
-                <BrandLogo size={26} className={cn(active ? "opacity-100" : "opacity-60")} />
+                <VinylLogo size={26} spinning={active} className={cn(!active && "opacity-60")} />
               ) : (
                 <CjIcon
                   src={icon}

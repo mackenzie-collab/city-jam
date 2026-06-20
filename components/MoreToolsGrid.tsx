@@ -51,7 +51,7 @@ export default function MoreToolsGrid() {
     <section className="cj-section bg-cj-purple-dark">
       <div className="mx-auto max-w-6xl">
         <span className="cj-badge mb-4 sm:mb-6">Explore</span>
-        <h2 className="cj-heading-display text-4xl sm:text-5xl md:text-7xl">
+        <h2 className="cj-headline text-4xl sm:text-5xl md:text-7xl">
           More Tools.
           <br />
           <span className="text-cj-gold-bright">Your Scene.</span>
@@ -62,7 +62,7 @@ export default function MoreToolsGrid() {
             <Link
               key={tool.title}
               href={tool.href}
-              className="group cj-card block transition-all hover:border-cj-gold/60 hover:bg-cj-purple-card/80"
+              className="group cj-divider-card block transition-all hover:border-cj-gold/60"
             >
               <CjIcon
                 src={TOOL_ICONS[tool.href]}
@@ -70,13 +70,13 @@ export default function MoreToolsGrid() {
                 size={28}
                 className="mb-4 opacity-80 group-hover:opacity-100"
               />
-              <h3 className="font-display text-2xl uppercase text-cj-gold">
+              <h3 className="font-headline text-2xl uppercase text-cj-gold">
                 {tool.title}
               </h3>
               <p className="mt-3 text-sm text-cj-gold-muted">
                 {tool.description}
               </p>
-              <span className="mt-6 inline-flex items-center gap-1 text-xs uppercase tracking-widest text-cj-gold group-hover:gap-2 transition-all">
+              <span className="mt-6 inline-flex items-center gap-1 text-xs uppercase tracking-nav text-cj-gold transition-all group-hover:gap-2">
                 Open <ArrowRight className="h-3 w-3" />
               </span>
             </Link>
