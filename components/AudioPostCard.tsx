@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Heart, MessageCircle, Play } from "lucide-react";
 import { useAudioPlayer, type Track } from "@/contexts/AudioPlayerContext";
 import { incrementPlayCount, likePost, type AudioPost } from "@/lib/scene";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
+import CassetteChip from "@/components/analog/CassetteChip";
+import CoverArtFrame from "@/components/analog/CoverArtFrame";
+import VinylCard from "@/components/analog/VinylCard";
 
 interface AudioPostCardProps {
   post: AudioPost;
@@ -56,15 +58,17 @@ export default function AudioPostCard({ post, queue, liked = false, onLike }: Au
   };
 
   return (
-    <article className="cj-card cj-gold-frame overflow-hidden p-0">
-      <div className="relative aspect-[4/3] cj-grain-photo bg-cj-dark">
-        {post.cover_url ? (
-          <Image src={post.cover_url} alt="" fill className="object-cover" sizes="(max-width:768px) 100vw, 400px" />
-        ) : (
+    <VinylCard padding="none" className="cj-gold-frame overflow-hidden">
+      <CoverArtFrame
+        src={post.cover_url}
+        aspect="4/3"
+        sizes="(max-width:768px) 100vw, 400px"
+        fallback={
           <div className="flex h-full items-center justify-center bg-cj-purple-card">
-            <span className="font-display text-4xl uppercase text-cj-gold/30">{post.genre.slice(0, 3)}</span>
+            <span className="font-display text-4xl uppercase text-cj-gold/30">{post.genre.slice(0, 3) || "♪"}</span>
           </div>
-        )}
+        }
+      >
         <button
           type="button"
           onClick={handlePlay}
@@ -76,11 +80,11 @@ export default function AudioPostCard({ post, queue, liked = false, onLike }: Au
           </span>
         </button>
         {post.genre && (
-          <span className="absolute left-3 top-3 cj-tag border-cj-gold/50 bg-cj-purple-dark/80">
-            {post.genre}
+          <span className="absolute left-3 top-3">
+            <CassetteChip>{post.genre}</CassetteChip>
           </span>
         )}
-      </div>
+      </CoverArtFrame>
 
       <div className="p-4 sm:p-5">
         <h3 className="cj-zine-headline text-xl sm:text-2xl">{post.title}</h3>
@@ -121,6 +125,6 @@ export default function AudioPostCard({ post, queue, liked = false, onLike }: Au
           <span className="ml-auto text-[10px] text-cj-gold-muted">{post.play_count} plays</span>
         </div>
       </div>
-    </article>
+    </VinylCard>
   );
 }

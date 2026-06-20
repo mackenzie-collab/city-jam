@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Mic, Radio } from "lucide-react";
 import FeatureShell from "@/components/FeatureShell";
+import VinylCard from "@/components/analog/VinylCard";
+import VinylDisc from "@/components/analog/VinylDisc";
 import { ICONS } from "@/lib/brand-assets";
 
 const JAM_TOOLS = [
@@ -9,12 +11,14 @@ const JAM_TOOLS = [
     label: "Blind Echo",
     desc: "Anonymous audio jam sessions — no faces, just sound.",
     icon: Mic,
+    room: "The Booth",
   },
   {
     href: "/echo-roulette",
     label: "Echo Roulette",
     desc: "Spin the dial and connect with a random musician.",
     icon: Radio,
+    room: "The Dial Room",
   },
 ];
 
@@ -23,31 +27,33 @@ export default function JamPage() {
     <FeatureShell
       title="Jam"
       iconSrc={ICONS.frequencyDial}
-      badge="Quick Jam"
+      badge="Jam"
       heading={
         <>
-          Pick Your / <span className="text-cj-gold-bright">Jam Mode.</span>
+          Pick Your / <span className="text-cj-gold-bright">Jam Room.</span>
         </>
       }
-      subtitle="Blind Echo and Echo Roulette — two ways to connect through sound."
+      subtitle="Each mode is a separate room in the house — enter through the vinyl doorway."
       maxWidth="md"
     >
-      <div className="grid gap-4 sm:grid-cols-1">
-        {JAM_TOOLS.map(({ href, label, desc, icon: Icon }) => (
-          <Link
-            key={href}
-            href={href}
-            className="cj-card cj-gold-frame group flex items-start gap-4 no-underline transition-colors hover:border-cj-gold"
-          >
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-cj-gold-border bg-cj-dark">
-              <Icon className="h-6 w-6 text-cj-gold" />
-            </div>
-            <div>
-              <h2 className="font-display text-xl uppercase text-cj-gold group-hover:text-cj-gold-bright">
-                {label}
-              </h2>
-              <p className="mt-1 text-sm text-cj-gold-muted">{desc}</p>
-            </div>
+      <div className="grid gap-6">
+        {JAM_TOOLS.map(({ href, label, desc, icon: Icon, room }) => (
+          <Link key={href} href={href} className="no-underline">
+            <VinylCard showDisc className="group flex items-start gap-5 transition-colors hover:border-cj-gold-bright">
+              <div className="relative shrink-0">
+                <VinylDisc size={56} />
+                <div className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full border border-cj-gold-border bg-cj-dark">
+                  <Icon className="h-4 w-4 text-cj-gold" />
+                </div>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase tracking-widest text-cj-gold-muted">{room}</p>
+                <h2 className="mt-1 font-display text-2xl uppercase text-cj-gold group-hover:text-cj-gold-bright">
+                  {label}
+                </h2>
+                <p className="mt-2 text-sm text-cj-gold-muted">{desc}</p>
+              </div>
+            </VinylCard>
           </Link>
         ))}
       </div>

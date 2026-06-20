@@ -5,7 +5,7 @@ import {
   AuthUser,
   getAuthUser,
   loginWithEmail,
-  loginWithGoogle,
+  loginWithOAuth,
   logoutUser,
   registerWithEmail,
   restoreSession,
@@ -80,18 +80,35 @@ export function useAuth() {
     }
   }, []);
 
-  const googleLogin = useCallback(async () => {
-    setError(null);
-    try {
-      const u = await loginWithGoogle();
-      if (u) setUser(u);
-      return u;
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Google sign-in failed";
-      setError(msg);
-      throw err;
-    }
-  }, []);
+  const oauthLogin = useCallback(
+    async (provider: "google" | "facebook" | "apple", returnPath?: string) => {
+      setError(null);
+      try {
+        await loginWithOAuth(provider, returnPath);
+        return null;
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : `${provider} sign-in failed`;
+        setError(msg);
+        throw err;
+      }
+    },
+    []
+  );
+
+  const googleLogin = useCallback(
+    (returnPath?: string) => oauthLogin("google", returnPath),
+    [oauthLogin]
+  );
+
+  const facebookLogin = useCallback(
+    (returnPath?: string) => oauthLogin("facebook", returnPath),
+    [oauthLogin]
+  );
+
+  const appleLogin = useCallback(
+    (returnPath?: string) => oauthLogin("apple", returnPath),
+    [oauthLogin]
+  );
 
   const logout = useCallback(async () => {
     await logoutUser();
@@ -114,6 +131,9 @@ export function useAuth() {
     login,
     register,
     googleLogin,
+    facebookLogin,
+    appleLogin,
+    oauthLogin,
     logout,
     deleteAccount,
   };

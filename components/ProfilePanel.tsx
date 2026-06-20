@@ -487,6 +487,14 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
               <Button type="submit" variant="primary">
                 {saved ? "Saved!" : "Save Profile"}
               </Button>
+              <div className="flex flex-wrap gap-3 pt-2">
+                <Link href="/settings/account" className="text-xs uppercase tracking-widest text-cj-gold hover:underline">
+                  Connected accounts
+                </Link>
+                <Link href="/settings/security" className="text-xs uppercase tracking-widest text-cj-gold hover:underline">
+                  Security & MFA
+                </Link>
+              </div>
               {profile && (
                 <p className="text-[10px] text-cj-gold-muted">
                   Last updated {new Date(profile.updated_at).toLocaleString()}

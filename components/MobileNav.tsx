@@ -45,7 +45,7 @@ export default function MobileNav() {
               href={linkHref}
               className={cn(
                 "flex min-h-11 min-w-[3.5rem] flex-1 flex-col items-center justify-center gap-0.5 px-1 py-1 text-[9px] uppercase tracking-wider no-underline",
-                active ? "text-cj-gold" : "text-cj-gold-muted"
+                active ? "text-cj-gold-bright cj-nav-tab-active" : "text-cj-gold-muted"
               )}
             >
               {icon === BRAND.logo ? (

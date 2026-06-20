@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import FeatureShell from "@/components/FeatureShell";
-import { ICONS, MUSICIAN_PHOTOS } from "@/lib/brand-assets";
+import CoverArtFrame from "@/components/analog/CoverArtFrame";
+import VinylCard from "@/components/analog/VinylCard";
+import { ICONS, BRAND } from "@/lib/brand-assets";
 import { fetchActiveProfiles, type UserProfile } from "@/lib/profiles";
 import { fetchSceneFeed, type AudioPost } from "@/lib/scene";
 
@@ -92,22 +93,18 @@ export default function DiscoverGrid() {
           <h2 className="mb-4 font-display text-lg uppercase text-cj-gold">Trending on Scene</h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {trending.map((post) => (
-              <Link
-                key={post.id}
-                href={`/scene/post/${post.id}`}
-                className="cj-card flex items-center gap-3 no-underline transition-colors hover:border-cj-gold"
-              >
-                {post.cover_url && (
-                  <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded">
-                    <Image src={post.cover_url} alt="" fill className="object-cover" sizes="48px" />
-                  </div>
-                )}
+              <Link key={post.id} href={`/scene/post/${post.id}`} className="no-underline">
+                <VinylCard padding="default" className="!p-4 flex items-center gap-3 transition-colors hover:border-cj-gold">
+                  {post.cover_url && (
+                    <CoverArtFrame src={post.cover_url} aspect="square" className="h-12 w-12 shrink-0" sizes="48px" />
+                  )}
                 <div className="min-w-0">
                   <p className="truncate font-display uppercase text-cj-gold">{post.title}</p>
                   <p className="truncate text-xs text-cj-gold-muted">
                     {post.author_display_name} · {post.like_count} likes
                   </p>
                 </div>
+                </VinylCard>
               </Link>
             ))}
           </div>
@@ -122,26 +119,15 @@ export default function DiscoverGrid() {
           <p className="text-cj-gold-muted">No artists match your search.</p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredProfiles.map((p, i) => {
+            {filteredProfiles.map((p) => {
               const href = p.username ? `/profile/${p.username}` : `/profile?user=${p.user_id}`;
-              const photo = MUSICIAN_PHOTOS[i % MUSICIAN_PHOTOS.length];
+              const cover = p.cover_image_url || BRAND.logo2026Updated;
               return (
-                <Link
-                  key={p.user_id}
-                  href={href}
-                  className="cj-card cj-gold-frame group overflow-hidden p-0 no-underline transition-colors hover:border-cj-gold"
-                >
-                  <div className="relative aspect-square cj-grain-photo">
-                    <Image
-                      src={p.cover_image_url || photo.src}
-                      alt=""
-                      fill
-                      className="object-cover"
-                      sizes="(max-width:768px) 50vw, 250px"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <p className="font-display text-lg uppercase text-cj-gold group-hover:text-cj-gold-bright">
+                <Link key={p.user_id} href={href} className="no-underline">
+                  <VinylCard padding="none" className="cj-gold-frame overflow-hidden transition-colors hover:border-cj-gold">
+                    <CoverArtFrame src={cover} aspect="square" sizes="(max-width:768px) 50vw, 250px" />
+                    <div className="p-4">
+                    <p className="font-display text-lg uppercase text-cj-gold hover:text-cj-gold-bright">
                       {p.display_name}
                     </p>
                     <p className="text-xs text-cj-gold-muted">
@@ -154,7 +140,8 @@ export default function DiscoverGrid() {
                       </p>
                     )}
                   </div>
-                </Link>
+                </VinylCard>
+              </Link>
               );
             })}
           </div>

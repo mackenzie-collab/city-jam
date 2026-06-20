@@ -9,6 +9,13 @@ export interface AuthUser {
   name?: string;
 }
 
+function isDemoAuthAllowed(): boolean {
+  return (
+    process.env.NODE_ENV === "development" &&
+    process.env.NEXT_PUBLIC_ALLOW_DEMO_AUTH !== "false"
+  );
+}
+
 function getOrCreateUserId(): string {
   if (typeof window === "undefined") return "server";
   let id = localStorage.getItem(USER_ID_KEY);
@@ -36,10 +43,12 @@ export function getAuthUser(): AuthUser | null {
 }
 
 export function setAuthUser(user: AuthUser): void {
+  if (typeof window === "undefined") return;
   localStorage.setItem(AUTH_KEY, JSON.stringify(user));
 }
 
 export function clearAuthUser(): void {
+  if (typeof window === "undefined") return;
   localStorage.removeItem(AUTH_KEY);
 }
 
@@ -53,16 +62,22 @@ function demoLoginWithEmail(email: string): AuthUser {
   return user;
 }
 
+async function supabaseReady(): Promise<boolean> {
+  const { supabaseAuthAvailable } = await import("@/lib/supabase/auth");
+  return supabaseAuthAvailable();
+}
+
 export async function loginWithEmail(email: string, password: string): Promise<AuthUser> {
-  const { supabaseAuthAvailable, signInWithEmail, mapSupabaseUser } = await import(
-    "@/lib/supabase/auth"
-  );
-  if (supabaseAuthAvailable()) {
+  if (await supabaseReady()) {
+    const { signInWithEmail, mapSupabaseUser } = await import("@/lib/supabase/auth");
     const { user } = await signInWithEmail(email, password);
     if (!user) throw new Error("Sign in failed");
     const mapped = mapSupabaseUser(user);
     setAuthUser(mapped);
     return mapped;
+  }
+  if (!isDemoAuthAllowed()) {
+    throw new Error("Sign-in requires Supabase — configure env vars for production.");
   }
   return demoLoginWithEmail(email);
 }
@@ -72,10 +87,8 @@ export async function registerWithEmail(
   password: string,
   displayName?: string
 ): Promise<AuthUser> {
-  const { supabaseAuthAvailable, signUpWithEmail, mapSupabaseUser } = await import(
-    "@/lib/supabase/auth"
-  );
-  if (supabaseAuthAvailable()) {
+  if (await supabaseReady()) {
+    const { signUpWithEmail, mapSupabaseUser } = await import("@/lib/supabase/auth");
     const { user } = await signUpWithEmail(email, password);
     if (!user) throw new Error("Sign up failed");
     const mapped = mapSupabaseUser(user);
@@ -88,48 +101,61 @@ export async function registerWithEmail(
     }).catch(() => undefined);
     return mapped;
   }
+  if (!isDemoAuthAllowed()) {
+    throw new Error("Registration requires Supabase — configure env vars for production.");
+  }
   const user = demoLoginWithEmail(email);
   if (displayName?.trim()) user.name = displayName.trim();
   setAuthUser(user);
   return user;
 }
 
-export async function loginWithGoogle(): Promise<AuthUser | null> {
-  const { supabaseAuthAvailable, signInWithGoogle, mapSupabaseUser, getSession } = await import(
-    "@/lib/supabase/auth"
-  );
-  if (supabaseAuthAvailable()) {
-    await signInWithGoogle();
-    const session = await getSession();
-    if (session?.user) {
-      const mapped = mapSupabaseUser(session.user);
-      setAuthUser(mapped);
-      return mapped;
+export async function loginWithOAuth(
+  provider: "google" | "facebook" | "apple",
+  returnPath?: string
+): Promise<null> {
+  if (!(await supabaseReady())) {
+    if (!isDemoAuthAllowed()) {
+      throw new Error(`${provider} sign-in requires Supabase.`);
     }
+    const user: AuthUser = {
+      id: getOrCreateUserId(),
+      email: `demo-${provider}@cityjam.local`,
+      name: "Demo Musician",
+    };
+    setAuthUser(user);
     return null;
   }
-  const user: AuthUser = {
-    id: getOrCreateUserId(),
-    email: "musician@gmail.com",
-    name: "Guest Musician",
-  };
-  setAuthUser(user);
-  return user;
+  const auth = await import("@/lib/supabase/auth");
+  if (provider === "google") await auth.signInWithGoogle(returnPath);
+  else if (provider === "facebook") await auth.signInWithFacebook(returnPath);
+  else await auth.signInWithApple(returnPath);
+  return null;
+}
+
+export async function loginWithGoogle(returnPath?: string): Promise<AuthUser | null> {
+  return loginWithOAuth("google", returnPath);
+}
+
+export async function loginWithFacebook(returnPath?: string): Promise<AuthUser | null> {
+  return loginWithOAuth("facebook", returnPath);
+}
+
+export async function loginWithApple(returnPath?: string): Promise<AuthUser | null> {
+  return loginWithOAuth("apple", returnPath);
 }
 
 export async function logoutUser(): Promise<void> {
-  const { supabaseAuthAvailable, signOut } = await import("@/lib/supabase/auth");
-  if (supabaseAuthAvailable()) {
+  if (await supabaseReady()) {
+    const { signOut } = await import("@/lib/supabase/auth");
     await signOut();
   }
   clearAuthUser();
 }
 
 export async function restoreSession(): Promise<AuthUser | null> {
-  const { supabaseAuthAvailable, getSession, mapSupabaseUser } = await import(
-    "@/lib/supabase/auth"
-  );
-  if (supabaseAuthAvailable()) {
+  if (await supabaseReady()) {
+    const { getSession, mapSupabaseUser } = await import("@/lib/supabase/auth");
     const session = await getSession();
     if (session?.user) {
       const mapped = mapSupabaseUser(session.user);
@@ -139,5 +165,6 @@ export async function restoreSession(): Promise<AuthUser | null> {
     clearAuthUser();
     return null;
   }
+  if (!isDemoAuthAllowed()) return null;
   return getAuthUser();
 }

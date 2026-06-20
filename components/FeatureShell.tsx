@@ -4,8 +4,20 @@ import { LucideIcon } from "lucide-react";
 import AppChrome from "@/components/AppChrome";
 import AppTrail from "@/components/AppTrail";
 import PageHeader from "@/components/PageHeader";
+import { cn } from "@/lib/utils";
 
 type ShellVariant = "purple" | "map" | "hall";
+
+const ROOM_ACCENTS: Partial<Record<string, string>> = {
+  Jam: "border-cj-gold/50",
+  Scene: "border-cj-gold-bright/60",
+  Studio: "border-cj-gold/40",
+  Vault: "border-cj-gold/35",
+  Collab: "border-cj-gold/45",
+  "Blind Echo": "border-orange-400/40",
+  "Echo Roulette": "border-cj-gold/55",
+  "Listening Rooms": "border-cj-gold/40",
+};
 
 const BG: Record<ShellVariant, string> = {
   purple: "bg-cj-purple",
@@ -67,7 +79,11 @@ export default function FeatureShell({
       />
       <div className={`mx-auto px-4 py-8 sm:px-6 sm:py-10 ${MAX[maxWidth]}`}>
         {showTrail && <AppTrail />}
-        {badge && <span className="cj-badge mb-6">{badge}</span>}
+        {badge && (
+          <span className={cn("cj-badge mb-6", ROOM_ACCENTS[badge] && `border-2 ${ROOM_ACCENTS[badge]}`)}>
+            {badge}
+          </span>
+        )}
         <div className="cj-heading-display text-4xl md:text-5xl lg:text-6xl">{heading}</div>
         {subtitle && (
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-cj-gold-muted md:text-base">

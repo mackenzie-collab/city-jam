@@ -2,8 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { UserPlus, UserMinus, Play } from "lucide-react";
+import CoverArtFrame from "@/components/analog/CoverArtFrame";
+import VinylCard from "@/components/analog/VinylCard";
+import WaveformBadge from "@/components/analog/WaveformBadge";
 import { Button } from "@/components/ui/button";
 import { useAudioPlayer, type Track } from "@/contexts/AudioPlayerContext";
 import { useAuth } from "@/hooks/useAuth";
@@ -82,9 +84,11 @@ export default function ArtistFeatureProfile({ profile }: ArtistFeatureProfilePr
   return (
     <div className="space-y-8">
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="relative aspect-[3/4] cj-grain-photo cj-gold-frame overflow-hidden">
-          <Image src={coverSrc} alt="" fill className="object-cover" sizes="(max-width:768px) 100vw, 400px" priority />
+        <CoverArtFrame src={coverSrc} aspect="3/4" sizes="(max-width:768px) 100vw, 400px">
           <div className="absolute inset-0 bg-gradient-to-t from-cj-purple-dark via-transparent to-transparent" />
+          <div className="absolute left-4 top-4">
+            <WaveformBadge label="Cover art" animate />
+          </div>
           <div className="absolute bottom-0 left-0 right-0 p-6">
             <p className="text-[10px] uppercase tracking-widest text-cj-gold-muted">
               {profile.role}
@@ -96,7 +100,7 @@ export default function ArtistFeatureProfile({ profile }: ArtistFeatureProfilePr
               <p className="mt-1 text-sm text-cj-gold-muted">@{profile.username}</p>
             )}
           </div>
-        </div>
+        </CoverArtFrame>
 
         <div className="flex flex-col justify-center space-y-6">
           {profile.manifesto_quote && (

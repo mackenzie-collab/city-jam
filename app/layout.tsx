@@ -2,6 +2,7 @@ import { Bebas_Neue, Inter, Special_Elite } from "next/font/google";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import LiveConfigBanner from "@/components/LiveConfigBanner";
+import Providers from "@/components/Providers";
 
 const bebasNeue = Bebas_Neue({
   weight: "400",
@@ -50,10 +51,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="dark" suppressHydrationWarning>
       <body className={`${bebasNeue.variable} ${inter.variable} ${specialElite.variable}`}>
-        <LiveConfigBanner />
-        {children}
+        <Providers>
+          <LiveConfigBanner />
+          {children}
+        </Providers>
       </body>
     </html>
   );
