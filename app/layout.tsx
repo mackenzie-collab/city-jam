@@ -1,29 +1,29 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow_Condensed, Instrument_Serif, Inter } from "next/font/google";
+import { Bebas_Neue, Courier_Prime, DM_Sans } from "next/font/google";
 
 import "./globals.css";
 
 import LiveConfigBanner from "@/components/LiveConfigBanner";
 import Providers from "@/components/Providers";
 
-const inter = Inter({
+const dmSans = DM_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-inter",
+  variable: "--font-body",
   display: "swap",
 });
 
-const barlowCondensed = Barlow_Condensed({
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  variable: "--font-headline",
-  display: "swap",
-});
-
-const instrumentSerif = Instrument_Serif({
+const bebasNeue = Bebas_Neue({
   subsets: ["latin"],
   weight: ["400"],
   variable: "--font-display",
+  display: "swap",
+});
+
+const courierPrime = Courier_Prime({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -31,7 +31,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#0D0A0F",
+  themeColor: "#050508",
 };
 
 export const metadata: Metadata = {
@@ -63,7 +63,7 @@ export default function RootLayout({
       lang="en"
       data-theme="dark"
       suppressHydrationWarning
-      className={`${inter.variable} ${barlowCondensed.variable} ${instrumentSerif.variable}`}
+      className={`${dmSans.variable} ${bebasNeue.variable} ${courierPrime.variable}`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />

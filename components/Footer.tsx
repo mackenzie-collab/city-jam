@@ -21,13 +21,13 @@ const sideB = [
 export default function Footer() {
   return (
     <footer className="cj-footer cj-section-poster relative overflow-hidden px-4 py-12 sm:px-6 sm:py-16 md:px-8">
-      <GrainOverlay warm intensity={0.18} />
+      <GrainOverlay warm intensity={0.035} />
       <div className="relative mx-auto max-w-6xl">
-        <div className="flex gap-6 border-b border-cj-border pb-8">
+        <div className="flex gap-6 border-b border-[var(--cj-zine-border)] pb-8">
           <BarcodeDivider orientation="vertical" className="hidden w-5 shrink-0 sm:flex" />
           <div className="min-w-0 flex-1">
             <BrandLogo href="/" size={40} />
-            <p className="mt-4 max-w-md font-headline text-sm uppercase tracking-[0.12em] text-cj-text-muted">
+            <p className="mt-4 max-w-md font-mono text-sm tracking-[0.06em] text-cj-text-muted">
               An app for musicians. Not fans. Not listeners. Make music fun again.
             </p>
           </div>
@@ -36,25 +36,25 @@ export default function Footer() {
         <SideABStrip sideA={sideA} sideB={sideB} compact className="mt-8 border-t-0 pt-0" />
 
         <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm">
-          <Link href="/privacy" className="cj-link-groove font-headline uppercase tracking-wide">
+          <Link href="/privacy" className="cj-link-groove uppercase tracking-wide">
             Privacy
           </Link>
-          <Link href="/terms" className="cj-link-groove font-headline uppercase tracking-wide">
+          <Link href="/terms" className="cj-link-groove uppercase tracking-wide">
             Terms
           </Link>
-          <Link href="/contact" className="cj-link-groove font-headline uppercase tracking-wide">
+          <Link href="/contact" className="cj-link-groove uppercase tracking-wide">
             Contact
           </Link>
         </div>
 
-        <div className="mt-10 flex flex-col gap-4 border-t border-cj-border pt-8 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mt-10 flex flex-col gap-4 border-t border-[var(--cj-zine-border)] pt-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <BarcodeDivider className="mb-4 max-w-xs opacity-60" />
-            <p className="font-headline text-xs uppercase tracking-[0.14em] text-cj-text-muted">
+            <p className="font-mono text-xs uppercase tracking-[0.1em] text-cj-text-muted">
               100% audio-only · 0 photos · No algorithms
             </p>
           </div>
-          <p className="text-xs text-cj-gold-muted">
+          <p className="font-mono text-xs text-cj-gold-muted">
             © {new Date().getFullYear()} City Jam. Close your eyes. Listen.
           </p>
         </div>

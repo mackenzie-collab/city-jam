@@ -24,7 +24,7 @@ export default function BrandLogo({
         alt={BRAND.logoAlt}
         width={size}
         height={size}
-        className="aspect-square object-contain drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
+        className="aspect-square object-contain"
         priority={priority}
       />
     </span>

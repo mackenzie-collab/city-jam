@@ -21,29 +21,28 @@ const sideB = [
 export default function Hero() {
   return (
     <section className="cj-section-poster relative flex min-h-[92dvh] flex-col justify-center overflow-hidden px-0 py-16 sm:py-20 md:py-24">
-      <div className="absolute inset-0 bg-cj-bg" aria-hidden />
-      <GrainOverlay warm intensity={0.28} />
+      <div className="absolute inset-0 bg-brand-black" aria-hidden />
+      <div className="absolute inset-0 bg-brand-purple/40" aria-hidden />
+      <GrainOverlay warm intensity={0.04} />
 
-      {/* Vertical barcode strip — constructivist edge */}
       <div className="absolute bottom-0 left-3 top-24 hidden w-6 sm:left-6 md:block">
         <BarcodeDivider orientation="vertical" className="h-full opacity-80" />
       </div>
 
       <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6 md:px-8">
         <div className="grid items-end gap-10 lg:grid-cols-12 lg:gap-8">
-          {/* Editorial copy — dominant type */}
           <div className="cj-page-enter relative z-[2] lg:col-span-7 lg:pb-8">
             <BrandLogo size={44} className="mb-6 sm:mb-8" priority />
-            <span className="cj-badge mb-5 font-headline uppercase tracking-[0.16em] sm:mb-6">
+            <span className="cj-badge mb-5 sm:mb-6">
               The rebellion starts here
             </span>
 
             <h1 className="cj-poster-headline">
               Make music{" "}
-              <span className="text-label-amber">fun again</span>
+              <span className="text-brand-gold">fun again</span>
             </h1>
 
-            <p className="mt-6 max-w-lg text-base leading-relaxed text-cj-text-muted sm:mt-8 md:text-lg">
+            <p className="mt-6 max-w-lg font-body text-base leading-relaxed text-cj-text-muted sm:mt-8 md:text-lg">
               An app for musicians. Not fans. Not listeners. Musicians. Meet your
               people. Build your band. Make noise together.
             </p>
@@ -62,9 +61,8 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Dominant vinyl graphic — not a small card */}
-          <div className="relative z-[1] flex min-h-[280px] items-center justify-center lg:col-span-5 lg:min-h-[480px]">
-            <PosterMotif variant="hero" dominant opacity={1} className="lg:-mr-8" />
+          <div className="relative z-[1] flex min-h-[320px] items-center justify-center lg:col-span-5 lg:min-h-[520px]">
+            <PosterMotif variant="hero" dominant opacity={1} className="lg:-mr-4" />
           </div>
         </div>
 

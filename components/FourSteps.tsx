@@ -30,34 +30,32 @@ const steps = [
 
 export default function FourSteps() {
   return (
-    <section className="cj-section cj-section-poster relative overflow-hidden bg-cj-bg">
-      <GrainOverlay intensity={0.14} />
-      <PosterMotif variant="section" opacity={0.5} />
+    <section className="cj-section cj-section-poster relative overflow-hidden bg-brand-black">
+      <GrainOverlay intensity={0.035} />
+      <PosterMotif variant="section" opacity={0.4} />
       <div className="relative mx-auto max-w-6xl">
         <BarcodeDivider className="mb-6 max-w-md opacity-70" />
-        <span className="cj-badge mb-4 font-headline uppercase tracking-[0.14em] sm:mb-6">
-          Process
-        </span>
+        <span className="cj-badge mb-4 sm:mb-6">Process</span>
         <h2 className="cj-poster-headline text-3xl sm:text-4xl md:text-5xl">
           Four steps.{" "}
-          <span className="text-label-amber">Then it&apos;s gone.</span>
+          <span className="text-brand-gold">Then it&apos;s gone.</span>
         </h2>
 
         <div className="mt-10 grid gap-0 sm:grid-cols-2">
           {steps.map((step, i) => (
             <div
               key={step.number}
-              className="border-b border-cj-border py-6 sm:odd:pr-8 sm:even:pl-8 sm:[&:nth-child(-n+2)]:border-t"
+              className="border-b border-[var(--cj-zine-border)] py-6 sm:odd:pr-8 sm:even:pl-8 sm:[&:nth-child(-n+2)]:border-t"
             >
               <div className="flex items-baseline gap-4">
-                <span className="font-headline text-3xl font-bold tabular-nums text-label-amber sm:text-4xl">
+                <span className="font-display text-3xl tabular-nums text-brand-gold sm:text-4xl">
                   {step.number}
                 </span>
                 <div>
-                  <h3 className="font-headline text-lg font-bold uppercase tracking-[0.1em] text-cj-text sm:text-xl">
+                  <h3 className="font-display text-lg uppercase tracking-[0.06em] text-cj-text sm:text-xl">
                     {step.title}
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-cj-text-muted">
+                  <p className="mt-2 font-mono text-sm leading-relaxed text-cj-text-muted">
                     {step.description}
                   </p>
                 </div>

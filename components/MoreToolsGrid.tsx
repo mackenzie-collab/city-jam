@@ -51,22 +51,20 @@ const tools = [
 
 export default function MoreToolsGrid() {
   return (
-    <section className="cj-section cj-section-poster relative overflow-hidden bg-cj-surface">
-      <GrainOverlay intensity={0.12} />
+    <section className="cj-section cj-section-poster relative overflow-hidden bg-brand-purple-deep">
+      <GrainOverlay intensity={0.035} />
       <div className="relative mx-auto max-w-6xl">
         <BarcodeDivider className="mb-6 max-w-sm opacity-65" />
-        <span className="cj-badge mb-4 font-headline uppercase tracking-[0.14em] sm:mb-6">
-          Explore
-        </span>
+        <span className="cj-badge mb-4 sm:mb-6">Explore</span>
         <h2 className="cj-poster-headline text-3xl sm:text-4xl md:text-5xl">
           More tools.{" "}
-          <span className="text-label-amber">Your scene.</span>
+          <span className="text-brand-gold">Your scene.</span>
         </h2>
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
           {tools.map((tool, i) => (
             <Link key={tool.title} href={tool.href} className="group block no-underline">
-              <VinylCard className="h-full transition-shadow hover:shadow-lg">
+              <VinylCard className="h-full border-[var(--cj-zine-border)] bg-brand-purple transition-shadow hover:border-brand-gold/40 hover:shadow-lg">
                 <div className="mb-3 flex items-center justify-between">
                   <CjIcon
                     src={TOOL_ICONS[tool.href]}
@@ -74,15 +72,15 @@ export default function MoreToolsGrid() {
                     size={24}
                     className="opacity-80 group-hover:opacity-100"
                   />
-                  <span className="font-headline text-xs font-bold tabular-nums text-cj-text-muted">
+                  <span className="font-mono text-xs tabular-nums text-cj-text-muted">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                 </div>
-                <h3 className="font-headline text-lg font-bold uppercase tracking-[0.08em] text-cj-text sm:text-xl">
+                <h3 className="font-display text-lg uppercase tracking-[0.06em] text-brand-parchment sm:text-xl">
                   {tool.title}
                 </h3>
-                <p className="mt-2 text-sm text-cj-text-muted">{tool.description}</p>
-                <span className="mt-4 inline-flex items-center gap-1 font-headline text-xs uppercase tracking-wide text-label-amber transition-all group-hover:gap-2">
+                <p className="mt-2 font-mono text-sm text-brand-parchment/65">{tool.description}</p>
+                <span className="mt-4 inline-flex items-center gap-1 font-mono text-xs uppercase tracking-wide text-brand-gold transition-all group-hover:gap-2">
                   Open <ArrowRight className="h-3.5 w-3.5" />
                 </span>
               </VinylCard>

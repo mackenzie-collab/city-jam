@@ -9,7 +9,7 @@ interface SideABStripProps {
   compact?: boolean;
 }
 
-/** Side A / Side B tracklist metadata — DIJON-style risograph album layout. */
+/** Side A / Side B tracklist — zine album layout with Bebas headers + Courier metadata. */
 export default function SideABStrip({
   sideA,
   sideB,
@@ -17,7 +17,7 @@ export default function SideABStrip({
   compact = false,
 }: SideABStripProps) {
   return (
-    <div className={cn("border-t border-cj-border pt-6", className)}>
+    <div className={cn("border-t border-[var(--cj-zine-border)] pt-6", className)}>
       <div className="mb-6 flex items-stretch gap-4">
         <BarcodeDivider orientation="vertical" className="w-5 shrink-0 opacity-90" />
         <BarcodeDivider className="flex-1 opacity-70" />
@@ -43,8 +43,8 @@ function Side({
     <div>
       <p
         className={cn(
-          "font-headline font-bold uppercase text-label-amber",
-          compact ? "text-lg tracking-[0.18em]" : "text-2xl tracking-[0.22em] sm:text-3xl"
+          "font-display uppercase text-brand-gold",
+          compact ? "text-xl tracking-[0.12em]" : "text-2xl tracking-[0.14em] sm:text-3xl"
         )}
       >
         Side {side}
@@ -54,34 +54,29 @@ function Side({
           <li
             key={item.label}
             className={cn(
-              "grid border-b border-cj-border/60 py-2.5",
+              "grid border-b border-[var(--cj-zine-border)] py-2.5",
               compact ? "grid-cols-[2.5rem_1fr] gap-2 text-sm" : "grid-cols-[2.75rem_1fr] gap-3 sm:grid-cols-[3rem_1fr]"
             )}
           >
-            <span className="font-headline text-base font-bold tabular-nums text-cj-text-muted sm:text-lg">
+            <span className="font-mono text-sm tabular-nums text-cj-text-muted sm:text-base">
               {String(i + 1).padStart(2, "0")}
             </span>
             <div className="min-w-0">
               {item.href ? (
                 <Link
                   href={item.href}
-                  className="block font-headline font-bold uppercase tracking-wide text-cj-text no-underline transition-colors hover:text-label-amber"
+                  className="block font-display text-sm uppercase tracking-[0.08em] text-cj-text no-underline transition-colors hover:text-brand-gold sm:text-base"
                 >
-                  <span className={cn(compact ? "text-xs tracking-[0.12em]" : "text-sm tracking-[0.14em] sm:text-base")}>
-                    {item.label}
-                  </span>
+                  {item.label}
                 </Link>
               ) : (
-                <span
-                  className={cn(
-                    "block font-headline font-bold uppercase tracking-wide text-cj-text",
-                    compact ? "text-xs tracking-[0.12em]" : "text-sm tracking-[0.14em] sm:text-base"
-                  )}
-                >
+                <span className="block font-display text-sm uppercase tracking-[0.08em] text-cj-text sm:text-base">
                   {item.label}
                 </span>
               )}
-              <span className="mt-0.5 block text-sm text-cj-text-muted">{item.value}</span>
+              <span className="mt-0.5 block font-mono text-xs text-cj-text-muted sm:text-sm">
+                {item.value}
+              </span>
             </div>
           </li>
         ))}

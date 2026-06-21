@@ -2,96 +2,98 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── City Jam palette (flat / SoundCloud-inspired) ── */
+/* ── City Jam — Luxury Punk / Analog Rebellion (Brand v2.0) ── */
 :root,
 :root[data-theme="dark"] {
-  /* --font-display, --font-headline, --font-inter set by next/font on <html> */
-  --vinyl-black: #0d0a0f;
-  --groove-purple: #1e0b2c;
-  --label-amber: #c9962a;
-  --label-cream: #f5edd6;
-  --wax-burgundy: #5c1f2e;
-  --signal-teal: #2abfad;
-  --dust-grey: #3a3340;
+  --royal-purple: #5c007a;
+  --royal-purple-deep: #3d0052;
+  --royal-purple-muted: #4a0062;
+  --hinabi-gold: #b3a200;
+  --parchment: #d0cf88;
+  --vinyl-black: #050508;
+  --groove-purple: #5c007a;
+  --midnight-black: #050508;
 
   --cj-bg: var(--vinyl-black);
-  --cj-surface: var(--groove-purple);
-  --cj-surface-rgb: 30 11 44;
-  --cj-surface-elevated: #251535;
-  --cj-card: #251535;
+  --cj-surface: var(--royal-purple);
+  --cj-surface-rgb: 92 0 122;
+  --cj-surface-elevated: var(--royal-purple-muted);
+  --cj-card: var(--royal-purple-deep);
   --cj-map: var(--vinyl-black);
-  --cj-text: var(--label-cream);
-  --cj-text-bright: var(--label-amber);
-  --cj-text-muted: rgba(245, 237, 214, 0.65);
-  --cj-border: rgba(245, 237, 214, 0.12);
-  --cj-accent: var(--label-amber);
-  --cj-on-gold: var(--vinyl-black);
-  --cj-input-bg: rgba(13, 10, 15, 0.6);
-  --cj-vinyl: var(--vinyl-black);
-  --cj-grain-opacity: 0.22;
-  --cj-vinyl-disc-fill: var(--groove-purple);
-  --cj-vinyl-groove-stroke: var(--label-cream);
-  --cj-vinyl-spindle: var(--label-cream);
-  --cj-barcode-fill: var(--label-amber);
-  --cj-radius-card: 0.5rem;
-  --cj-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  --cj-card-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.35);
-  --cj-auth-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  --cj-text: var(--parchment);
+  --cj-text-bright: var(--hinabi-gold);
+  --cj-text-muted: rgba(208, 207, 136, 0.62);
+  --cj-border: rgba(179, 162, 0, 0.35);
+  --cj-zine-border: rgba(5, 5, 8, 0.85);
+  --cj-accent: var(--hinabi-gold);
+  --cj-on-gold: var(--parchment);
+  --cj-input-bg: rgba(5, 5, 8, 0.55);
+  --cj-vinyl: var(--royal-purple-deep);
+  --cj-grain-opacity: 0.04;
+  --cj-vinyl-disc-fill: var(--royal-purple-deep);
+  --cj-vinyl-groove-stroke: var(--parchment);
+  --cj-vinyl-spindle: var(--parchment);
+  --cj-barcode-fill: var(--hinabi-gold);
+  --cj-radius-card: 0;
+  --cj-card-shadow: inset 0 0 0 1px rgba(5, 5, 8, 0.6);
+  --cj-card-shadow-hover: inset 0 0 0 1px var(--hinabi-gold), 0 4px 20px rgba(0, 0, 0, 0.4);
+  --cj-auth-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
 
   --cj-purple: var(--cj-surface);
   --cj-purple-dark: var(--cj-bg);
   --cj-purple-card: var(--cj-card);
-  --cj-purple-continent: var(--dust-grey);
+  --cj-purple-continent: var(--royal-purple-muted);
   --cj-purple-map: var(--cj-map);
-  --cj-gold: var(--label-amber);
-  --cj-gold-rgb: 201 150 42;
-  --cj-gold-bright: #d4a84a;
-  --cj-gold-dot: var(--label-amber);
-  --cj-gold-muted: rgba(245, 237, 214, 0.65);
-  --cj-gold-border: rgba(201, 150, 42, 0.3);
+  --cj-gold: var(--hinabi-gold);
+  --cj-gold-rgb: 179 162 0;
+  --cj-gold-bright: #c4b520;
+  --cj-gold-dot: var(--hinabi-gold);
+  --cj-gold-muted: rgba(208, 207, 136, 0.55);
+  --cj-gold-border: rgba(179, 162, 0, 0.45);
   --cj-dark: var(--vinyl-black);
-  --cj-bg-rgb: 13 10 15;
-  --cj-dark-rgb: 13 10 15;
+  --cj-bg-rgb: 5 5 8;
+  --cj-dark-rgb: 5 5 8;
 }
 
 :root[data-theme="light"] {
-  --cj-bg: #f5edd6;
-  --cj-surface: #faf6ee;
-  --cj-surface-rgb: 250 246 238;
-  --cj-surface-elevated: #ede5cc;
-  --cj-card: #fffdf5;
-  --cj-map: #e8dfc8;
-  --cj-text: var(--groove-purple);
-  --cj-text-bright: var(--wax-burgundy);
-  --cj-text-muted: rgba(30, 11, 44, 0.65);
-  --cj-border: rgba(30, 11, 44, 0.15);
-  --cj-accent: var(--label-amber);
-  --cj-on-gold: var(--groove-purple);
-  --cj-input-bg: rgba(255, 253, 245, 0.85);
-  --cj-vinyl: var(--groove-purple);
-  --cj-grain-opacity: 0.26;
-  --cj-vinyl-disc-fill: var(--label-cream);
-  --cj-vinyl-groove-stroke: var(--groove-purple);
-  --cj-vinyl-spindle: var(--groove-purple);
-  --cj-barcode-fill: var(--groove-purple);
-  --cj-card-shadow: 0 1px 3px rgba(30, 11, 44, 0.08);
-  --cj-card-shadow-hover: 0 4px 16px rgba(30, 11, 44, 0.12);
-  --cj-auth-shadow: 0 4px 24px rgba(30, 11, 44, 0.1);
+  --cj-bg: #c8c788;
+  --cj-surface: #d0cf88;
+  --cj-surface-rgb: 208 207 136;
+  --cj-surface-elevated: #b8b778;
+  --cj-card: #d8d798;
+  --cj-map: #b0af70;
+  --cj-text: var(--royal-purple-deep);
+  --cj-text-bright: var(--royal-purple);
+  --cj-text-muted: rgba(61, 0, 82, 0.65);
+  --cj-border: rgba(5, 5, 8, 0.22);
+  --cj-zine-border: rgba(5, 5, 8, 0.75);
+  --cj-accent: var(--hinabi-gold);
+  --cj-on-gold: var(--royal-purple-deep);
+  --cj-input-bg: rgba(208, 207, 136, 0.75);
+  --cj-vinyl: var(--royal-purple);
+  --cj-grain-opacity: 0.035;
+  --cj-vinyl-disc-fill: var(--royal-purple);
+  --cj-vinyl-groove-stroke: var(--royal-purple-deep);
+  --cj-vinyl-spindle: var(--royal-purple-deep);
+  --cj-barcode-fill: var(--royal-purple-deep);
+  --cj-card-shadow: inset 0 0 0 1px rgba(5, 5, 8, 0.15);
+  --cj-card-shadow-hover: inset 0 0 0 1px var(--royal-purple), 0 4px 16px rgba(61, 0, 82, 0.12);
+  --cj-auth-shadow: 0 4px 24px rgba(61, 0, 82, 0.1);
 
   --cj-purple: var(--cj-surface);
   --cj-purple-dark: var(--cj-bg);
   --cj-purple-card: var(--cj-card);
   --cj-purple-continent: var(--cj-surface-elevated);
   --cj-purple-map: var(--cj-map);
-  --cj-gold: var(--label-amber);
-  --cj-gold-rgb: 201 150 42;
-  --cj-gold-bright: #a67c1a;
-  --cj-gold-dot: var(--label-amber);
-  --cj-gold-muted: rgba(30, 11, 44, 0.55);
-  --cj-gold-border: rgba(201, 150, 42, 0.35);
+  --cj-gold: var(--hinabi-gold);
+  --cj-gold-rgb: 179 162 0;
+  --cj-gold-bright: #8a7d00;
+  --cj-gold-dot: var(--hinabi-gold);
+  --cj-gold-muted: rgba(61, 0, 82, 0.55);
+  --cj-gold-border: rgba(179, 162, 0, 0.4);
   --cj-dark: var(--cj-card);
-  --cj-bg-rgb: 245 237 214;
-  --cj-dark-rgb: 255 253 245;
+  --cj-bg-rgb: 200 199 136;
+  --cj-dark-rgb: 216 215 152;
 }
 
 @layer base {
@@ -112,76 +114,120 @@
   isolation: isolate;
 }
 
+/* Zine grain — 3–4% per brand spec */
 .cj-grain {
   z-index: 1;
   opacity: var(--cj-grain-opacity);
-  mix-blend-mode: soft-light;
+  mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   background-size: 180px 180px;
 }
 
 .cj-grain-warm {
-  mix-blend-mode: multiply;
-  background-color: rgba(201, 150, 42, 0.08);
+  mix-blend-mode: soft-light;
+  background-color: rgba(179, 162, 0, 0.06);
 }
 
 :root[data-theme="dark"] .cj-grain-warm {
   mix-blend-mode: overlay;
-  background-color: rgba(201, 150, 42, 0.12);
+  background-color: rgba(92, 0, 122, 0.08);
 }
 
 .cj-vinyl-graphic {
   color: var(--cj-vinyl-groove-stroke);
 }
 
+/* Bebas Neue — display headlines, ALL CAPS */
 .cj-poster-headline {
-  @apply font-headline text-balance font-bold uppercase leading-[0.95] tracking-[0.04em];
+  @apply font-display text-balance font-normal uppercase leading-[0.92] tracking-[0.06em];
   font-size: clamp(2.75rem, 8vw, 5.5rem);
   color: var(--cj-text);
 }
 
 .cj-display {
-  font-family: var(--font-display), "Instrument Serif", serif;
-  @apply text-balance leading-snug tracking-normal;
-  color: var(--cj-gold-bright);
+  @apply font-display text-balance uppercase leading-none tracking-[0.08em];
+  color: var(--cj-gold);
 }
 
 .cj-headline {
-  @apply font-body text-balance text-4xl font-bold leading-tight tracking-normal sm:text-5xl md:text-6xl;
+  @apply font-display text-balance text-4xl font-normal uppercase leading-[0.95] tracking-[0.06em] sm:text-5xl md:text-6xl;
   color: var(--cj-text);
 }
 
+/* Courier Prime — zine callouts */
 .cj-label-stamp {
-  @apply text-xs font-medium tracking-normal;
+  @apply font-mono text-xs font-normal tracking-[0.08em];
   color: var(--cj-text-muted);
+}
+
+.cj-callout {
+  @apply font-mono text-sm tracking-[0.04em];
+  color: var(--cj-text-muted);
+}
+
+/* Duotone photography — royal purple + gold */
+.cj-duotone-photo img,
+.cj-duotone-photo {
+  filter: grayscale(100%) sepia(40%) hue-rotate(250deg) saturate(180%) contrast(1.1);
+}
+
+.cj-duotone-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(92, 0, 122, 0.35) 0%,
+    rgba(179, 162, 0, 0.15) 100%
+  );
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* Zine grid — 1px solid black borders */
+.cj-zine-border {
+  border: 1px solid var(--cj-zine-border);
+}
+
+.cj-zine-grid {
+  @apply cj-zine-border;
+  background-image:
+    linear-gradient(var(--cj-zine-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--cj-zine-border) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: -1px -1px;
 }
 
 @layer components {
   .cj-badge {
-    @apply cj-label-stamp inline-block rounded-full px-3 py-1;
-    border: 1px solid var(--cj-border);
-    background-color: var(--cj-surface-elevated);
+    @apply cj-label-stamp inline-block px-3 py-1;
+    border: 1px solid var(--cj-gold-border);
+    background-color: transparent;
+    color: var(--cj-gold);
   }
 
   .cj-btn-primary {
-    @apply rounded-full px-6 py-2.5 text-sm font-semibold transition-colors;
-    background-color: var(--cj-gold);
-    color: var(--cj-on-gold);
+    @apply px-6 py-2.5 text-sm font-semibold transition-colors;
+    border: 1px solid var(--cj-gold);
+    background-color: var(--royal-purple);
+    color: var(--parchment);
   }
 
   .cj-btn-primary:hover {
-    background-color: var(--cj-gold-bright);
+    border-color: var(--cj-gold-bright);
+    background-color: var(--royal-purple-muted);
   }
 
   .cj-btn-secondary {
-    @apply rounded-full px-6 py-2.5 text-sm font-semibold transition-colors;
+    @apply px-6 py-2.5 text-sm font-semibold transition-colors;
     border: 1px solid var(--cj-border);
+    background-color: transparent;
     color: var(--cj-text);
   }
 
   .cj-btn-secondary:hover {
-    border-color: var(--label-amber);
-    background-color: rgba(201, 150, 42, 0.05);
+    border-color: var(--hinabi-gold);
+    background-color: rgba(179, 162, 0, 0.06);
   }
 
   .cj-btn-ghost {
@@ -194,10 +240,11 @@
   }
 
   .cj-card {
-    @apply rounded-lg p-5 transition-shadow sm:p-6;
-    border: 1px solid var(--cj-border);
+    @apply p-5 transition-shadow sm:p-6;
+    border: 1px solid var(--cj-zine-border);
     background-color: var(--cj-card);
     box-shadow: var(--cj-card-shadow);
+    border-radius: var(--cj-radius-card);
   }
 
   .cj-card-lp {
@@ -218,10 +265,11 @@
   }
 
   .cj-input {
-    @apply w-full rounded-md px-4 py-2.5 font-body text-base focus:outline-none focus:ring-1;
+    @apply w-full px-4 py-2.5 font-body text-base focus:outline-none focus:ring-1;
     border: 1px solid var(--cj-border);
     background-color: var(--cj-input-bg);
     color: var(--cj-text);
+    border-radius: 0;
   }
 
   .cj-input::placeholder {
@@ -229,15 +277,16 @@
   }
 
   .cj-input:focus {
-    border-color: var(--label-amber);
-    --tw-ring-color: rgba(201, 150, 42, 0.4);
+    border-color: var(--hinabi-gold);
+    --tw-ring-color: rgba(179, 162, 0, 0.35);
   }
 
   .cj-auth-card {
-    @apply rounded-lg p-6 sm:p-8;
-    border: 1px solid var(--cj-border);
+    @apply p-6 sm:p-8;
+    border: 1px solid var(--cj-zine-border);
     background-color: var(--cj-card);
     box-shadow: var(--cj-auth-shadow);
+    border-radius: 0;
   }
 
   .cj-section {
@@ -255,7 +304,7 @@
 
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: rgba(201, 150, 42, 0.35) transparent;
+    scrollbar-color: rgba(179, 162, 0, 0.35) transparent;
   }
 
   .scrollbar-thin::-webkit-scrollbar {
@@ -275,9 +324,10 @@
   }
 
   .cj-pill {
-    @apply rounded-full px-3 py-1.5 text-xs font-medium transition-colors;
+    @apply px-3 py-1.5 text-xs font-medium transition-colors;
     border: 1px solid var(--cj-border);
     color: var(--cj-text-muted);
+    border-radius: 0;
   }
 
   .cj-pill:hover {
@@ -287,22 +337,23 @@
 
   .cj-pill-active {
     border-color: var(--cj-gold);
-    background-color: var(--cj-gold);
-    color: var(--cj-on-gold);
+    background-color: transparent;
+    color: var(--cj-gold);
   }
 
   .cj-pill-active:hover {
-    background-color: var(--cj-gold);
+    background-color: rgba(179, 162, 0, 0.08);
   }
 
   .cj-tag {
-    @apply rounded-full px-2 py-0.5 text-xs;
+    @apply px-2 py-0.5 text-xs;
     border: 1px solid var(--cj-border);
     color: var(--cj-text-muted);
+    border-radius: 0;
   }
 
   .cj-status-open {
-    @apply rounded-full border border-label-amber/40 bg-label-amber/10 px-3 py-1 text-xs font-medium text-cj-gold-bright;
+    @apply border border-label-amber/40 bg-transparent px-3 py-1 text-xs font-medium text-cj-gold-bright;
   }
 
   .cj-page {
@@ -311,25 +362,25 @@
   }
 
   .cj-typewriter {
-    @apply font-body tracking-normal italic text-cj-gold-bright;
+    @apply font-mono tracking-[0.04em] text-cj-gold;
   }
 
   .cj-gold-frame {
-    @apply rounded-lg;
-    border: 1px solid var(--cj-border);
+    border: 1px solid var(--cj-gold-border);
+    border-radius: 0;
   }
 
   .cj-zine-headline {
-    @apply text-lg font-bold leading-snug sm:text-xl;
+    @apply font-display text-lg uppercase leading-snug sm:text-xl;
     color: var(--cj-text);
   }
 
   .cj-grain-photo img {
-    filter: none;
+    @apply cj-duotone-photo;
   }
 
   .cj-room-groove {
-    border-bottom: 1px solid var(--cj-border);
+    border-bottom: 1px solid var(--cj-zine-border);
     @apply pb-1;
   }
 
@@ -339,21 +390,21 @@
 
   .cj-nav-tab-active::after {
     content: "";
-    @apply absolute -bottom-0.5 left-0 h-0.5 w-full rounded-full bg-cj-gold;
+    @apply absolute -bottom-0.5 left-0 h-0.5 w-full bg-cj-gold;
   }
 
   .cj-link-groove {
-    @apply font-medium text-cj-gold no-underline transition-colors hover:text-cj-gold-bright;
+    @apply font-mono font-medium text-cj-gold no-underline transition-colors hover:text-cj-gold-bright;
   }
 
   .cj-header {
     @apply sticky top-0 z-50 backdrop-blur-md;
-    border-bottom: 1px solid var(--cj-border);
-    background-color: rgb(var(--cj-bg-rgb) / 0.95);
+    border-bottom: 1px solid var(--cj-zine-border);
+    background-color: rgb(var(--cj-bg-rgb) / 0.92);
   }
 
   .cj-footer {
-    border-top: 1px solid var(--cj-border);
+    border-top: 1px solid var(--cj-zine-border);
     background-color: var(--cj-bg);
   }
 
@@ -366,11 +417,12 @@
   }
 
   .cj-waveform-bar {
-    @apply w-1 rounded-full bg-label-amber/70;
+    @apply w-1 bg-label-amber/70;
+    border-radius: 0;
   }
 
   .cj-stats-row {
-    @apply flex flex-wrap gap-x-8 gap-y-3 text-sm;
+    @apply flex flex-wrap gap-x-8 gap-y-3 font-mono text-sm;
     color: var(--cj-text-muted);
   }
 
@@ -384,9 +436,10 @@
   }
 
   .cj-record-spinner {
-    @apply h-8 w-8 animate-spin rounded-full border-2 border-t-cj-gold;
+    @apply h-8 w-8 animate-spin border-2 border-t-cj-gold;
     border-color: var(--cj-border);
     border-top-color: var(--cj-gold);
+    border-radius: 9999px;
   }
 
   .cj-tonearm-rail {
@@ -398,23 +451,27 @@
   }
 
   .cj-sign-in-ghost {
-    @apply inline-flex items-center rounded-full px-4 py-2 text-sm font-medium no-underline transition-colors hover:text-cj-gold;
+    @apply inline-flex items-center px-4 py-2 text-sm font-medium no-underline transition-colors hover:text-cj-gold;
     color: var(--cj-text);
+    border-radius: 0;
   }
 
   .cj-label-sticker {
-    @apply inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition-colors;
-    background-color: var(--cj-gold);
-    color: var(--cj-on-gold);
+    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-semibold transition-colors;
+    border: 1px solid var(--cj-gold);
+    background-color: var(--royal-purple);
+    color: var(--parchment);
   }
 
   .cj-label-sticker:hover {
-    background-color: var(--cj-gold-bright);
+    border-color: var(--cj-gold-bright);
+    background-color: var(--royal-purple-muted);
   }
 
   .cj-turntable-toggle {
-    @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors hover:text-cj-gold;
+    @apply flex h-9 w-9 shrink-0 items-center justify-center transition-colors hover:text-cj-gold;
     color: var(--cj-text-muted);
+    border-radius: 0;
   }
 
   .cj-turntable-toggle:hover {
@@ -427,14 +484,16 @@
   }
 
   .cj-gatefold {
-    @apply overflow-hidden rounded-lg;
-    border: 1px solid var(--cj-border);
+    @apply overflow-hidden;
+    border: 1px solid var(--cj-zine-border);
+    border-radius: 0;
   }
 
   .cj-crt-panel {
-    @apply rounded-lg p-8;
-    border: 1px solid var(--cj-border);
+    @apply p-8;
+    border: 1px solid var(--cj-zine-border);
     background-color: var(--cj-card);
+    border-radius: 0;
   }
 
   .cj-crt-scanline,

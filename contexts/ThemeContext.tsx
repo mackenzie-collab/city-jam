@@ -14,8 +14,8 @@ export type ThemeMode = "dark" | "light";
 const STORAGE_KEY = "cj-theme";
 
 const THEME_COLORS: Record<ThemeMode, string> = {
-  dark: "#0D0A0F",
-  light: "#F5EDD6",
+  dark: "#050508",
+  light: "#C8C788",
 };
 
 function getSystemTheme(): ThemeMode {

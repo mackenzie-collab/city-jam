@@ -9,22 +9,30 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        brand: {
+          purple: "#5C007A",
+          "purple-deep": "#3D0052",
+          "purple-muted": "#4A0062",
+          gold: "#B3A200",
+          parchment: "#D0CF88",
+          black: "#050508",
+        },
         vinyl: {
-          black: "#0D0A0F",
-          groove: "#1E0B2C",
+          black: "var(--vinyl-black)",
+          groove: "var(--groove-purple)",
         },
         label: {
-          amber: "#C9962A",
-          cream: "#F5EDD6",
+          amber: "var(--hinabi-gold)",
+          cream: "var(--parchment)",
         },
         wax: {
-          burgundy: "#5C1F2E",
+          burgundy: "var(--royal-purple-deep)",
         },
         signal: {
           teal: "#2ABFAD",
         },
         dust: {
-          grey: "#3A3340",
+          grey: "var(--royal-purple-muted)",
         },
         "cj-purple": {
           DEFAULT: "rgb(var(--cj-surface-rgb) / <alpha-value>)",
@@ -53,11 +61,12 @@ const config: Config = {
         "cj-border": "var(--cj-border)",
       },
       fontFamily: {
-        display: ["var(--font-display)", "Instrument Serif", "Georgia", "serif"],
-        headline: ["var(--font-headline)", "Barlow Condensed", "Arial Narrow", "sans-serif"],
-        serif: ["var(--font-display)", "Instrument Serif", "Georgia", "serif"],
-        body: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
-        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
+        display: ["var(--font-display)", "Bebas Neue", "Impact", "sans-serif"],
+        headline: ["var(--font-display)", "Bebas Neue", "Impact", "sans-serif"],
+        callout: ["var(--font-mono)", "Courier Prime", "Courier New", "monospace"],
+        body: ["var(--font-body)", "DM Sans", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "Courier Prime", "Courier New", "monospace"],
+        serif: ["var(--font-display)", "Bebas Neue", "Impact", "sans-serif"],
       },
       letterSpacing: {
         widest: "0.2em",
@@ -106,9 +115,9 @@ const config: Config = {
         },
       },
       boxShadow: {
-        emboss: "inset 0 1px 0 rgba(245,237,214,0.25), 0 3px 0 rgba(0,0,0,0.35)",
+        emboss: "inset 0 1px 0 rgba(208,207,136,0.15), 0 3px 0 rgba(0,0,0,0.35)",
         "press-collapse": "inset 0 2px 4px rgba(0,0,0,0.5)",
-        "lp-lift": "0 12px 40px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(201,150,42,0.12)",
+        "lp-lift": "0 12px 40px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(179,162,0,0.2)",
       },
     },
   },

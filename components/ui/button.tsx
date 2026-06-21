@@ -8,15 +8,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "rounded-full bg-cj-gold px-6 py-2.5 text-cj-on-gold hover:bg-cj-gold-bright",
+          "border border-cj-gold bg-brand-purple px-6 py-2.5 text-brand-parchment hover:border-cj-gold-bright hover:bg-brand-purple-muted",
         secondary:
-          "rounded-full border border-cj-border px-6 py-2.5 text-cj-text hover:border-cj-gold hover:bg-cj-gold/5",
+          "border border-cj-border bg-transparent px-6 py-2.5 text-cj-text hover:border-cj-gold hover:bg-cj-gold/5",
         ghost:
-          "rounded-md px-4 py-2 font-medium text-cj-text-muted hover:bg-cj-surface-elevated hover:text-cj-text",
+          "px-4 py-2 font-medium text-cj-text-muted hover:bg-cj-surface-elevated hover:text-cj-text",
         outline:
-          "rounded-full border border-cj-border px-4 py-2 text-cj-text hover:border-cj-gold hover:bg-cj-gold/5",
+          "border border-cj-border px-4 py-2 text-cj-text hover:border-cj-gold hover:bg-cj-gold/5",
         destructive:
-          "rounded-full border border-wax-burgundy bg-wax-burgundy/20 px-6 py-2.5 text-label-cream hover:bg-wax-burgundy/40",
+          "border border-brand-purple-deep bg-brand-purple-deep/30 px-6 py-2.5 text-brand-parchment hover:bg-brand-purple-deep/50",
       },
       size: {
         default: "",
