@@ -23,7 +23,7 @@ export default function AuthBanner({ message, returnUrl }: AuthBannerProps) {
       <p className="text-sm text-cj-gold-muted">{message}</p>
       <Link href={loginHref}>
         <Button variant="primary" size="sm">
-          Sign In
+          Sign in
         </Button>
       </Link>
     </div>

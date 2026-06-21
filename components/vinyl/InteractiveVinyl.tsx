@@ -31,7 +31,7 @@ function formatTime(sec: number): string {
 }
 
 export default function InteractiveVinyl({
-  size = 180,
+  size = 200,
   coverUrl,
   title,
   artist,

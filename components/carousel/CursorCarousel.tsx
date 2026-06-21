@@ -23,9 +23,9 @@ interface CursorCarouselProps {
 }
 
 const GAP = {
-  sm: "gap-3",
-  md: "gap-4 sm:gap-6",
-  lg: "gap-6 sm:gap-8",
+  sm: "gap-0 sm:gap-1",
+  md: "gap-1 sm:gap-2",
+  lg: "gap-2 sm:gap-3",
 };
 
 const CENTER_GLOW =
@@ -117,7 +117,7 @@ export default function CursorCarousel({
           aria-label={ariaLabel}
           tabIndex={0}
           className={cn(
-            "cj-cursor-carousel-track snap-x-proximity flex items-center overflow-x-auto py-4 scrollbar-thin",
+            "cj-cursor-carousel-track snap-x-proximity flex items-center overflow-x-auto py-2 scrollbar-thin",
             fullBleed ? "cj-cursor-carousel-track--full-bleed px-0" : "px-4 sm:px-6 md:px-8",
             GAP[gap],
             isDragging ? "cj-cursor-carousel-track--dragging select-none" : "",

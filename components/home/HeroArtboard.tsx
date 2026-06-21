@@ -22,14 +22,14 @@ function toTrack(p: AudioPost): Track {
 }
 
 function useHeroVinylSize() {
-  const [size, setSize] = useState(240);
+  const [size, setSize] = useState(260);
 
   useEffect(() => {
     const update = () => {
       const w = window.innerWidth;
-      if (w >= 768) setSize(310);
-      else if (w >= 640) setSize(280);
-      else setSize(Math.min(240, Math.floor(w * 0.62)));
+      if (w >= 768) setSize(Math.min(340, Math.floor(w * 0.42)));
+      else if (w >= 640) setSize(Math.min(300, Math.floor(w * 0.48)));
+      else setSize(Math.min(260, Math.floor(w * 0.68)));
     };
     update();
     window.addEventListener("resize", update, { passive: true });
@@ -66,18 +66,18 @@ export default function HeroArtboard({ className }: HeroArtboardProps) {
   return (
     <div
       className={cn(
-        "cj-zine-border relative flex w-full max-w-[min(92vw,460px)] flex-col items-center bg-[var(--royal-purple-deep)] sm:max-w-[min(78vw,520px)]",
+        "cj-zine-border relative flex w-full max-w-[min(94vw,520px)] flex-col items-center bg-[var(--royal-purple-deep)] sm:max-w-[min(82vw,560px)]",
         className
       )}
     >
-      <div className="w-full border-b border-[var(--cj-zine-border)] px-4 py-3 text-center">
+      <div className="w-full border-b border-[var(--cj-zine-border)] px-3 py-2 text-center">
         <span className="font-display text-sm uppercase tracking-[0.14em] text-brand-parchment">
           City Jam
         </span>
         <span className="ml-3 font-mono text-[10px] text-brand-gold">Now spinning</span>
       </div>
 
-      <div className="flex w-full flex-col items-center px-4 py-8 sm:px-6 sm:py-10 md:py-12">
+      <div className="flex w-full flex-col items-center px-3 py-4 sm:px-4 sm:py-6 md:py-8">
         <InteractiveVinyl
           size={vinylSize}
           coverUrl={featured?.cover_url}
@@ -92,31 +92,27 @@ export default function HeroArtboard({ className }: HeroArtboardProps) {
         />
 
         {featured ? (
-          <div className="mt-6 text-center sm:mt-8">
+          <div className="mt-4 text-center sm:mt-5">
             <p className="font-display text-lg uppercase leading-tight text-brand-parchment sm:text-xl md:text-2xl">
               {featured.title}
             </p>
-            <p className="mt-1 font-mono text-xs text-brand-parchment/70">
+            <p className="mt-0.5 font-mono text-xs text-brand-parchment/70">
               {featured.author_display_name}
             </p>
           </div>
         ) : (
-          <div className="mt-6 text-center sm:mt-8">
+          <div className="mt-4 text-center sm:mt-5">
             <p className="font-display text-lg uppercase leading-tight text-brand-parchment sm:text-xl md:text-2xl">
               Drop the needle
             </p>
-            <p className="mt-1 font-mono text-xs text-brand-parchment/60">
+            <p className="mt-0.5 font-mono text-xs text-brand-parchment/60">
               Loading scene feed…
             </p>
           </div>
         )}
-
-        <p className="mt-4 font-mono text-[9px] uppercase tracking-[0.16em] text-brand-parchment/50 sm:mt-6">
-          Tap the vinyl to play
-        </p>
       </div>
 
-      <div className="w-full border-t border-[var(--cj-zine-border)] px-4 py-2 text-center">
+      <div className="w-full border-t border-[var(--cj-zine-border)] px-3 py-1.5 text-center">
         <span className="font-mono text-[9px] text-brand-gold">Close your eyes. Listen.</span>
       </div>
     </div>

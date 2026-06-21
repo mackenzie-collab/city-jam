@@ -72,10 +72,9 @@ export default function SceneFeed() {
       <div className={cn(view === "grid" ? "lg:hidden" : undefined, "-mx-4 sm:-mx-6")}>
         <CursorCarousel
           ariaLabel="Scene feed"
-          gap="lg"
+          gap="sm"
           fullBleed
           showControls
-          showDragHint
         >
           {displayPosts.map((post) => (
             <VinylSleeveCard key={post.id} post={post} queue={displayPosts} />

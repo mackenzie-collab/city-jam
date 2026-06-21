@@ -47,27 +47,27 @@ export default function VinylSleeveCard({ post, queue, className, compact = fals
   return (
     <article
       className={cn(
-        "cj-zine-border group relative flex w-full max-w-[min(85vw,300px)] flex-col bg-brand-purple-deep transition-shadow hover:shadow-lg",
-        compact && "max-w-[min(82vw,260px)]",
+        "cj-zine-border group relative flex w-full max-w-[min(90vw,360px)] flex-col bg-brand-purple-deep transition-shadow hover:shadow-lg",
+        compact && "max-w-[min(88vw,320px)]",
         isActive && "ring-1 ring-brand-gold/50",
         className
       )}
     >
-      <div className="relative border-b border-[var(--cj-zine-border)] bg-brand-purple p-3 sm:p-4">
-        <div className="flex items-end justify-center gap-2 sm:gap-3">
+      <div className="relative border-b border-[var(--cj-zine-border)] bg-brand-purple p-2 sm:p-2.5">
+        <div className="flex items-end justify-center gap-1 sm:gap-1.5">
           <CoverArtFrame
             src={post.cover_url}
             alt=""
             aspect="square"
             className={cn(
-              "cj-sleeve-cover w-[42%] shrink-0 transition-transform duration-300 sm:w-[44%]",
-              isActive && "-translate-y-1"
+              "cj-sleeve-cover w-[50%] shrink-0 transition-transform duration-300 sm:w-[52%]",
+              isActive && "-translate-y-0.5"
             )}
-            sizes="160px"
+            sizes="(max-width: 640px) 180px, 220px"
           />
-          <div className="relative isolate shrink-0 overflow-visible pb-1">
+          <div className="relative isolate shrink-0 overflow-visible">
             <InteractiveVinyl
-              size={compact ? 110 : 125}
+              size={compact ? 130 : 150}
               className="sm:hidden"
               coverUrl={post.cover_url || undefined}
               title={post.title}
@@ -77,7 +77,7 @@ export default function VinylSleeveCard({ post, queue, className, compact = fals
               onPlayToggle={handlePlay}
             />
             <InteractiveVinyl
-              size={compact ? 120 : 140}
+              size={compact ? 145 : 170}
               className="hidden sm:block"
               coverUrl={post.cover_url || undefined}
               title={post.title}
@@ -90,18 +90,18 @@ export default function VinylSleeveCard({ post, queue, className, compact = fals
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-3">
+      <div className="flex flex-1 flex-col p-2 sm:p-2.5">
         <p className="font-mono text-[9px] uppercase tracking-widest text-brand-gold">{post.genre}</p>
-        <h3 className="mt-1 font-display text-lg uppercase leading-tight text-brand-parchment line-clamp-2">
+        <h3 className="mt-0.5 font-display text-lg uppercase leading-tight text-brand-parchment line-clamp-2">
           {post.title}
         </h3>
-        <Link href={profileHref} className="mt-1 truncate font-body text-xs text-cj-text-muted hover:text-brand-gold">
+        <Link href={profileHref} className="mt-0.5 truncate font-body text-xs text-cj-text-muted hover:text-brand-gold">
           {post.author_display_name ?? "Musician"}
         </Link>
-        {post.caption && (
-          <p className="mt-2 line-clamp-2 font-body text-xs text-cj-text-muted">{post.caption}</p>
+        {post.caption && !compact && (
+          <p className="mt-1.5 line-clamp-1 font-body text-xs text-cj-text-muted">{post.caption}</p>
         )}
-        <div className="mt-auto flex items-center justify-between pt-3">
+        <div className="mt-auto flex items-center justify-between pt-2">
           <span className="font-mono text-[10px] text-cj-text-muted">
             {post.play_count} plays · {post.like_count} likes
           </span>

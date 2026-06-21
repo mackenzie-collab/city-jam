@@ -92,18 +92,16 @@ export default function DiscoverGrid() {
 
       {trending.length > 0 && (
         <section className="mb-10">
-          <div className="mb-4">
+          <div className="mb-3">
             <h2 className="text-lg font-bold text-cj-text">Trending on Scene</h2>
-            <p className="text-xs text-cj-text-muted">Drag to browse · tap vinyl to play</p>
           </div>
           <div className="-mx-4 sm:-mx-6">
             <CursorCarousel
               ariaLabel="Trending tracks"
-              gap="md"
+              gap="sm"
               fullBleed
               compact
               showControls
-              showDragHint
             >
               {trending.map((post) => (
                 <VinylSleeveCard key={post.id} post={post} queue={trending} compact />
@@ -127,10 +125,10 @@ export default function DiscoverGrid() {
               return (
                 <Link key={p.user_id} href={href} className="no-underline">
                   <VinylCard padding="none" className="overflow-hidden transition-shadow hover:shadow-md">
-                    <div className="flex items-center justify-center bg-brand-purple-deep px-3 py-5 sm:px-4 sm:py-6">
-                      <VinylPhotoFrame src={cover} alt={p.display_name} size={160} maxVw={36} />
+                    <div className="flex items-center justify-center bg-brand-purple-deep px-2 py-3 sm:px-3 sm:py-4">
+                      <VinylPhotoFrame src={cover} alt={p.display_name} size={200} maxVw={44} />
                     </div>
-                    <div className="p-4">
+                    <div className="p-3">
                       <p className="text-lg font-semibold text-cj-text hover:text-cj-gold">
                         {p.display_name}
                       </p>

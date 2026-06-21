@@ -50,7 +50,7 @@ function computeTransform(
   centerScale: number
 ): SlideTransform {
   const distance = Math.abs(slideCenter - trackCenter);
-  const normalized = slideWidth > 0 ? distance / (slideWidth * 0.72) : 0;
+  const normalized = slideWidth > 0 ? distance / (slideWidth * 0.58) : 0;
   const t = smoothstep(Math.min(1, normalized));
 
   return {

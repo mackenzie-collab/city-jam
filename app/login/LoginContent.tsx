@@ -56,12 +56,12 @@ export default function LoginContent() {
         <Image src={STOCK.auth} alt={STOCK.phoneJamAlt} fill className="object-cover cj-grain-photo" sizes="50vw" />
         <div className="absolute inset-0 bg-cj-purple-dark/75" />
       </div>
-      <div className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6 sm:py-12 lg:py-12">
+      <div className="flex min-h-0 flex-1 items-start justify-center overflow-y-auto px-4 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:items-center sm:px-6 sm:py-10 lg:min-h-[100dvh] lg:py-12">
         <div className="w-full max-w-md text-center">
-          <BrandLogo size={128} className="mb-6 justify-center sm:mb-8" priority />
-          <h1 className="cj-heading-display text-3xl sm:text-4xl md:text-5xl">Welcome Back</h1>
-          <p className="mt-2 text-sm text-cj-gold-muted">One account for web and app</p>
-          <div className="mt-8 sm:mt-10">
+          <BrandLogo size={96} className="mb-5 justify-center sm:mb-6" priority />
+          <h1 className="cj-heading-auth">Welcome back</h1>
+          <p className="mt-3 text-sm leading-normal text-cj-gold-muted">Sign in to your City Jam account</p>
+          <div className="mt-6 sm:mt-8">
             <AuthCard
               mode="login"
               onSubmit={handleSubmit}

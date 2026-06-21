@@ -67,24 +67,25 @@ export default function RegisterContent() {
         <Image src={STOCK.community} alt={STOCK.communityAlt} fill className="object-cover cj-grain-photo" sizes="50vw" />
         <div className="absolute inset-0 bg-cj-purple-dark/75" />
       </div>
-      <div className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6 sm:py-12 lg:py-12">
+      <div className="flex min-h-0 flex-1 items-start justify-center overflow-y-auto px-4 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:items-center sm:px-6 sm:py-10 lg:min-h-[100dvh] lg:py-12">
         <div className="w-full max-w-md text-center">
-          <BrandLogo size={128} className="mb-6 justify-center sm:mb-8" priority />
-          <h1 className="cj-heading-display text-3xl sm:text-4xl md:text-5xl">Create Your Account</h1>
-          <p className="mt-2 text-sm text-cj-gold-muted">Cover art over selfies. Music speaks first.</p>
-          <div className="mt-8 sm:mt-10">
+          <BrandLogo size={96} className="mb-5 justify-center sm:mb-6" priority />
+          <h1 className="cj-heading-auth">Join City Jam</h1>
+          <p className="mt-3 text-sm leading-normal text-cj-gold-muted">Create an account to jam, connect, and share</p>
+          <div className="mt-6 sm:mt-8">
             {pendingEmail ? (
-              <div className="rounded-2xl border border-cj-gold-border p-6 text-left" style={{ backgroundColor: "var(--cj-input-bg)" }}>
-                <h2 className="text-lg font-semibold text-cj-gold">Check your email</h2>
-                <p className="mt-2 text-sm text-cj-gold-muted">
-                  We sent a confirmation link to <span className="text-cj-gold">{pendingEmail}</span>.
-                  Open it to activate your account, then{" "}
-                  <Link href="/login" className="text-cj-gold hover:underline">log in</Link>.
+              <div className="cj-auth-card p-6 text-left">
+                <h2 className="text-lg font-semibold leading-snug text-cj-gold">Check your email</h2>
+                <p className="mt-3 text-sm leading-normal text-cj-gold-muted">
+                  We sent a confirmation link to{" "}
+                  <span className="break-all text-cj-gold">{pendingEmail}</span>.
+                  Open the link to activate your account, then{" "}
+                  <Link href="/login" className="text-cj-gold hover:underline">sign in</Link>.
                 </p>
                 <button
                   type="button"
                   disabled={loading || resendSent}
-                  className="mt-4 text-sm text-cj-gold hover:underline disabled:opacity-50"
+                  className="mt-4 text-sm leading-normal text-cj-gold hover:underline disabled:opacity-50"
                   onClick={async () => {
                     setLoading(true);
                     try {
@@ -97,7 +98,7 @@ export default function RegisterContent() {
                     }
                   }}
                 >
-                  {resendSent ? "Confirmation email sent again" : "Resend confirmation email"}
+                  {resendSent ? "Confirmation email sent" : "Resend confirmation email"}
                 </button>
               </div>
             ) : (

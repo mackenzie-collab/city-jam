@@ -10,33 +10,32 @@ export default function MusicianGallery() {
   return (
     <section
       id="musician-gallery"
-      className="cj-section relative overflow-hidden bg-cj-surface py-12 sm:py-16"
+      className="relative overflow-hidden border-y border-brand-gold/10 bg-cj-surface py-8 sm:py-10"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8">
-        <span className="cj-badge mb-3">Real musicians</span>
+        <span className="cj-badge mb-2">Real musicians</span>
         <h2 className="cj-headline text-3xl sm:text-4xl">
           Every kind of musician.{" "}
           <span className="text-brand-gold">One frequency.</span>
         </h2>
-        <p className="mt-3 max-w-xl font-body text-sm text-cj-text-muted">
-          Drag the gallery — classical to beatbox, bedroom producers to brass sections. This is who City Jam is for.
+        <p className="mt-2 max-w-xl font-body text-sm text-cj-text-muted">
+          Classical to beatbox, bedroom producers to brass sections — this is who City Jam is for.
         </p>
-        <Link href="/discover" className="cj-link-groove mt-4 inline-flex items-center gap-2 text-sm">
+        <Link href="/discover" className="cj-link-groove mt-3 inline-flex items-center gap-2 text-sm">
           Discover artists <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-5">
         <CursorCarousel
           ariaLabel="Musician gallery"
-          gap="md"
+          gap="sm"
           fullBleed
           showControls
-          showDragHint
-          trackClassName="py-6"
+          trackClassName="py-3"
         >
           {MUSICIAN_PHOTOS.map(({ src, alt }) => (
-            <VinylPhotoFrame key={src} src={src} alt={alt} size={180} maxVw={38} />
+            <VinylPhotoFrame key={src} src={src} alt={alt} size={220} maxVw={52} />
           ))}
         </CursorCarousel>
       </div>

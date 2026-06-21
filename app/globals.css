@@ -55,13 +55,13 @@
   --cj-dark-rgb: 5 5 8;
 
   --cj-section-px: 1rem;
-  --cj-carousel-slide-half: min(140px, 42.5vw);
+  --cj-carousel-slide-half: min(175px, 46vw);
 }
 
 @media (min-width: 640px) {
   :root {
     --cj-section-px: 1.5rem;
-    --cj-carousel-slide-half: 150px;
+    --cj-carousel-slide-half: 185px;
   }
 }
 
@@ -300,6 +300,14 @@
     @apply cj-headline;
   }
 
+  /* Auth pages — readable Bebas sizing without tight line-height overlap */
+  .cj-heading-auth {
+    @apply font-display text-balance font-normal uppercase tracking-[0.06em];
+    font-size: clamp(1.75rem, 5.5vw, 2.75rem);
+    line-height: 1.12;
+    color: var(--cj-text);
+  }
+
   .cj-input {
     @apply w-full px-4 py-2.5 font-body text-base focus:outline-none focus:ring-1;
     border: 1px solid var(--cj-border);
@@ -317,6 +325,14 @@
     --tw-ring-color: rgba(179, 162, 0, 0.35);
   }
 
+  .cj-input-with-icon {
+    @apply pl-10;
+  }
+
+  .cj-auth-error {
+    @apply mb-4 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-left text-sm leading-normal text-red-300;
+  }
+
   .cj-auth-card {
     @apply p-6 sm:p-8;
     border: 1px solid var(--cj-zine-border);
@@ -326,7 +342,7 @@
   }
 
   .cj-section {
-    @apply px-4 py-16 sm:px-6 sm:py-20 md:px-8 md:py-24;
+    @apply px-4 py-10 sm:px-6 sm:py-12 md:px-8 md:py-16;
   }
 
   .cj-mobile-cta-stack {
@@ -580,27 +596,27 @@
 
 .carousel-slide {
   scroll-snap-align: center;
-  max-width: min(85vw, 300px);
+  max-width: min(90vw, 360px);
 }
 
 .cj-cursor-carousel--cover-flow .carousel-slide {
-  margin-inline: -0.25rem;
+  margin-inline: -0.625rem;
 }
 
 @media (min-width: 640px) {
   .cj-cursor-carousel--cover-flow .carousel-slide {
-    margin-inline: -0.5rem;
+    margin-inline: -1rem;
   }
 }
 
 @media (min-width: 768px) {
   .cj-cursor-carousel--cover-flow .carousel-slide {
-    margin-inline: -0.625rem;
+    margin-inline: -1.25rem;
   }
 }
 
 .cj-cursor-carousel--cover-flow.cj-cursor-carousel--compact .carousel-slide {
-  max-width: min(82vw, 260px);
+  max-width: min(88vw, 320px);
 }
 
 .cj-carousel-slide-content {
