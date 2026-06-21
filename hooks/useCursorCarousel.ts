@@ -29,11 +29,15 @@ export function useCursorCarousel(
   const isTrackingRef = useRef(false);
   const hasExceededThresholdRef = useRef(false);
   const startedOnInteractiveRef = useRef(false);
+  const useNativeScrollRef = useRef(false);
 
   useEffect(() => {
     reducedMotion.current =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    useNativeScrollRef.current =
+      typeof window !== "undefined" &&
+      window.matchMedia("(pointer: coarse)").matches;
   }, []);
 
   const getSlides = useCallback(() => {
@@ -143,7 +147,7 @@ export function useCursorCarousel(
 
   const onPointerDown = useCallback(
     (e: React.PointerEvent) => {
-      if (!enabled) return;
+      if (!enabled || useNativeScrollRef.current) return;
       const target = e.target as HTMLElement;
       const track = trackRef.current;
       if (!track) return;
@@ -178,6 +182,7 @@ export function useCursorCarousel(
         setIsDragging(true);
       }
 
+      e.preventDefault();
       track.scrollLeft = scrollStart.current - dx;
 
       const now = performance.now();

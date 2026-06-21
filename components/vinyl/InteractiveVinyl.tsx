@@ -46,7 +46,7 @@ export default function InteractiveVinyl({
   const cy = size / 2;
   const outerR = size / 2 - 1;
   const grooves = GROOVE_FRACTIONS.map((f) => outerR * f);
-  const labelR = outerR * 0.36;
+  const labelR = outerR * 0.48;
   const progressPct = duration > 0 ? progress / duration : 0;
   const arcEnd = progressPct * 360;
   const discClipId = `vinyl-disc-${uid}`;

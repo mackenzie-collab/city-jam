@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { UserPlus, UserMinus, Play } from "lucide-react";
-import CoverArtFrame from "@/components/analog/CoverArtFrame";
+import VinylPhotoFrame from "@/components/vinyl/VinylPhotoFrame";
 import VinylCard from "@/components/analog/VinylCard";
 import WaveformBadge from "@/components/analog/WaveformBadge";
 import { Button } from "@/components/ui/button";
@@ -84,12 +84,16 @@ export default function ArtistFeatureProfile({ profile }: ArtistFeatureProfilePr
   return (
     <div className="space-y-8">
       <div className="grid gap-6 lg:grid-cols-2">
-        <CoverArtFrame src={coverSrc} aspect="3/4" sizes="(max-width:768px) 100vw, 400px">
-          <div className="absolute inset-0 bg-gradient-to-t from-cj-purple-dark via-transparent to-transparent" />
-          <div className="absolute left-4 top-4">
-            <WaveformBadge label="Cover art" animate />
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 p-6">
+        <div className="flex flex-col items-center justify-center bg-brand-purple-deep p-6 sm:p-8">
+          <VinylPhotoFrame
+            src={coverSrc}
+            alt={displayName(profile)}
+            size={240}
+            className="drop-shadow-[0_12px_32px_rgba(0,0,0,0.5)]"
+          >
+            <div className="absolute inset-0 bg-gradient-to-t from-brand-purple-deep/90 via-transparent to-transparent" />
+          </VinylPhotoFrame>
+          <div className="mt-6 w-full text-center lg:text-left">
             <p className="text-[10px] uppercase tracking-widest text-cj-gold-muted">
               {profile.role}
               {profile.genre ? ` · ${profile.genre}` : ""}
@@ -100,9 +104,12 @@ export default function ArtistFeatureProfile({ profile }: ArtistFeatureProfilePr
               <p className="mt-1 text-sm text-cj-gold-muted">@{profile.username}</p>
             )}
           </div>
-        </CoverArtFrame>
+        </div>
 
         <div className="flex flex-col justify-center space-y-6">
+          <div className="hidden lg:block">
+            <WaveformBadge label="Cover art" animate />
+          </div>
           {profile.manifesto_quote && (
             <blockquote className="cj-typewriter border-l-2 border-cj-gold pl-4 text-lg leading-relaxed italic">
               &ldquo;{profile.manifesto_quote}&rdquo;

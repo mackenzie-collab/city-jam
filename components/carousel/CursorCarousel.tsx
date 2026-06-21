@@ -41,7 +41,7 @@ export default function CursorCarousel({
         className={cn(
           "cj-cursor-carousel-track snap-x-mandatory flex items-stretch overflow-x-auto px-4 py-4 scrollbar-thin sm:px-6 md:px-8",
           GAP[gap],
-          isDragging ? "cj-cursor-carousel-track--dragging cursor-grabbing select-none" : "cursor-grab",
+          isDragging ? "cj-cursor-carousel-track--dragging select-none" : "",
           trackClassName
         )}
         {...handlers}

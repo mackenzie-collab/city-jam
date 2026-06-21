@@ -10,7 +10,7 @@ export default function GlobalPlayerBar() {
   if (!currentTrack) return null;
 
   return (
-    <div className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom))] left-0 right-0 z-40 border-t border-cj-gold-border bg-cj-bg/95 px-4 py-2 backdrop-blur-md md:bottom-0 md:left-4 md:right-4 md:mb-4 md:max-w-xl md:rounded-xl md:border md:shadow-xl lg:left-auto lg:translate-x-0">
+    <div className="fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom))] left-0 right-0 z-40 border-t border-cj-gold-border bg-cj-bg/95 px-4 py-2 backdrop-blur-md md:bottom-0 md:left-4 md:right-4 md:mb-4 md:max-w-xl md:rounded-xl md:border md:shadow-xl lg:left-auto lg:translate-x-0">
       <VinylPlayer
         compact
         title={currentTrack.title}

@@ -8,7 +8,7 @@ import { incrementPlayCount, likePost, type AudioPost } from "@/lib/scene";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import CassetteChip from "@/components/analog/CassetteChip";
-import CoverArtFrame from "@/components/analog/CoverArtFrame";
+import VinylPhotoFrame from "@/components/vinyl/VinylPhotoFrame";
 import VinylCard from "@/components/analog/VinylCard";
 
 interface AudioPostCardProps {
@@ -59,16 +59,13 @@ export default function AudioPostCard({ post, queue, liked = false, onLike }: Au
 
   return (
     <VinylCard padding="none" className="overflow-hidden">
-      <CoverArtFrame
-        src={post.cover_url}
-        aspect="4/3"
-        sizes="(max-width:768px) 100vw, 400px"
-        fallback={
-          <div className="flex h-full items-center justify-center bg-cj-purple-card">
-            <span className="text-4xl text-cj-gold/30">{post.genre.slice(0, 3) || "♪"}</span>
-          </div>
-        }
-      >
+      <div className="relative flex items-center justify-center border-b border-cj-gold-border/20 bg-brand-purple-deep px-6 py-8">
+        <VinylPhotoFrame
+          src={post.cover_url}
+          alt={post.title}
+          size={168}
+          className="drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
+        />
         <button
           type="button"
           onClick={handlePlay}
@@ -84,7 +81,7 @@ export default function AudioPostCard({ post, queue, liked = false, onLike }: Au
             <CassetteChip>{post.genre}</CassetteChip>
           </span>
         )}
-      </CoverArtFrame>
+      </div>
 
       <div className="p-4 sm:p-5">
         <h3 className="cj-zine-headline">{post.title}</h3>

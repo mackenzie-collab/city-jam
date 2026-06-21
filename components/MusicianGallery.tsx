@@ -1,6 +1,6 @@
 "use client";
 
-import CoverArtFrame from "@/components/analog/CoverArtFrame";
+import VinylPhotoFrame from "@/components/vinyl/VinylPhotoFrame";
 import CursorCarousel from "@/components/carousel/CursorCarousel";
 import { MUSICIAN_PHOTOS } from "@/lib/brand-assets";
 
@@ -16,13 +16,11 @@ export default function MusicianGallery() {
       <div className="mx-4 overflow-hidden rounded-lg border border-cj-border sm:mx-6 md:mx-8">
         <CursorCarousel ariaLabel="Musician gallery" gap="md" trackClassName="py-6">
           {MUSICIAN_PHOTOS.map(({ src, alt }) => (
-            <CoverArtFrame
+            <VinylPhotoFrame
               key={src}
               src={src}
               alt={alt}
-              aspect="3/4"
-              className="h-44 w-32 sm:h-52 sm:w-36 md:h-60 md:w-44"
-              sizes="(max-width: 640px) 128px, 176px"
+              size={144}
             />
           ))}
         </CursorCarousel>

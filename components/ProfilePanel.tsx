@@ -7,6 +7,7 @@ import { User, Sparkles, Users, Trash2 } from "lucide-react";
 import FeatureShell from "@/components/FeatureShell";
 import JamStreakWidget, { BadgeGallery } from "@/components/JamStreakWidget";
 import ToolsStrip from "@/components/ToolsStrip";
+import VinylPhotoFrame from "@/components/vinyl/VinylPhotoFrame";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { FILTER_OPTIONS } from "@/lib/studio";
@@ -360,9 +361,8 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
           {isOwnProfile ? (
             <form onSubmit={handleSave} className="cj-card space-y-4">
               {profile?.cover_image_url && (
-                <div className="relative aspect-[3/1] overflow-hidden rounded-lg cj-grain-photo">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={profile.cover_image_url} alt="" className="h-full w-full object-cover" />
+                <div className="flex justify-center py-2">
+                  <VinylPhotoFrame src={profile.cover_image_url} alt="Cover preview" size={140} />
                 </div>
               )}
               <div>
@@ -502,7 +502,16 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
               )}
             </form>
           ) : profile ? (
-            <div className="cj-card space-y-3">
+            <div className="cj-card space-y-4">
+              {profile.cover_image_url && (
+                <div className="flex justify-center py-2">
+                  <VinylPhotoFrame
+                    src={profile.cover_image_url}
+                    alt={displayName(profile)}
+                    size={160}
+                  />
+                </div>
+              )}
               <p className="text-[10px] uppercase tracking-widest text-cj-gold-muted">
                 {profile.role}
                 {profile.genre ? ` · ${profile.genre}` : ""}

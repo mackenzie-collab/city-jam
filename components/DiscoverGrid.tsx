@@ -5,7 +5,7 @@ import Link from "next/link";
 import FeatureShell from "@/components/FeatureShell";
 import CursorCarousel from "@/components/carousel/CursorCarousel";
 import VinylSleeveCard from "@/components/vinyl/VinylSleeveCard";
-import CoverArtFrame from "@/components/analog/CoverArtFrame";
+import VinylPhotoFrame from "@/components/vinyl/VinylPhotoFrame";
 import VinylCard from "@/components/analog/VinylCard";
 import { ICONS, BRAND } from "@/lib/brand-assets";
 import { fetchActiveProfiles, type UserProfile } from "@/lib/profiles";
@@ -118,7 +118,9 @@ export default function DiscoverGrid() {
               return (
                 <Link key={p.user_id} href={href} className="no-underline">
                   <VinylCard padding="none" className="overflow-hidden transition-shadow hover:shadow-md">
-                    <CoverArtFrame src={cover} aspect="square" sizes="(max-width:768px) 50vw, 250px" />
+                    <div className="flex items-center justify-center bg-brand-purple-deep px-4 py-6">
+                      <VinylPhotoFrame src={cover} alt={p.display_name} size={120} />
+                    </div>
                     <div className="p-4">
                       <p className="text-lg font-semibold text-cj-text hover:text-cj-gold">
                         {p.display_name}
