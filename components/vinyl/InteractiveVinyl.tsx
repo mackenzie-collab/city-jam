@@ -77,6 +77,15 @@ export default function InteractiveVinyl({
         </defs>
         <g clipPath={`url(#${discClipId})`}>
           <circle cx={cx} cy={cy} r={outerR} className="fill-[var(--cj-vinyl-disc-fill,#1a0030)]" />
+          <circle
+            cx={cx}
+            cy={cy}
+            r={outerR - 0.5}
+            fill="none"
+            stroke="#B3A200"
+            strokeWidth={isPlaying ? 2 : 1.5}
+            opacity={isPlaying ? 0.95 : 0.55}
+          />
           {grooves.map((r, i) => (
             <circle
               key={r}
@@ -104,11 +113,11 @@ export default function InteractiveVinyl({
             <circle
               cx={cx}
               cy={cy}
-              r={outerR - 1}
+              r={outerR - 2}
               fill="none"
               stroke="#B3A200"
               strokeWidth={2}
-              strokeDasharray={`${(arcEnd / 360) * Math.PI * (outerR - 1) * 2} ${Math.PI * (outerR - 1) * 2}`}
+              strokeDasharray={`${(arcEnd / 360) * Math.PI * (outerR - 2) * 2} ${Math.PI * (outerR - 2) * 2}`}
               transform={`rotate(-90 ${cx} ${cy})`}
               opacity={0.85}
             />
@@ -121,22 +130,10 @@ export default function InteractiveVinyl({
     </div>
   );
 
-  const discFrame = (
-    <div
-      className={cn(
-        "rounded-full border-2 border-brand-gold/60 p-0 transition-[border-color]",
-        isPlaying && "border-brand-gold"
-      )}
-      style={{ width: size, height: size }}
-    >
-      {disc}
-    </div>
-  );
-
   if (!interactive) {
     return (
       <div className={cn("relative inline-flex", className)} aria-hidden>
-        {discFrame}
+        {disc}
       </div>
     );
   }
@@ -148,11 +145,13 @@ export default function InteractiveVinyl({
       className={cn(
         "group relative inline-flex flex-col items-center rounded-full border-0 bg-transparent p-0",
         "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-gold",
+        !showTime && "overflow-hidden",
         className
       )}
+      style={showTime ? undefined : { width: size, height: size }}
       aria-label={isPlaying ? `Pause ${label}` : `Play ${label}`}
     >
-      {discFrame}
+      {disc}
       {showTime && duration > 0 && (
         <span className="mt-2 font-mono text-[10px] text-brand-gold" aria-live="polite">
           {formatTime(progress)} / {formatTime(duration)}

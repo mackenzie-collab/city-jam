@@ -36,6 +36,9 @@ export default function ScenePreviewCarousel() {
         <p className="mt-3 max-w-xl font-body text-sm text-cj-text-muted">
           Drag through fresh drops from musicians worldwide. Every card is audio-first — no photos, no vanity.
         </p>
+        <p className="mt-2 font-mono text-[11px] uppercase tracking-widest text-brand-gold/70">
+          Drag to browse →
+        </p>
         <Link href="/scene" className="cj-link-groove mt-4 inline-flex items-center gap-2 text-sm">
           Full scene feed <ArrowRight className="h-4 w-4" />
         </Link>

@@ -544,16 +544,23 @@
 
 .carousel-slide {
   scroll-snap-align: center;
+}
+
+.carousel-slide > * {
   transition: transform 0.3s ease, opacity 0.3s ease;
+  transform-origin: center center;
 }
 
 .cj-carousel-active {
-  transform: scale(1.05);
-  opacity: 1;
   z-index: 1;
 }
 
-.cj-carousel-inactive {
+.cj-carousel-active > * {
+  transform: scale(1.05);
+  opacity: 1;
+}
+
+.cj-carousel-inactive > * {
   transform: scale(0.98);
   opacity: 0.85;
 }
@@ -561,15 +568,20 @@
 .cj-cursor-carousel-track {
   -webkit-overflow-scrolling: touch;
   scroll-behavior: auto;
+  touch-action: pan-x pinch-zoom;
 }
 
-.carousel-slide:focus-within,
-.carousel-slide:hover {
+.cj-cursor-carousel-track--dragging {
+  scroll-snap-type: none;
+}
+
+.carousel-slide:focus-within > *,
+.carousel-slide:hover > * {
   transform: scale(1.02);
 }
 
-.cj-carousel-active:focus-within,
-.cj-carousel-active:hover {
+.cj-carousel-active:focus-within > *,
+.cj-carousel-active:hover > * {
   transform: scale(1.06);
 }
 
@@ -579,10 +591,10 @@
   .animate-vinyl-spin,
   .cj-vinyl-disc--spinning,
   .cj-page-enter,
-  .carousel-slide:focus-within,
-  .carousel-slide:hover,
-  .cj-carousel-active,
-  .cj-carousel-inactive {
+  .carousel-slide:focus-within > *,
+  .carousel-slide:hover > *,
+  .cj-carousel-active > *,
+  .cj-carousel-inactive > * {
     animation: none !important;
     transform: none !important;
     opacity: 1 !important;

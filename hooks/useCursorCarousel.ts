@@ -8,6 +8,8 @@ interface UseCursorCarouselOptions {
   enabled?: boolean;
 }
 
+const DRAG_THRESHOLD = 6;
+
 export function useCursorCarousel(
   trackRef: RefObject<HTMLElement | null>,
   options: UseCursorCarouselOptions = {}
@@ -23,6 +25,10 @@ export function useCursorCarousel(
   const lastTime = useRef(0);
   const rafId = useRef<number | null>(null);
   const reducedMotion = useRef(false);
+  const isDraggingRef = useRef(false);
+  const isTrackingRef = useRef(false);
+  const hasExceededThresholdRef = useRef(false);
+  const startedOnInteractiveRef = useRef(false);
 
   useEffect(() => {
     reducedMotion.current =
@@ -37,6 +43,7 @@ export function useCursorCarousel(
   }, [trackRef]);
 
   const snapToNearest = useCallback(() => {
+    if (isDraggingRef.current) return;
     const track = trackRef.current;
     const slides = getSlides();
     if (!track || slides.length === 0) return;
@@ -101,15 +108,52 @@ export function useCursorCarousel(
     rafId.current = requestAnimationFrame(step);
   }, [friction, snapToNearest, trackRef]);
 
+  const suppressClickAfterDrag = useCallback((track: HTMLElement) => {
+    const preventClick = (ev: MouseEvent) => {
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+    };
+    track.addEventListener("click", preventClick, true);
+    window.setTimeout(() => track.removeEventListener("click", preventClick, true), 300);
+  }, []);
+
+  const endDrag = useCallback(
+    (e: React.PointerEvent) => {
+      if (!isTrackingRef.current) return;
+      const track = trackRef.current;
+      const didDrag = hasExceededThresholdRef.current;
+
+      isTrackingRef.current = false;
+      isDraggingRef.current = false;
+      setIsDragging(false);
+      track?.releasePointerCapture(e.pointerId);
+
+      if (didDrag && startedOnInteractiveRef.current && track) {
+        suppressClickAfterDrag(track);
+      }
+
+      if (didDrag && Math.abs(velocity.current) > 1 && !reducedMotion.current) {
+        runMomentum();
+      } else if (didDrag) {
+        snapToNearest();
+      }
+    },
+    [runMomentum, snapToNearest, suppressClickAfterDrag, trackRef]
+  );
+
   const onPointerDown = useCallback(
     (e: React.PointerEvent) => {
       if (!enabled) return;
       const target = e.target as HTMLElement;
-      if (target.closest("button, a, [role='button'], input, textarea, select")) return;
       const track = trackRef.current;
       if (!track) return;
+
+      startedOnInteractiveRef.current = !!target.closest(
+        "button, a, [role='button'], input, textarea, select"
+      );
       stopMomentum();
-      setIsDragging(true);
+      isTrackingRef.current = true;
+      hasExceededThresholdRef.current = false;
       dragStartX.current = e.clientX;
       scrollStart.current = track.scrollLeft;
       lastX.current = e.clientX;
@@ -122,10 +166,18 @@ export function useCursorCarousel(
 
   const onPointerMove = useCallback(
     (e: React.PointerEvent) => {
-      if (!isDragging) return;
+      if (!isTrackingRef.current) return;
       const track = trackRef.current;
       if (!track) return;
+
       const dx = e.clientX - dragStartX.current;
+      if (!hasExceededThresholdRef.current) {
+        if (Math.abs(dx) < DRAG_THRESHOLD) return;
+        hasExceededThresholdRef.current = true;
+        isDraggingRef.current = true;
+        setIsDragging(true);
+      }
+
       track.scrollLeft = scrollStart.current - dx;
 
       const now = performance.now();
@@ -136,22 +188,14 @@ export function useCursorCarousel(
       lastX.current = e.clientX;
       lastTime.current = now;
     },
-    [isDragging, trackRef]
+    [trackRef]
   );
 
   const onPointerUp = useCallback(
     (e: React.PointerEvent) => {
-      if (!isDragging) return;
-      const track = trackRef.current;
-      setIsDragging(false);
-      track?.releasePointerCapture(e.pointerId);
-      if (Math.abs(velocity.current) > 1 && !reducedMotion.current) {
-        runMomentum();
-      } else {
-        snapToNearest();
-      }
+      endDrag(e);
     },
-    [isDragging, runMomentum, snapToNearest, trackRef]
+    [endDrag]
   );
 
   const onWheel = useCallback(
@@ -186,6 +230,7 @@ export function useCursorCarousel(
 
     let scrollTimeout: ReturnType<typeof setTimeout>;
     const onScroll = () => {
+      if (isDraggingRef.current) return;
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(snapToNearest, 80);
     };
@@ -206,6 +251,7 @@ export function useCursorCarousel(
       onPointerDown,
       onPointerMove,
       onPointerUp,
+      onPointerCancel: onPointerUp,
       onPointerLeave: onPointerUp,
       onWheel,
       onKeyDown,
