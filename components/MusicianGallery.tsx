@@ -11,7 +11,7 @@ export default function MusicianGallery() {
   return (
     <section
       id="musician-gallery"
-      className="relative overflow-x-clip border-y border-brand-gold/10 bg-cj-surface py-8 sm:py-10"
+      className="relative overflow-x-visible border-y border-brand-gold/10 bg-cj-surface py-8 sm:py-10"
     >
       <GrainOverlay className="opacity-[0.035]" />
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 md:px-8">

@@ -3,8 +3,6 @@
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 
 interface UseCursorCarouselOptions {
-  /** Pixels per frame decay for momentum (0–1) */
-  friction?: number;
   enabled?: boolean;
   /** Slide count — triggers transform recalc when children mount */
   slideCount?: number;
@@ -17,8 +15,6 @@ export interface SlideTransform {
   isCentered: boolean;
 }
 
-const DRAG_THRESHOLD = 6;
-
 const CENTER_SCALE_DESKTOP = 1.04;
 const CENTER_SCALE_MOBILE = 1.02;
 const SIDE_SCALE = 0.92;
@@ -28,6 +24,7 @@ function getCenterScale(): number {
   if (typeof window === "undefined") return CENTER_SCALE_DESKTOP;
   return window.innerWidth < MOBILE_BREAKPOINT ? CENTER_SCALE_MOBILE : CENTER_SCALE_DESKTOP;
 }
+
 const CENTER_OPACITY = 1;
 const SIDE_OPACITY = 0.58;
 
@@ -65,36 +62,25 @@ export function useCursorCarousel(
   trackRef: RefObject<HTMLElement | null>,
   options: UseCursorCarouselOptions = {}
 ) {
-  const { friction = 0.92, enabled = true, slideCount = 0 } = options;
+  const { enabled = true, slideCount = 0 } = options;
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
   const [slideTransforms, setSlideTransforms] = useState<SlideTransform[]>([]);
   const [isScrolling, setIsScrolling] = useState(false);
 
-  const dragStartX = useRef(0);
-  const scrollStart = useRef(0);
-  const velocity = useRef(0);
-  const lastX = useRef(0);
-  const lastTime = useRef(0);
-  const rafId = useRef<number | null>(null);
   const transformRafId = useRef<number | null>(null);
   const reducedMotion = useRef(false);
   const centerScaleRef = useRef(CENTER_SCALE_DESKTOP);
-  const isDraggingRef = useRef(false);
-  const isTrackingRef = useRef(false);
-  const hasExceededThresholdRef = useRef(false);
-  const startedOnInteractiveRef = useRef(false);
-  const useNativeScrollRef = useRef(false);
   const programmaticScrollRef = useRef(false);
   const programmaticScrollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const finePointerRef = useRef(false);
 
   useEffect(() => {
     reducedMotion.current =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    useNativeScrollRef.current =
+    finePointerRef.current =
       typeof window !== "undefined" &&
-      window.matchMedia("(pointer: coarse)").matches;
+      window.matchMedia("(pointer: fine)").matches;
     centerScaleRef.current = getCenterScale();
   }, []);
 
@@ -163,46 +149,6 @@ export function useCursorCarousel(
     });
   }, [updateSlideTransforms]);
 
-  const snapToNearest = useCallback(() => {
-    if (isDraggingRef.current || programmaticScrollRef.current) return;
-    const track = trackRef.current;
-    const slides = getSlides();
-    if (!track || slides.length === 0) return;
-
-    const trackCenter = track.scrollLeft + track.clientWidth / 2;
-    let nearest = 0;
-    let minDist = Infinity;
-
-    slides.forEach((slide, i) => {
-      const slideCenter = slide.offsetLeft + slide.offsetWidth / 2;
-      const dist = Math.abs(slideCenter - trackCenter);
-      if (dist < minDist) {
-        minDist = dist;
-        nearest = i;
-      }
-    });
-
-    setActiveIndex(nearest);
-    updateSlideTransforms();
-
-    if (useNativeScrollRef.current) return;
-
-    const target = slides[nearest];
-    const scrollTarget = target.offsetLeft - (track.clientWidth - target.offsetWidth) / 2;
-    const delta = Math.abs(track.scrollLeft - scrollTarget);
-
-    if (delta < 2) return;
-
-    beginProgrammaticScroll();
-    setIsScrolling(true);
-    track.scrollTo({
-      left: scrollTarget,
-      behavior: reducedMotion.current || delta < 8 ? "auto" : "smooth",
-    });
-
-    window.setTimeout(() => setIsScrolling(false), reducedMotion.current ? 0 : 400);
-  }, [beginProgrammaticScroll, getSlides, trackRef, updateSlideTransforms]);
-
   const scrollToIndex = useCallback(
     (index: number) => {
       const track = trackRef.current;
@@ -225,130 +171,10 @@ export function useCursorCarousel(
     [beginProgrammaticScroll, getSlides, scheduleTransformUpdate, trackRef]
   );
 
-  const stopMomentum = useCallback(() => {
-    if (rafId.current != null) {
-      cancelAnimationFrame(rafId.current);
-      rafId.current = null;
-    }
-  }, []);
-
-  const runMomentum = useCallback(() => {
-    const track = trackRef.current;
-    if (!track || reducedMotion.current) {
-      snapToNearest();
-      return;
-    }
-
-    const step = () => {
-      if (Math.abs(velocity.current) < 0.5) {
-        rafId.current = null;
-        snapToNearest();
-        return;
-      }
-      track.scrollLeft -= velocity.current;
-      velocity.current *= friction;
-      scheduleTransformUpdate();
-      rafId.current = requestAnimationFrame(step);
-    };
-    rafId.current = requestAnimationFrame(step);
-  }, [friction, scheduleTransformUpdate, snapToNearest, trackRef]);
-
-  const suppressClickAfterDrag = useCallback((track: HTMLElement) => {
-    const preventClick = (ev: MouseEvent) => {
-      ev.preventDefault();
-      ev.stopImmediatePropagation();
-    };
-    track.addEventListener("click", preventClick, true);
-    window.setTimeout(() => track.removeEventListener("click", preventClick, true), 300);
-  }, []);
-
-  const endDrag = useCallback(
-    (e: React.PointerEvent) => {
-      if (!isTrackingRef.current) return;
-      const track = trackRef.current;
-      const didDrag = hasExceededThresholdRef.current;
-
-      isTrackingRef.current = false;
-      isDraggingRef.current = false;
-      setIsDragging(false);
-      track?.releasePointerCapture(e.pointerId);
-
-      if (didDrag && startedOnInteractiveRef.current && track) {
-        suppressClickAfterDrag(track);
-      }
-
-      if (didDrag && Math.abs(velocity.current) > 1 && !reducedMotion.current) {
-        runMomentum();
-      } else if (didDrag) {
-        snapToNearest();
-      }
-    },
-    [runMomentum, snapToNearest, suppressClickAfterDrag, trackRef]
-  );
-
-  const onPointerDown = useCallback(
-    (e: React.PointerEvent) => {
-      if (!enabled || useNativeScrollRef.current) return;
-      const target = e.target as HTMLElement;
-      const track = trackRef.current;
-      if (!track) return;
-
-      startedOnInteractiveRef.current = !!target.closest(
-        "button, a, [role='button'], input, textarea, select"
-      );
-      stopMomentum();
-      isTrackingRef.current = true;
-      hasExceededThresholdRef.current = false;
-      dragStartX.current = e.clientX;
-      scrollStart.current = track.scrollLeft;
-      lastX.current = e.clientX;
-      lastTime.current = performance.now();
-      velocity.current = 0;
-      track.setPointerCapture(e.pointerId);
-    },
-    [enabled, stopMomentum, trackRef]
-  );
-
-  const onPointerMove = useCallback(
-    (e: React.PointerEvent) => {
-      if (!isTrackingRef.current) return;
-      const track = trackRef.current;
-      if (!track) return;
-
-      const dx = e.clientX - dragStartX.current;
-      if (!hasExceededThresholdRef.current) {
-        if (Math.abs(dx) < DRAG_THRESHOLD) return;
-        hasExceededThresholdRef.current = true;
-        isDraggingRef.current = true;
-        setIsDragging(true);
-      }
-
-      e.preventDefault();
-      track.scrollLeft = scrollStart.current - dx;
-      scheduleTransformUpdate();
-
-      const now = performance.now();
-      const dt = now - lastTime.current;
-      if (dt > 0) {
-        velocity.current = ((e.clientX - lastX.current) / dt) * 16;
-      }
-      lastX.current = e.clientX;
-      lastTime.current = now;
-    },
-    [scheduleTransformUpdate, trackRef]
-  );
-
-  const onPointerUp = useCallback(
-    (e: React.PointerEvent) => {
-      endDrag(e);
-    },
-    [endDrag]
-  );
-
   const onWheel = useCallback(
     (e: React.WheelEvent) => {
       const track = trackRef.current;
-      if (!track || !enabled) return;
+      if (!track || !enabled || !finePointerRef.current) return;
       const horizontal = e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY);
       if (!horizontal) return;
       e.preventDefault();
@@ -375,24 +201,13 @@ export function useCursorCarousel(
     const track = trackRef.current;
     if (!track) return;
 
-    let scrollTimeout: ReturnType<typeof setTimeout>;
-
     const handleScrollEnd = () => {
-      if (isDraggingRef.current || programmaticScrollRef.current) return;
-      if (useNativeScrollRef.current) {
-        updateSlideTransforms();
-        return;
-      }
-      snapToNearest();
+      if (programmaticScrollRef.current) return;
+      updateSlideTransforms();
     };
 
     const onScroll = () => {
       scheduleTransformUpdate();
-      if (isDraggingRef.current || programmaticScrollRef.current) return;
-      if (useNativeScrollRef.current) return;
-
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(handleScrollEnd, 180);
     };
 
     track.addEventListener("scroll", onScroll, { passive: true });
@@ -405,17 +220,15 @@ export function useCursorCarousel(
     return () => {
       track.removeEventListener("scroll", onScroll);
       track.removeEventListener("scrollend", handleScrollEnd);
-      clearTimeout(scrollTimeout);
       if (programmaticScrollTimer.current) {
         clearTimeout(programmaticScrollTimer.current);
       }
       ro.disconnect();
-      stopMomentum();
       if (transformRafId.current != null) {
         cancelAnimationFrame(transformRafId.current);
       }
     };
-  }, [scheduleTransformUpdate, snapToNearest, stopMomentum, trackRef, updateSlideTransforms]);
+  }, [scheduleTransformUpdate, trackRef, updateSlideTransforms]);
 
   useEffect(() => {
     const onResize = () => {
@@ -439,18 +252,12 @@ export function useCursorCarousel(
 
   return {
     activeIndex,
-    isDragging,
+    isDragging: false,
     isScrolling,
     slideTransforms,
     getSlideTransform,
     scrollToIndex,
-    snapToNearest,
     handlers: {
-      onPointerDown,
-      onPointerMove,
-      onPointerUp,
-      onPointerCancel: onPointerUp,
-      onPointerLeave: onPointerUp,
       onWheel,
       onKeyDown,
     },

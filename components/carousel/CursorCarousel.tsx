@@ -46,9 +46,9 @@ export default function CursorCarousel({
   const trackRef = useRef<HTMLDivElement>(null);
   const slides = Children.toArray(children);
   const slideCount = slides.length;
-  const { activeIndex, isDragging, getSlideTransform, scrollToIndex, handlers } =
+  const { activeIndex, getSlideTransform, scrollToIndex, handlers } =
     useCursorCarousel(trackRef, { slideCount });
-  const allowTransition = !isDragging;
+  const allowTransition = true;
 
   const canGoPrev = activeIndex > 0;
   const canGoNext = activeIndex < slideCount - 1;
@@ -72,7 +72,6 @@ export default function CursorCarousel({
           className={cn(
             "cj-cursor-carousel-track snap-x-mandatory flex items-center gap-0",
             fullBleed ? "cj-cursor-carousel-track--full-bleed px-0" : "px-4 sm:px-6 md:px-8",
-            isDragging ? "cj-cursor-carousel-track--dragging select-none" : "",
             trackClassName
           )}
           {...handlers}
