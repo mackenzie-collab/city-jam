@@ -39,7 +39,7 @@ export default function ScenePreviewCarousel() {
   return (
     <section
       id="on-the-scene"
-      className="relative overflow-hidden border-y border-brand-gold/15 bg-brand-purple-deep py-8 sm:py-10"
+      className="relative overflow-x-clip border-y border-brand-gold/15 bg-brand-purple-deep py-8 sm:py-10"
     >
       <GrainOverlay className="opacity-[0.035]" />
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 md:px-8">

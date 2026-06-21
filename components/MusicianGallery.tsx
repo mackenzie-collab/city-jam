@@ -11,10 +11,11 @@ export default function MusicianGallery() {
   return (
     <section
       id="musician-gallery"
-      className="relative overflow-hidden border-y border-brand-gold/10 bg-cj-surface py-8 sm:py-10"
+      className="relative overflow-x-clip border-y border-brand-gold/10 bg-cj-surface py-8 sm:py-10"
     >
       <GrainOverlay className="opacity-[0.035]" />
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 md:px-8">        <span className="cj-badge mb-2">Real musicians</span>
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 md:px-8">
+        <span className="cj-badge mb-2">Real musicians</span>
         <h2 className="cj-headline text-3xl sm:text-4xl">
           Every kind of musician.{" "}
           <span className="text-brand-gold">One frequency.</span>
@@ -33,7 +34,8 @@ export default function MusicianGallery() {
           fullBleed
           showControls
           trackClassName="py-3"
-        >          {MUSICIAN_PHOTOS.map(({ src, alt }) => (
+        >
+          {MUSICIAN_PHOTOS.map(({ src, alt }) => (
             <VinylPhotoFrame key={src} src={src} alt={alt} size={220} maxVw={52} />
           ))}
         </CursorCarousel>

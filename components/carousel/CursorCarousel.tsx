@@ -22,15 +22,13 @@ interface CursorCarouselProps {
 function slideContentStyle(
   scale: number,
   opacity: number,
-  isCentered: boolean,
   animate: boolean
 ): CSSProperties {
   return {
     transform: `scale(${scale})`,
     opacity,
-    boxShadow: isCentered ? "var(--cj-gold-glow-active)" : undefined,
     transition: animate
-      ? "transform 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.32s ease"
+      ? "transform 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
       : "none",
     transformOrigin: "center center",
   };
@@ -60,7 +58,7 @@ export default function CursorCarousel({
       className={cn(
         "cj-cursor-carousel cj-cursor-carousel--cover-flow relative",
         compact && "cj-cursor-carousel--compact",
-        fullBleed ? "w-full" : "overflow-hidden",
+        fullBleed ? "w-full" : undefined,
         className
       )}
     >
@@ -72,7 +70,7 @@ export default function CursorCarousel({
           aria-label={ariaLabel}
           tabIndex={0}
           className={cn(
-            "cj-cursor-carousel-track snap-x-mandatory flex items-center gap-0 overflow-x-auto py-2",
+            "cj-cursor-carousel-track snap-x-mandatory flex items-center gap-0",
             fullBleed ? "cj-cursor-carousel-track--full-bleed px-0" : "px-4 sm:px-6 md:px-8",
             isDragging ? "cj-cursor-carousel-track--dragging select-none" : "",
             trackClassName
@@ -94,7 +92,7 @@ export default function CursorCarousel({
                     "cj-carousel-slide-content h-full w-full",
                     isCentered && "cj-carousel-slide-content--centered"
                   )}
-                  style={slideContentStyle(scale, opacity, isCentered, allowTransition)}
+                  style={slideContentStyle(scale, opacity, allowTransition)}
                 >
                   {child}
                 </div>

@@ -19,9 +19,9 @@ export interface SlideTransform {
 
 const DRAG_THRESHOLD = 6;
 
-const CENTER_SCALE_DESKTOP = 1.06;
-const CENTER_SCALE_MOBILE = 1.03;
-const SIDE_SCALE = 0.88;
+const CENTER_SCALE_DESKTOP = 1.04;
+const CENTER_SCALE_MOBILE = 1.02;
+const SIDE_SCALE = 0.92;
 const MOBILE_BREAKPOINT = 640;
 
 function getCenterScale(): number {
@@ -50,13 +50,13 @@ function computeTransform(
   centerScale: number
 ): SlideTransform {
   const distance = Math.abs(slideCenter - trackCenter);
-  const normalized = slideWidth > 0 ? distance / (slideWidth * 0.58) : 0;
+  const normalized = slideWidth > 0 ? distance / (slideWidth * 0.72) : 0;
   const t = smoothstep(Math.min(1, normalized));
 
   return {
     scale: centerScale + (SIDE_SCALE - centerScale) * t,
     opacity: CENTER_OPACITY + (SIDE_OPACITY - CENTER_OPACITY) * t,
-    zIndex: Math.max(1, Math.round(10 - t * 9)),
+    zIndex: t < 0.2 ? 3 : t < 0.55 ? 2 : 1,
     isCentered: t < 0.12,
   };
 }
