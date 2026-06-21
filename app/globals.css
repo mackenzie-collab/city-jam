@@ -137,6 +137,17 @@
   color: var(--cj-vinyl-groove-stroke);
 }
 
+.cj-vinyl-disc {
+  overflow: hidden;
+  border-radius: 50%;
+  transform-origin: center center;
+  backface-visibility: hidden;
+}
+
+.cj-vinyl-disc--spinning {
+  @apply animate-vinyl-spin;
+}
+
 /* Bebas Neue — display headlines, ALL CAPS */
 .cj-poster-headline {
   @apply font-display text-balance font-normal uppercase leading-[0.92] tracking-[0.06em];
@@ -566,6 +577,7 @@
   .cj-record-spinner,
   .animate-spin,
   .animate-vinyl-spin,
+  .cj-vinyl-disc--spinning,
   .cj-page-enter,
   .carousel-slide:focus-within,
   .carousel-slide:hover,
