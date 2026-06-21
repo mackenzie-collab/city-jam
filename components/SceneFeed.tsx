@@ -64,18 +64,13 @@ export default function SceneFeed() {
       ) : null}
 
       {loading && (
-        <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-brand-gold/50">
+        <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-brand-gold/40">
           Syncing live feed…
         </p>
       )}
 
       <div className={cn(view === "grid" ? "lg:hidden" : undefined, "-mx-4 sm:-mx-6")}>
-        <CursorCarousel
-          ariaLabel="Scene feed"
-          gap="sm"
-          fullBleed
-          showControls
-        >
+        <CursorCarousel ariaLabel="Scene feed" fullBleed showControls>
           {displayPosts.map((post) => (
             <VinylSleeveCard key={post.id} post={post} queue={displayPosts} />
           ))}

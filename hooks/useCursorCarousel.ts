@@ -85,6 +85,8 @@ export function useCursorCarousel(
   const hasExceededThresholdRef = useRef(false);
   const startedOnInteractiveRef = useRef(false);
   const useNativeScrollRef = useRef(false);
+  const programmaticScrollRef = useRef(false);
+  const programmaticScrollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     reducedMotion.current =
@@ -94,6 +96,17 @@ export function useCursorCarousel(
       typeof window !== "undefined" &&
       window.matchMedia("(pointer: coarse)").matches;
     centerScaleRef.current = getCenterScale();
+  }, []);
+
+  const beginProgrammaticScroll = useCallback((durationMs = 400) => {
+    programmaticScrollRef.current = true;
+    if (programmaticScrollTimer.current) {
+      clearTimeout(programmaticScrollTimer.current);
+    }
+    programmaticScrollTimer.current = setTimeout(() => {
+      programmaticScrollRef.current = false;
+      programmaticScrollTimer.current = null;
+    }, reducedMotion.current ? 0 : durationMs);
   }, []);
 
   const getSlides = useCallback(() => {
@@ -151,7 +164,7 @@ export function useCursorCarousel(
   }, [updateSlideTransforms]);
 
   const snapToNearest = useCallback(() => {
-    if (isDraggingRef.current) return;
+    if (isDraggingRef.current || programmaticScrollRef.current) return;
     const track = trackRef.current;
     const slides = getSlides();
     if (!track || slides.length === 0) return;
@@ -170,14 +183,25 @@ export function useCursorCarousel(
     });
 
     setActiveIndex(nearest);
-    const target = slides[nearest];
-    const scrollTarget = target.offsetLeft - (track.clientWidth - target.offsetWidth) / 2;
-    setIsScrolling(true);
-    track.scrollTo({ left: scrollTarget, behavior: reducedMotion.current ? "auto" : "smooth" });
     updateSlideTransforms();
 
+    if (useNativeScrollRef.current) return;
+
+    const target = slides[nearest];
+    const scrollTarget = target.offsetLeft - (track.clientWidth - target.offsetWidth) / 2;
+    const delta = Math.abs(track.scrollLeft - scrollTarget);
+
+    if (delta < 2) return;
+
+    beginProgrammaticScroll();
+    setIsScrolling(true);
+    track.scrollTo({
+      left: scrollTarget,
+      behavior: reducedMotion.current || delta < 8 ? "auto" : "smooth",
+    });
+
     window.setTimeout(() => setIsScrolling(false), reducedMotion.current ? 0 : 400);
-  }, [getSlides, trackRef, updateSlideTransforms]);
+  }, [beginProgrammaticScroll, getSlides, trackRef, updateSlideTransforms]);
 
   const scrollToIndex = useCallback(
     (index: number) => {
@@ -187,13 +211,18 @@ export function useCursorCarousel(
       const i = Math.max(0, Math.min(slides.length - 1, index));
       const slide = slides[i];
       const scrollTarget = slide.offsetLeft - (track.clientWidth - slide.offsetWidth) / 2;
+
+      beginProgrammaticScroll();
       setIsScrolling(true);
-      track.scrollTo({ left: scrollTarget, behavior: reducedMotion.current ? "auto" : "smooth" });
+      track.scrollTo({
+        left: scrollTarget,
+        behavior: reducedMotion.current ? "auto" : "smooth",
+      });
       setActiveIndex(i);
-      updateSlideTransforms();
+      scheduleTransformUpdate();
       window.setTimeout(() => setIsScrolling(false), reducedMotion.current ? 0 : 400);
     },
-    [getSlides, trackRef, updateSlideTransforms]
+    [beginProgrammaticScroll, getSlides, scheduleTransformUpdate, trackRef]
   );
 
   const stopMomentum = useCallback(() => {
@@ -347,14 +376,27 @@ export function useCursorCarousel(
     if (!track) return;
 
     let scrollTimeout: ReturnType<typeof setTimeout>;
+
+    const handleScrollEnd = () => {
+      if (isDraggingRef.current || programmaticScrollRef.current) return;
+      if (useNativeScrollRef.current) {
+        updateSlideTransforms();
+        return;
+      }
+      snapToNearest();
+    };
+
     const onScroll = () => {
       scheduleTransformUpdate();
-      if (isDraggingRef.current) return;
+      if (isDraggingRef.current || programmaticScrollRef.current) return;
+      if (useNativeScrollRef.current) return;
+
       clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(snapToNearest, 120);
+      scrollTimeout = setTimeout(handleScrollEnd, 180);
     };
 
     track.addEventListener("scroll", onScroll, { passive: true });
+    track.addEventListener("scrollend", handleScrollEnd);
     scheduleTransformUpdate();
 
     const ro = new ResizeObserver(() => scheduleTransformUpdate());
@@ -362,14 +404,18 @@ export function useCursorCarousel(
 
     return () => {
       track.removeEventListener("scroll", onScroll);
+      track.removeEventListener("scrollend", handleScrollEnd);
       clearTimeout(scrollTimeout);
+      if (programmaticScrollTimer.current) {
+        clearTimeout(programmaticScrollTimer.current);
+      }
       ro.disconnect();
       stopMomentum();
       if (transformRafId.current != null) {
         cancelAnimationFrame(transformRafId.current);
       }
     };
-  }, [scheduleTransformUpdate, snapToNearest, stopMomentum, trackRef]);
+  }, [scheduleTransformUpdate, snapToNearest, stopMomentum, trackRef, updateSlideTransforms]);
 
   useEffect(() => {
     const onResize = () => {

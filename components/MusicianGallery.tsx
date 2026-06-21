@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import VinylPhotoFrame from "@/components/vinyl/VinylPhotoFrame";
 import CursorCarousel from "@/components/carousel/CursorCarousel";
+import GrainOverlay from "@/components/GrainOverlay";
 import { MUSICIAN_PHOTOS } from "@/lib/brand-assets";
 
 export default function MusicianGallery() {
@@ -12,8 +13,8 @@ export default function MusicianGallery() {
       id="musician-gallery"
       className="relative overflow-hidden border-y border-brand-gold/10 bg-cj-surface py-8 sm:py-10"
     >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8">
-        <span className="cj-badge mb-2">Real musicians</span>
+      <GrainOverlay className="opacity-[0.035]" />
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 md:px-8">        <span className="cj-badge mb-2">Real musicians</span>
         <h2 className="cj-headline text-3xl sm:text-4xl">
           Every kind of musician.{" "}
           <span className="text-brand-gold">One frequency.</span>
@@ -26,15 +27,13 @@ export default function MusicianGallery() {
         </Link>
       </div>
 
-      <div className="mt-5">
+      <div className="relative mt-5">
         <CursorCarousel
           ariaLabel="Musician gallery"
-          gap="sm"
           fullBleed
           showControls
           trackClassName="py-3"
-        >
-          {MUSICIAN_PHOTOS.map(({ src, alt }) => (
+        >          {MUSICIAN_PHOTOS.map(({ src, alt }) => (
             <VinylPhotoFrame key={src} src={src} alt={alt} size={220} maxVw={52} />
           ))}
         </CursorCarousel>

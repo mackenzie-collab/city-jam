@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import FeatureShell from "@/components/FeatureShell";
 import CursorCarousel from "@/components/carousel/CursorCarousel";
+import GrainOverlay from "@/components/GrainOverlay";
 import VinylSleeveCard from "@/components/vinyl/VinylSleeveCard";
 import VinylPhotoFrame from "@/components/vinyl/VinylPhotoFrame";
 import VinylCard from "@/components/analog/VinylCard";
@@ -91,18 +92,14 @@ export default function DiscoverGrid() {
       </div>
 
       {trending.length > 0 && (
-        <section className="mb-10">
-          <div className="mb-3">
-            <h2 className="text-lg font-bold text-cj-text">Trending on Scene</h2>
+        <section className="relative mb-10">
+          <GrainOverlay className="opacity-[0.03]" />
+          <div className="relative mb-3">
+            <span className="cj-badge mb-2">Trending</span>
+            <h2 className="cj-headline text-2xl sm:text-3xl">On the scene</h2>
           </div>
           <div className="-mx-4 sm:-mx-6">
-            <CursorCarousel
-              ariaLabel="Trending tracks"
-              gap="sm"
-              fullBleed
-              compact
-              showControls
-            >
+            <CursorCarousel ariaLabel="Trending tracks" fullBleed compact showControls>
               {trending.map((post) => (
                 <VinylSleeveCard key={post.id} post={post} queue={trending} compact />
               ))}

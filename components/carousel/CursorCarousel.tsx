@@ -1,7 +1,7 @@
 "use client";
 
-import { Children, useCallback, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { ChevronLeft, ChevronRight, Hand } from "lucide-react";
+import { Children, useRef, type CSSProperties, type ReactNode } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCursorCarousel } from "@/hooks/useCursorCarousel";
 
@@ -11,25 +11,13 @@ interface CursorCarouselProps {
   trackClassName?: string;
   /** Accessible label for the carousel region */
   ariaLabel?: string;
-  gap?: "sm" | "md" | "lg";
   /** Full-bleed edge-to-edge track with peek of adjacent slides */
   fullBleed?: boolean;
   /** Narrower slides for compact vinyl cards */
   compact?: boolean;
   /** Prev/next arrows, dot indicators, and slide counter */
   showControls?: boolean;
-  /** Animated drag hint until first interaction */
-  showDragHint?: boolean;
 }
-
-const GAP = {
-  sm: "gap-0 sm:gap-1",
-  md: "gap-1 sm:gap-2",
-  lg: "gap-2 sm:gap-3",
-};
-
-const CENTER_GLOW =
-  "0 0 0 2px rgba(179, 162, 0, 0.85), 0 12px 32px rgba(0, 0, 0, 0.35)";
 
 function slideContentStyle(
   scale: number,
@@ -40,8 +28,10 @@ function slideContentStyle(
   return {
     transform: `scale(${scale})`,
     opacity,
-    boxShadow: isCentered ? CENTER_GLOW : undefined,
-    transition: animate ? "transform 0.35s ease, opacity 0.35s ease, box-shadow 0.35s ease" : "none",
+    boxShadow: isCentered ? "var(--cj-gold-glow-active)" : undefined,
+    transition: animate
+      ? "transform 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.32s ease"
+      : "none",
     transformOrigin: "center center",
   };
 }
@@ -51,39 +41,16 @@ export default function CursorCarousel({
   className,
   trackClassName,
   ariaLabel = "Carousel",
-  gap = "md",
   fullBleed = false,
   compact = false,
   showControls = false,
-  showDragHint = false,
 }: CursorCarouselProps) {
   const trackRef = useRef<HTMLDivElement>(null);
-  const [hasInteracted, setHasInteracted] = useState(false);
   const slides = Children.toArray(children);
   const slideCount = slides.length;
-  const { activeIndex, isDragging, isScrolling, getSlideTransform, scrollToIndex, handlers } =
+  const { activeIndex, isDragging, getSlideTransform, scrollToIndex, handlers } =
     useCursorCarousel(trackRef, { slideCount });
-  const allowTransition = !isDragging && isScrolling;
-
-  const markInteracted = useCallback(() => {
-    setHasInteracted(true);
-  }, []);
-
-  const wrappedHandlers = {
-    ...handlers,
-    onPointerDown: (e: React.PointerEvent) => {
-      markInteracted();
-      handlers.onPointerDown(e);
-    },
-    onWheel: (e: React.WheelEvent) => {
-      markInteracted();
-      handlers.onWheel(e);
-    },
-    onKeyDown: (e: React.KeyboardEvent) => {
-      markInteracted();
-      handlers.onKeyDown(e);
-    },
-  };
+  const allowTransition = !isDragging;
 
   const canGoPrev = activeIndex > 0;
   const canGoNext = activeIndex < slideCount - 1;
@@ -98,18 +65,6 @@ export default function CursorCarousel({
       )}
     >
       <div className="relative">
-        {showDragHint && !hasInteracted && slideCount > 1 && (
-          <div
-            className="cj-drag-hint pointer-events-none absolute inset-x-0 top-2 z-10 flex items-center justify-center gap-2 sm:top-4"
-            aria-hidden
-          >
-            <Hand className="h-3.5 w-3.5 text-brand-gold/90" />
-            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-brand-gold/90">
-              ← Drag →
-            </span>
-          </div>
-        )}
-
         <div
           ref={trackRef}
           role="region"
@@ -117,14 +72,12 @@ export default function CursorCarousel({
           aria-label={ariaLabel}
           tabIndex={0}
           className={cn(
-            "cj-cursor-carousel-track snap-x-proximity flex items-center overflow-x-auto py-2 scrollbar-thin",
+            "cj-cursor-carousel-track snap-x-mandatory flex items-center gap-0 overflow-x-auto py-2",
             fullBleed ? "cj-cursor-carousel-track--full-bleed px-0" : "px-4 sm:px-6 md:px-8",
-            GAP[gap],
             isDragging ? "cj-cursor-carousel-track--dragging select-none" : "",
             trackClassName
           )}
-          {...wrappedHandlers}
-          onScroll={() => markInteracted()}
+          {...handlers}
         >
           {fullBleed && <div className="cj-carousel-edge-spacer shrink-0" aria-hidden />}
           {slides.map((child, i) => {
@@ -133,11 +86,14 @@ export default function CursorCarousel({
               <div
                 key={i}
                 data-carousel-slide
-                className="carousel-slide shrink-0 snap-center"
+                className="carousel-slide shrink-0 snap-center snap-always"
                 style={{ zIndex }}
               >
                 <div
-                  className="cj-carousel-slide-content h-full w-full"
+                  className={cn(
+                    "cj-carousel-slide-content h-full w-full",
+                    isCentered && "cj-carousel-slide-content--centered"
+                  )}
                   style={slideContentStyle(scale, opacity, isCentered, allowTransition)}
                 >
                   {child}
@@ -152,7 +108,7 @@ export default function CursorCarousel({
       {showControls && slideCount > 1 && (
         <div
           className={cn(
-            "mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-3",
+            "cj-carousel-controls mt-4 flex items-center justify-center gap-3 sm:gap-4",
             fullBleed ? "px-4 sm:px-6 md:px-8" : "px-4 sm:px-6 md:px-8"
           )}
         >
@@ -163,37 +119,39 @@ export default function CursorCarousel({
             aria-label="Previous slide"
             className="cj-carousel-nav-btn"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4" strokeWidth={2.25} />
           </button>
 
-          <div
-            className="flex items-center gap-1.5"
-            role="tablist"
-            aria-label={`${ariaLabel} slides`}
-          >
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                role="tab"
-                aria-selected={activeIndex === i}
-                aria-label={`Go to slide ${i + 1}`}
-                onClick={() => scrollToIndex(i)}
-                className={cn(
-                  "cj-carousel-dot",
-                  activeIndex === i ? "cj-carousel-dot--active" : "cj-carousel-dot--inactive"
-                )}
-              />
-            ))}
-          </div>
+          <div className="flex min-w-0 flex-1 flex-col items-center gap-2 sm:flex-row sm:justify-center sm:gap-4">
+            <div
+              className="flex items-center gap-1.5"
+              role="tablist"
+              aria-label={`${ariaLabel} slides`}
+            >
+              {slides.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeIndex === i}
+                  aria-label={`Go to slide ${i + 1}`}
+                  onClick={() => scrollToIndex(i)}
+                  className={cn(
+                    "cj-carousel-dot",
+                    activeIndex === i ? "cj-carousel-dot--active" : "cj-carousel-dot--inactive"
+                  )}
+                />
+              ))}
+            </div>
 
-          <span
-            className="min-w-[3.5rem] text-center font-mono text-[11px] uppercase tracking-widest text-brand-gold/80"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {activeIndex + 1} / {slideCount}
-          </span>
+            <span
+              className="font-mono text-[10px] uppercase tracking-[0.22em] text-brand-gold/75 sm:text-[11px]"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {String(activeIndex + 1).padStart(2, "0")} / {String(slideCount).padStart(2, "0")}
+            </span>
+          </div>
 
           <button
             type="button"
@@ -202,7 +160,7 @@ export default function CursorCarousel({
             aria-label="Next slide"
             className="cj-carousel-nav-btn"
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-4 w-4" strokeWidth={2.25} />
           </button>
         </div>
       )}
