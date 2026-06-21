@@ -1,6 +1,7 @@
 "use client";
 
 import { SkipBack, Pause, Play, SkipForward } from "lucide-react";
+import InteractiveVinyl from "@/components/vinyl/InteractiveVinyl";
 import { cn } from "@/lib/utils";
 
 interface VinylPlayerProps {
@@ -14,6 +15,7 @@ interface VinylPlayerProps {
   onNext: () => void;
   onSeek?: (seconds: number) => void;
   compact?: boolean;
+  coverUrl?: string;
 }
 
 function formatTime(sec: number): string {
@@ -34,6 +36,7 @@ export default function VinylPlayer({
   onNext,
   onSeek,
   compact = false,
+  coverUrl,
 }: VinylPlayerProps) {
   const pct = duration > 0 ? (progress / duration) * 100 : 0;
 
@@ -46,22 +49,18 @@ export default function VinylPlayer({
 
   return (
     <div className={cn("flex items-center gap-3", compact ? "w-full" : "max-w-md")}>
-      <div
-        className={cn(
-          "relative shrink-0 rounded-full border-2 border-cj-gold/60 bg-cj-dark shadow-lg",
-          compact ? "h-12 w-12" : "h-20 w-20",
-          isPlaying && "animate-spin"
-        )}
-      >
-        <svg viewBox="0 0 100 100" className="h-full w-full">
-          <circle cx="50" cy="50" r="48" fill="#1a0030" stroke="#c9a800" strokeWidth="1" />
-          <circle cx="50" cy="50" r="35" fill="none" stroke="#c9a800" strokeWidth="0.5" opacity="0.4" />
-          <circle cx="50" cy="50" r="25" fill="none" stroke="#c9a800" strokeWidth="0.5" opacity="0.3" />
-          <circle cx="50" cy="50" r="15" fill="none" stroke="#c9a800" strokeWidth="0.5" opacity="0.2" />
-          <circle cx="50" cy="50" r="8" fill="#c9a800" />
-          <circle cx="50" cy="50" r="3" fill="#0d0d0d" />
-        </svg>
-      </div>
+      <InteractiveVinyl
+        size={compact ? 48 : 80}
+        coverUrl={coverUrl}
+        title={title}
+        artist={artist}
+        isPlaying={isPlaying}
+        progress={progress}
+        duration={duration}
+        interactive
+        onPlayToggle={onToggle}
+        className="shrink-0"
+      />
 
       <div className="min-w-0 flex-1">
         <span
@@ -81,13 +80,14 @@ export default function VinylPlayer({
           role="slider"
           aria-valuenow={progress}
           aria-valuemax={duration}
+          aria-label="Seek"
         >
           <div
             className="h-full rounded-full bg-cj-gold transition-all"
             style={{ width: `${pct}%` }}
           />
         </div>
-        <div className="mt-1 flex justify-between text-[10px] text-cj-gold-muted">
+        <div className="mt-1 flex justify-between font-mono text-[10px] text-cj-gold-muted">
           <span>{formatTime(progress)}</span>
           <span>{formatTime(duration)}</span>
         </div>
@@ -98,7 +98,7 @@ export default function VinylPlayer({
           type="button"
           onClick={onPrev}
           className="flex h-8 w-8 items-center justify-center text-cj-gold hover:opacity-80"
-          aria-label="Previous"
+          aria-label="Previous track"
         >
           <SkipBack className="h-4 w-4" />
         </button>
@@ -114,7 +114,7 @@ export default function VinylPlayer({
           type="button"
           onClick={onNext}
           className="flex h-8 w-8 items-center justify-center text-cj-gold hover:opacity-80"
-          aria-label="Next"
+          aria-label="Next track"
         >
           <SkipForward className="h-4 w-4" />
         </button>

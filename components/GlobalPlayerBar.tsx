@@ -22,6 +22,7 @@ export default function GlobalPlayerBar() {
         onPrev={prev}
         onNext={next}
         onSeek={seek}
+        coverUrl={currentTrack.coverUrl}
       />
     </div>
   );

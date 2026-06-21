@@ -2,20 +2,23 @@ import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
 import BarcodeDivider from "@/components/BarcodeDivider";
 import GrainOverlay from "@/components/GrainOverlay";
-import SideABStrip from "@/components/SideABStrip";
 
-const sideA = [
-  { label: "Community", value: "Feed, streaks, project board", href: "/community" },
-  { label: "Blind Echo", value: "7-min anonymous sessions", href: "/blind-echo" },
-  { label: "Echo Roulette", value: "Spin and go live", href: "/echo-roulette" },
-  { label: "Project Match", value: "Find collaborators by intent", href: "/project-match" },
+const discoverLinks = [
+  { label: "Community", href: "/community" },
+  { label: "Blind Echo", href: "/blind-echo" },
+  { label: "Echo Roulette", href: "/echo-roulette" },
+  { label: "Project Match", href: "/project-match" },
+  { label: "Scene", href: "/scene" },
+  { label: "Signal Map", href: "/signal-map" },
 ];
 
-const sideB = [
-  { label: "Circles", value: "Invite-only groups", href: "/circles" },
-  { label: "Vault", value: "Private demos and stems", href: "/vault" },
-  { label: "Collab", value: "Boards, files, chord sheets", href: "/collab" },
-  { label: "Listen Rooms", value: "Shared listening sessions", href: "/listening-rooms" },
+const studioLinks = [
+  { label: "Circles", href: "/circles" },
+  { label: "Vault", href: "/vault" },
+  { label: "Collab", href: "/collab" },
+  { label: "Listen Rooms", href: "/listening-rooms" },
+  { label: "Studio", href: "/studio" },
+  { label: "Jam", href: "/jam" },
 ];
 
 export default function Footer() {
@@ -23,17 +26,43 @@ export default function Footer() {
     <footer className="cj-footer cj-section-poster relative overflow-hidden px-4 py-12 sm:px-6 sm:py-16 md:px-8">
       <GrainOverlay warm intensity={0.035} />
       <div className="relative mx-auto max-w-6xl">
-        <div className="flex gap-6 border-b border-[var(--cj-zine-border)] pb-8">
-          <BarcodeDivider orientation="vertical" className="hidden w-5 shrink-0 sm:flex" />
-          <div className="min-w-0 flex-1">
-            <BrandLogo href="/" size={40} />
-            <p className="mt-4 max-w-md font-mono text-sm tracking-[0.06em] text-cj-text-muted">
-              An app for musicians. Not fans. Not listeners. Make music fun again.
-            </p>
-          </div>
+        <div className="border-b border-[var(--cj-zine-border)] pb-8">
+          <BrandLogo href="/" size={40} />
+          <p className="mt-4 max-w-md font-mono text-sm tracking-[0.06em] text-cj-text-muted">
+            An app for musicians. Not fans. Not listeners. Make music fun again.
+          </p>
         </div>
 
-        <SideABStrip sideA={sideA} sideB={sideB} compact className="mt-8 border-t-0 pt-0" />
+        <div className="mt-8 grid gap-8 sm:grid-cols-2">
+          <div>
+            <h3 className="font-display text-sm uppercase tracking-[0.12em] text-brand-gold">
+              Discover
+            </h3>
+            <ul className="mt-4 space-y-2">
+              {discoverLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="cj-link-groove font-mono text-sm uppercase tracking-wide">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-display text-sm uppercase tracking-[0.12em] text-brand-gold">
+              Studio
+            </h3>
+            <ul className="mt-4 space-y-2">
+              {studioLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="cj-link-groove font-mono text-sm uppercase tracking-wide">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
 
         <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm">
           <Link href="/privacy" className="cj-link-groove uppercase tracking-wide">

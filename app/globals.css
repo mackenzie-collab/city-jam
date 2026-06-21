@@ -312,7 +312,7 @@
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    @apply rounded-full bg-label-amber/40;
+    @apply rounded-full bg-brand-gold/40;
   }
 
   .snap-x-mandatory {
@@ -353,7 +353,7 @@
   }
 
   .cj-status-open {
-    @apply border border-label-amber/40 bg-transparent px-3 py-1 text-xs font-medium text-cj-gold-bright;
+    @apply border border-brand-gold/40 bg-transparent px-3 py-1 text-xs font-medium text-cj-gold-bright;
   }
 
   .cj-page {
@@ -417,7 +417,7 @@
   }
 
   .cj-waveform-bar {
-    @apply w-1 bg-label-amber/70;
+    @apply w-1 bg-brand-gold/70;
     border-radius: 0;
   }
 
@@ -533,7 +533,23 @@
 
 .carousel-slide {
   scroll-snap-align: center;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.cj-carousel-active {
+  transform: scale(1.05);
+  opacity: 1;
+  z-index: 1;
+}
+
+.cj-carousel-inactive {
+  transform: scale(0.98);
+  opacity: 0.85;
+}
+
+.cj-cursor-carousel-track {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: auto;
 }
 
 .carousel-slide:focus-within,
@@ -541,14 +557,23 @@
   transform: scale(1.02);
 }
 
+.cj-carousel-active:focus-within,
+.cj-carousel-active:hover {
+  transform: scale(1.06);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cj-record-spinner,
   .animate-spin,
+  .animate-vinyl-spin,
   .cj-page-enter,
   .carousel-slide:focus-within,
-  .carousel-slide:hover {
+  .carousel-slide:hover,
+  .cj-carousel-active,
+  .cj-carousel-inactive {
     animation: none !important;
     transform: none !important;
+    opacity: 1 !important;
   }
 
   .cj-card-lp:hover {

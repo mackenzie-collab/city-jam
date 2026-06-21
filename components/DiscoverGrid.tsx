@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import FeatureShell from "@/components/FeatureShell";
+import CursorCarousel from "@/components/carousel/CursorCarousel";
+import VinylSleeveCard from "@/components/vinyl/VinylSleeveCard";
 import CoverArtFrame from "@/components/analog/CoverArtFrame";
 import VinylCard from "@/components/analog/VinylCard";
 import { ICONS, BRAND } from "@/lib/brand-assets";
@@ -51,7 +53,7 @@ export default function DiscoverGrid() {
   }, [profiles, search, genre]);
 
   const trending = useMemo(() => {
-    return [...posts].sort((a, b) => b.like_count + b.play_count - (a.like_count + a.play_count)).slice(0, 6);
+    return [...posts].sort((a, b) => b.like_count + b.play_count - (a.like_count + a.play_count)).slice(0, 8);
   }, [posts]);
 
   return (
@@ -89,25 +91,16 @@ export default function DiscoverGrid() {
       </div>
 
       {trending.length > 0 && (
-        <section className="mb-10">
-          <h2 className="mb-4 text-lg font-bold text-cj-text">Trending on Scene</h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {trending.map((post) => (
-              <Link key={post.id} href={`/scene/post/${post.id}`} className="no-underline">
-                <VinylCard padding="default" className="!p-4 flex items-center gap-3 transition-shadow hover:shadow-md">
-                  {post.cover_url && (
-                    <CoverArtFrame src={post.cover_url} aspect="square" className="h-12 w-12 shrink-0" sizes="48px" />
-                  )}
-                <div className="min-w-0">
-                  <p className="truncate font-semibold text-cj-text">{post.title}</p>
-                  <p className="truncate text-xs text-cj-gold-muted">
-                    {post.author_display_name} · {post.like_count} likes
-                  </p>
-                </div>
-                </VinylCard>
-              </Link>
-            ))}
+        <section className="mb-10 -mx-4 sm:-mx-6">
+          <div className="mb-4 px-4 sm:px-6">
+            <h2 className="text-lg font-bold text-cj-text">Trending on Scene</h2>
+            <p className="text-xs text-cj-text-muted">Drag to browse · tap vinyl to play</p>
           </div>
+          <CursorCarousel ariaLabel="Trending tracks" gap="md">
+            {trending.map((post) => (
+              <VinylSleeveCard key={post.id} post={post} queue={trending} compact />
+            ))}
+          </CursorCarousel>
         </section>
       )}
 
@@ -127,21 +120,21 @@ export default function DiscoverGrid() {
                   <VinylCard padding="none" className="overflow-hidden transition-shadow hover:shadow-md">
                     <CoverArtFrame src={cover} aspect="square" sizes="(max-width:768px) 50vw, 250px" />
                     <div className="p-4">
-                    <p className="text-lg font-semibold text-cj-text hover:text-cj-gold">
-                      {p.display_name}
-                    </p>
-                    <p className="text-xs text-cj-gold-muted">
-                      {p.genre}
-                      {p.city ? ` · ${p.city}` : ""}
-                    </p>
-                    {p.status_text && (
-                      <p className="mt-2 line-clamp-2 text-xs italic text-cj-gold-muted">
-                        &ldquo;{p.status_text}&rdquo;
+                      <p className="text-lg font-semibold text-cj-text hover:text-cj-gold">
+                        {p.display_name}
                       </p>
-                    )}
-                  </div>
-                </VinylCard>
-              </Link>
+                      <p className="text-xs text-cj-gold-muted">
+                        {p.genre}
+                        {p.city ? ` · ${p.city}` : ""}
+                      </p>
+                      {p.status_text && (
+                        <p className="mt-2 line-clamp-2 text-xs italic text-cj-gold-muted">
+                          &ldquo;{p.status_text}&rdquo;
+                        </p>
+                      )}
+                    </div>
+                  </VinylCard>
+                </Link>
               );
             })}
           </div>

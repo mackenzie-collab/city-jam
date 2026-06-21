@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import SignalMap from "@/components/SignalMap";
 
 export default function SignalMapPage() {
-  redirect("/");
+  return <SignalMap />;
 }
