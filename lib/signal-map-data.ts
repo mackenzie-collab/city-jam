@@ -59,6 +59,25 @@ export function cityBySlug(slug: string): CityDot | undefined {
   return CITY_DOTS.find((c) => c.slug === slug);
 }
 
+/** Match free-text profile city (e.g. "Manila", "NYC") to a map hub slug */
+export function resolveCitySlugFromText(text: string): string | null {
+  const raw = text.trim().toLowerCase();
+  if (!raw) return null;
+
+  const slugCandidate = raw.replace(/\s+/g, "-");
+  const bySlug = cityBySlug(slugCandidate);
+  if (bySlug) return bySlug.slug;
+
+  for (const city of CITY_DOTS) {
+    const name = city.name.toLowerCase();
+    if (name === raw || raw.includes(name) || name.includes(raw)) {
+      return city.slug;
+    }
+  }
+
+  return null;
+}
+
 function haversineKm(lng1: number, lat1: number, lng2: number, lat2: number): number {
   const R = 6371;
   const toRad = (d: number) => (d * Math.PI) / 180;

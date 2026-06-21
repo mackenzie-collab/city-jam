@@ -74,7 +74,7 @@ export default function FeatureShell({
         iconSrc={iconSrc}
         showDot={showDot}
         dark={variant === "hall"}
-        backHref="/community"
+        backHref="/scene"
         rightElement={headerRight}
       />
       <div className={`mx-auto px-4 py-8 sm:px-6 sm:py-10 ${MAX[maxWidth]}`}>

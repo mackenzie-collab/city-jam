@@ -33,7 +33,6 @@ export default function VinylSleeveCard({ post, queue, className, compact = fals
   const profileHref = post.author_username
     ? `/profile/${post.author_username}`
     : `/profile?user=${post.user_id}`;
-  const vinylSize = compact ? 96 : 112;
 
   const handlePlay = () => {
     if (isActive) {
@@ -48,27 +47,38 @@ export default function VinylSleeveCard({ post, queue, className, compact = fals
   return (
     <article
       className={cn(
-        "cj-zine-border group relative flex flex-col bg-brand-purple-deep transition-shadow hover:shadow-lg",
-        compact ? "w-[200px] sm:w-[220px]" : "w-[240px] sm:w-[260px]",
+        "cj-zine-border group relative flex w-full max-w-[min(85vw,300px)] flex-col bg-brand-purple-deep transition-shadow hover:shadow-lg",
+        compact && "max-w-[min(82vw,260px)]",
         isActive && "ring-1 ring-brand-gold/50",
         className
       )}
     >
-      <div className="relative border-b border-[var(--cj-zine-border)] bg-brand-purple p-4">
-        <div className="flex items-end justify-center gap-3">
+      <div className="relative border-b border-[var(--cj-zine-border)] bg-brand-purple p-3 sm:p-4">
+        <div className="flex items-end justify-center gap-2 sm:gap-3">
           <CoverArtFrame
             src={post.cover_url}
             alt=""
             aspect="square"
             className={cn(
-              "cj-sleeve-cover w-[42%] shrink-0 transition-transform duration-300",
+              "cj-sleeve-cover w-[42%] shrink-0 transition-transform duration-300 sm:w-[44%]",
               isActive && "-translate-y-1"
             )}
-            sizes="120px"
+            sizes="160px"
           />
           <div className="relative isolate shrink-0 overflow-visible pb-1">
             <InteractiveVinyl
-              size={vinylSize}
+              size={compact ? 110 : 125}
+              className="sm:hidden"
+              coverUrl={post.cover_url || undefined}
+              title={post.title}
+              artist={post.author_display_name}
+              isPlaying={isActive && isPlaying}
+              interactive
+              onPlayToggle={handlePlay}
+            />
+            <InteractiveVinyl
+              size={compact ? 120 : 140}
+              className="hidden sm:block"
               coverUrl={post.cover_url || undefined}
               title={post.title}
               artist={post.author_display_name}

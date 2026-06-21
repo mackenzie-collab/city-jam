@@ -1,22 +1,24 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   aggregateCityOnline,
   fetchMapPresence,
   getYourCity,
+  registerLiveMapPresence,
   removeMapPresence,
-  roundCoordinate,
   subscribeToMapPresence,
   upsertMapPresence,
-  type CityOnlineSummary,
+  upsertMapPresenceFromCitySlug,
   type MapPresenceRow,
 } from "@/lib/matchmaking";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
-import { nearestCity } from "@/lib/signal-map-data";
+import { cityBySlug, resolveCitySlugFromText } from "@/lib/signal-map-data";
+import { fetchProfile } from "@/lib/profiles";
 import { GEO_CONSENT_KEY, hasStoredConsent } from "@/components/PermissionNotice";
 
 const MAP_HIDDEN_KEY = "cj-map-hidden";
+const PRESENCE_HEARTBEAT_MS = 5 * 60 * 1000;
 
 export function useMapPresence(userId: string | undefined, isAuthenticated: boolean) {
   const [rows, setRows] = useState<MapPresenceRow[]>([]);
@@ -25,6 +27,7 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
   const [visible, setVisible] = useState(false);
   const [autoAttempted, setAutoAttempted] = useState(false);
   const [needsGeoConsent, setNeedsGeoConsent] = useState(false);
+  const lastCoords = useRef<{ lng: number; lat: number } | null>(null);
 
   const refresh = useCallback(async () => {
     if (!isSupabaseConfigured()) return;
@@ -33,10 +36,7 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
     if (userId) setVisible(data.some((r) => r.user_id === userId));
   }, [userId]);
 
-  const cities = useMemo(
-    () => aggregateCityOnline(rows, userId),
-    [rows, userId]
-  );
+  const cities = useMemo(() => aggregateCityOnline(rows), [rows]);
 
   const yourCity = useMemo(
     () => (userId ? getYourCity(rows, userId) : null),
@@ -44,6 +44,53 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
   );
 
   const totalOnline = useMemo(() => rows.length, [rows]);
+
+  const applyPresence = useCallback(
+    async (lng: number, lat: number) => {
+      if (!userId) return false;
+      const result = await upsertMapPresence(userId, lng, lat);
+      if (result.error) {
+        setGeoError(result.error);
+        return false;
+      }
+      lastCoords.current = { lng, lat };
+      await refresh();
+      setVisible(true);
+      if (typeof sessionStorage !== "undefined") {
+        sessionStorage.removeItem(MAP_HIDDEN_KEY);
+      }
+      return true;
+    },
+    [userId, refresh]
+  );
+
+  const tryProfileCityFallback = useCallback(async (): Promise<boolean> => {
+    if (!userId) return false;
+    const profile = await fetchProfile(userId);
+    const slug = profile?.city ? resolveCitySlugFromText(profile.city) : null;
+    if (!slug) {
+      setGeoError("Set your city in Profile (e.g. Manila) or allow location");
+      return false;
+    }
+    const result = await upsertMapPresenceFromCitySlug(userId, slug);
+    if (result.error) {
+      setGeoError(result.error);
+      return false;
+    }
+    const city = cityBySlug(slug);
+    if (city) {
+      const [lng, lat] = city.coordinates;
+      lastCoords.current = { lng, lat };
+    } else {
+      lastCoords.current = null;
+    }
+    await refresh();
+    setVisible(true);
+    if (typeof sessionStorage !== "undefined") {
+      sessionStorage.removeItem(MAP_HIDDEN_KEY);
+    }
+    return true;
+  }, [userId, refresh]);
 
   const appearOnMap = useCallback(async () => {
     if (!userId || !isAuthenticated) return;
@@ -58,8 +105,9 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
     setLoading(true);
     setGeoError(null);
     if (!navigator.geolocation) {
-      setGeoError("Geolocation not supported");
+      const ok = await tryProfileCityFallback();
       setLoading(false);
+      if (!ok) setGeoError("Geolocation not supported");
       return;
     }
     const loadingGuard = window.setTimeout(() => {
@@ -69,32 +117,25 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         window.clearTimeout(loadingGuard);
-        await upsertMapPresence(
-          userId,
-          pos.coords.longitude,
-          pos.coords.latitude
-        );
-        await refresh();
-        setVisible(true);
+        await applyPresence(pos.coords.longitude, pos.coords.latitude);
         setLoading(false);
-        if (typeof sessionStorage !== "undefined") {
-          sessionStorage.removeItem(MAP_HIDDEN_KEY);
-        }
       },
-      () => {
+      async () => {
         window.clearTimeout(loadingGuard);
-        setGeoError("Location permission denied");
+        const ok = await tryProfileCityFallback();
+        if (!ok) setGeoError("Location permission denied — set city in Profile");
         setLoading(false);
       },
       { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }
     );
-  }, [userId, isAuthenticated, refresh]);
+  }, [userId, isAuthenticated, applyPresence, tryProfileCityFallback]);
 
   const hideFromMap = useCallback(async () => {
     if (userId) {
       if (typeof sessionStorage !== "undefined") {
         sessionStorage.setItem(MAP_HIDDEN_KEY, userId);
       }
+      lastCoords.current = null;
       await removeMapPresence(userId);
     }
     setVisible(false);
@@ -122,6 +163,21 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
     appearOnMap();
   }, [userId, isAuthenticated, autoAttempted, visible, loading, appearOnMap]);
 
+  useEffect(() => {
+    if (!visible || !userId) return;
+    const tick = async () => {
+      const coords = lastCoords.current;
+      if (coords) {
+        await upsertMapPresence(userId, coords.lng, coords.lat);
+      } else {
+        await registerLiveMapPresence(userId, { allowGeolocation: false });
+      }
+      await refresh();
+    };
+    const id = window.setInterval(tick, PRESENCE_HEARTBEAT_MS);
+    return () => window.clearInterval(id);
+  }, [visible, userId, refresh]);
+
   return {
     cities,
     yourCity,
@@ -139,11 +195,5 @@ export function useMapPresence(userId: string | undefined, isAuthenticated: bool
 
 /** For demo / manual city pin without GPS */
 export async function appearInCity(userId: string, citySlug: string) {
-  const { cityBySlug } = await import("@/lib/signal-map-data");
-  const city = cityBySlug(citySlug);
-  if (!city) return;
-  const [lng, lat] = city.coordinates;
-  await upsertMapPresence(userId, lng + (Math.random() - 0.5) * 0.5, lat + (Math.random() - 0.5) * 0.5);
+  await upsertMapPresenceFromCitySlug(userId, citySlug);
 }
-
-export { roundCoordinate, nearestCity };

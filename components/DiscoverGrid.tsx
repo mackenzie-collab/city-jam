@@ -91,16 +91,25 @@ export default function DiscoverGrid() {
       </div>
 
       {trending.length > 0 && (
-        <section className="mb-10 -mx-4 sm:-mx-6">
-          <div className="mb-4 px-4 sm:px-6">
+        <section className="mb-10">
+          <div className="mb-4">
             <h2 className="text-lg font-bold text-cj-text">Trending on Scene</h2>
             <p className="text-xs text-cj-text-muted">Drag to browse · tap vinyl to play</p>
           </div>
-          <CursorCarousel ariaLabel="Trending tracks" gap="md">
-            {trending.map((post) => (
-              <VinylSleeveCard key={post.id} post={post} queue={trending} compact />
-            ))}
-          </CursorCarousel>
+          <div className="-mx-4 sm:-mx-6">
+            <CursorCarousel
+              ariaLabel="Trending tracks"
+              gap="md"
+              fullBleed
+              compact
+              showControls
+              showDragHint
+            >
+              {trending.map((post) => (
+                <VinylSleeveCard key={post.id} post={post} queue={trending} compact />
+              ))}
+            </CursorCarousel>
+          </div>
         </section>
       )}
 
@@ -118,8 +127,8 @@ export default function DiscoverGrid() {
               return (
                 <Link key={p.user_id} href={href} className="no-underline">
                   <VinylCard padding="none" className="overflow-hidden transition-shadow hover:shadow-md">
-                    <div className="flex items-center justify-center bg-brand-purple-deep px-4 py-6">
-                      <VinylPhotoFrame src={cover} alt={p.display_name} size={120} />
+                    <div className="flex items-center justify-center bg-brand-purple-deep px-3 py-5 sm:px-4 sm:py-6">
+                      <VinylPhotoFrame src={cover} alt={p.display_name} size={160} maxVw={36} />
                     </div>
                     <div className="p-4">
                       <p className="text-lg font-semibold text-cj-text hover:text-cj-gold">

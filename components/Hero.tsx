@@ -43,7 +43,7 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="relative z-[1] flex items-center justify-center lg:col-span-5">
+          <div className="relative z-[1] flex w-full items-center justify-center lg:col-span-5">
             <HeroArtboard className="lg:-mr-4" />
           </div>
         </div>

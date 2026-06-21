@@ -1,6 +1,12 @@
 import { getSupabase } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
-import { nearestCity, drifterAlias, CITY_DOTS, cityBySlug } from "@/lib/signal-map-data";
+import {
+  nearestCity,
+  drifterAlias,
+  CITY_DOTS,
+  cityBySlug,
+  resolveCitySlugFromText,
+} from "@/lib/signal-map-data";
 
 export type MatchMode = "blind-echo" | "echo-roulette";
 
@@ -218,11 +224,11 @@ export async function upsertMapPresence(
   userId: string,
   lng: number,
   lat: number
-): Promise<void> {
+): Promise<{ error?: string }> {
   const supabase = getSupabase();
-  if (!supabase) return;
+  if (!supabase) return { error: "No Supabase client" };
   const city = nearestCity(lng, lat);
-  await supabase.from("map_presence").upsert({
+  const { error } = await supabase.from("map_presence").upsert({
     user_id: userId,
     lng: roundCoordinate(lng),
     lat: roundCoordinate(lat),
@@ -230,6 +236,58 @@ export async function upsertMapPresence(
     alias: drifterAlias(userId),
     updated_at: new Date().toISOString(),
   });
+  return error ? { error: error.message } : {};
+}
+
+export async function upsertMapPresenceFromCitySlug(
+  userId: string,
+  citySlug: string
+): Promise<{ error?: string }> {
+  const city = cityBySlug(citySlug);
+  if (!city) return { error: "Unknown city" };
+  const [lng, lat] = city.coordinates;
+  const jitter = () => (Math.random() - 0.5) * 0.3;
+  return upsertMapPresence(userId, lng + jitter(), lat + jitter());
+}
+
+async function upsertMapPresenceFromProfileCity(
+  userId: string
+): Promise<{ error?: string; usedProfileCity?: boolean }> {
+  const { fetchProfile } = await import("@/lib/profiles");
+  const profile = await fetchProfile(userId);
+  const slug = profile?.city ? resolveCitySlugFromText(profile.city) : null;
+  if (!slug) return { error: "Set your city in Profile to appear on the map" };
+  const result = await upsertMapPresenceFromCitySlug(userId, slug);
+  return result.error ? result : { usedProfileCity: true };
+}
+
+/** Register map presence when going live — GPS when allowed, else profile city */
+export async function registerLiveMapPresence(
+  userId: string,
+  options?: { allowGeolocation?: boolean }
+): Promise<{ error?: string }> {
+  if (!isSupabaseConfigured()) return {};
+
+  if (
+    options?.allowGeolocation !== false &&
+    typeof navigator !== "undefined" &&
+    navigator.geolocation
+  ) {
+    try {
+      const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          maximumAge: 60_000,
+          timeout: 10_000,
+        });
+      });
+      return upsertMapPresence(userId, pos.coords.longitude, pos.coords.latitude);
+    } catch {
+      // Fall back to profile city
+    }
+  }
+
+  return upsertMapPresenceFromProfileCity(userId);
 }
 
 export async function fetchMapPresence(): Promise<MapPresenceRow[]> {
@@ -239,14 +297,10 @@ export async function fetchMapPresence(): Promise<MapPresenceRow[]> {
   return (data ?? []).filter((r) => isFresh(r.updated_at));
 }
 
-export function aggregateCityOnline(
-  rows: MapPresenceRow[],
-  excludeUserId?: string
-): CityOnlineSummary[] {
+export function aggregateCityOnline(rows: MapPresenceRow[]): CityOnlineSummary[] {
   const byCity = new Map<string, { drifters: string[] }>();
 
   for (const row of rows) {
-    if (excludeUserId && row.user_id === excludeUserId) continue;
     const slug = cityForPresence(row);
     const entry = byCity.get(slug) ?? { drifters: [] };
     entry.drifters.push(row.alias ?? drifterAlias(row.user_id));

@@ -201,7 +201,8 @@ export async function fetchActiveProfiles(limit = 50): Promise<UserProfile[]> {
     .order("status_updated_at", { ascending: false, nullsFirst: false })
     .limit(limit);
   if (error) throw error;
-  return data ?? [];
+  const rows = data ?? [];
+  return rows.length > 0 ? rows : DEMO_PROFILES.slice(0, limit);
 }
 
 export async function syncAuthProfile(userId: string, displayName: string): Promise<void> {

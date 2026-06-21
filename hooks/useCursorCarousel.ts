@@ -6,17 +6,70 @@ interface UseCursorCarouselOptions {
   /** Pixels per frame decay for momentum (0–1) */
   friction?: number;
   enabled?: boolean;
+  /** Slide count — triggers transform recalc when children mount */
+  slideCount?: number;
+}
+
+export interface SlideTransform {
+  scale: number;
+  opacity: number;
+  zIndex: number;
+  isCentered: boolean;
 }
 
 const DRAG_THRESHOLD = 6;
+
+const CENTER_SCALE_DESKTOP = 1.06;
+const CENTER_SCALE_MOBILE = 1.03;
+const SIDE_SCALE = 0.88;
+const MOBILE_BREAKPOINT = 640;
+
+function getCenterScale(): number {
+  if (typeof window === "undefined") return CENTER_SCALE_DESKTOP;
+  return window.innerWidth < MOBILE_BREAKPOINT ? CENTER_SCALE_MOBILE : CENTER_SCALE_DESKTOP;
+}
+const CENTER_OPACITY = 1;
+const SIDE_OPACITY = 0.58;
+
+const DEFAULT_TRANSFORM: SlideTransform = {
+  scale: SIDE_SCALE,
+  opacity: SIDE_OPACITY,
+  zIndex: 1,
+  isCentered: false,
+};
+
+function smoothstep(t: number): number {
+  const c = Math.max(0, Math.min(1, t));
+  return c * c * (3 - 2 * c);
+}
+
+function computeTransform(
+  slideCenter: number,
+  trackCenter: number,
+  slideWidth: number,
+  centerScale: number
+): SlideTransform {
+  const distance = Math.abs(slideCenter - trackCenter);
+  const normalized = slideWidth > 0 ? distance / (slideWidth * 0.72) : 0;
+  const t = smoothstep(Math.min(1, normalized));
+
+  return {
+    scale: centerScale + (SIDE_SCALE - centerScale) * t,
+    opacity: CENTER_OPACITY + (SIDE_OPACITY - CENTER_OPACITY) * t,
+    zIndex: Math.max(1, Math.round(10 - t * 9)),
+    isCentered: t < 0.12,
+  };
+}
 
 export function useCursorCarousel(
   trackRef: RefObject<HTMLElement | null>,
   options: UseCursorCarouselOptions = {}
 ) {
-  const { friction = 0.92, enabled = true } = options;
+  const { friction = 0.92, enabled = true, slideCount = 0 } = options;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [slideTransforms, setSlideTransforms] = useState<SlideTransform[]>([]);
+  const [isScrolling, setIsScrolling] = useState(false);
 
   const dragStartX = useRef(0);
   const scrollStart = useRef(0);
@@ -24,7 +77,9 @@ export function useCursorCarousel(
   const lastX = useRef(0);
   const lastTime = useRef(0);
   const rafId = useRef<number | null>(null);
+  const transformRafId = useRef<number | null>(null);
   const reducedMotion = useRef(false);
+  const centerScaleRef = useRef(CENTER_SCALE_DESKTOP);
   const isDraggingRef = useRef(false);
   const isTrackingRef = useRef(false);
   const hasExceededThresholdRef = useRef(false);
@@ -38,6 +93,7 @@ export function useCursorCarousel(
     useNativeScrollRef.current =
       typeof window !== "undefined" &&
       window.matchMedia("(pointer: coarse)").matches;
+    centerScaleRef.current = getCenterScale();
   }, []);
 
   const getSlides = useCallback(() => {
@@ -45,6 +101,54 @@ export function useCursorCarousel(
     if (!track) return [];
     return Array.from(track.querySelectorAll<HTMLElement>("[data-carousel-slide]"));
   }, [trackRef]);
+
+  const updateSlideTransforms = useCallback(() => {
+    const track = trackRef.current;
+    const slides = getSlides();
+    if (!track || slides.length === 0) return;
+
+    const trackCenter = track.scrollLeft + track.clientWidth / 2;
+    let nearest = 0;
+    let minDist = Infinity;
+
+    slides.forEach((slide, i) => {
+      const slideCenter = slide.offsetLeft + slide.offsetWidth / 2;
+      const dist = Math.abs(slideCenter - trackCenter);
+      if (dist < minDist) {
+        minDist = dist;
+        nearest = i;
+      }
+    });
+
+    if (reducedMotion.current) {
+      setSlideTransforms(
+        slides.map((_, i) => ({
+          scale: 1,
+          opacity: 1,
+          zIndex: i === nearest ? 10 : 1,
+          isCentered: i === nearest,
+        }))
+      );
+      setActiveIndex(nearest);
+      return;
+    }
+
+    const transforms: SlideTransform[] = slides.map((slide) => {
+      const slideCenter = slide.offsetLeft + slide.offsetWidth / 2;
+      return computeTransform(slideCenter, trackCenter, slide.offsetWidth, centerScaleRef.current);
+    });
+
+    setActiveIndex(nearest);
+    setSlideTransforms(transforms);
+  }, [getSlides, trackRef]);
+
+  const scheduleTransformUpdate = useCallback(() => {
+    if (transformRafId.current != null) return;
+    transformRafId.current = requestAnimationFrame(() => {
+      transformRafId.current = null;
+      updateSlideTransforms();
+    });
+  }, [updateSlideTransforms]);
 
   const snapToNearest = useCallback(() => {
     if (isDraggingRef.current) return;
@@ -68,8 +172,12 @@ export function useCursorCarousel(
     setActiveIndex(nearest);
     const target = slides[nearest];
     const scrollTarget = target.offsetLeft - (track.clientWidth - target.offsetWidth) / 2;
+    setIsScrolling(true);
     track.scrollTo({ left: scrollTarget, behavior: reducedMotion.current ? "auto" : "smooth" });
-  }, [getSlides, trackRef]);
+    updateSlideTransforms();
+
+    window.setTimeout(() => setIsScrolling(false), reducedMotion.current ? 0 : 400);
+  }, [getSlides, trackRef, updateSlideTransforms]);
 
   const scrollToIndex = useCallback(
     (index: number) => {
@@ -79,10 +187,13 @@ export function useCursorCarousel(
       const i = Math.max(0, Math.min(slides.length - 1, index));
       const slide = slides[i];
       const scrollTarget = slide.offsetLeft - (track.clientWidth - slide.offsetWidth) / 2;
+      setIsScrolling(true);
       track.scrollTo({ left: scrollTarget, behavior: reducedMotion.current ? "auto" : "smooth" });
       setActiveIndex(i);
+      updateSlideTransforms();
+      window.setTimeout(() => setIsScrolling(false), reducedMotion.current ? 0 : 400);
     },
-    [getSlides, trackRef]
+    [getSlides, trackRef, updateSlideTransforms]
   );
 
   const stopMomentum = useCallback(() => {
@@ -107,10 +218,11 @@ export function useCursorCarousel(
       }
       track.scrollLeft -= velocity.current;
       velocity.current *= friction;
+      scheduleTransformUpdate();
       rafId.current = requestAnimationFrame(step);
     };
     rafId.current = requestAnimationFrame(step);
-  }, [friction, snapToNearest, trackRef]);
+  }, [friction, scheduleTransformUpdate, snapToNearest, trackRef]);
 
   const suppressClickAfterDrag = useCallback((track: HTMLElement) => {
     const preventClick = (ev: MouseEvent) => {
@@ -184,6 +296,7 @@ export function useCursorCarousel(
 
       e.preventDefault();
       track.scrollLeft = scrollStart.current - dx;
+      scheduleTransformUpdate();
 
       const now = performance.now();
       const dt = now - lastTime.current;
@@ -193,7 +306,7 @@ export function useCursorCarousel(
       lastX.current = e.clientX;
       lastTime.current = now;
     },
-    [trackRef]
+    [scheduleTransformUpdate, trackRef]
   );
 
   const onPointerUp = useCallback(
@@ -211,9 +324,9 @@ export function useCursorCarousel(
       if (!horizontal) return;
       e.preventDefault();
       track.scrollLeft += e.deltaX || e.deltaY;
-      snapToNearest();
+      scheduleTransformUpdate();
     },
-    [enabled, snapToNearest, trackRef]
+    [enabled, scheduleTransformUpdate, trackRef]
   );
 
   const onKeyDown = useCallback(
@@ -235,21 +348,55 @@ export function useCursorCarousel(
 
     let scrollTimeout: ReturnType<typeof setTimeout>;
     const onScroll = () => {
+      scheduleTransformUpdate();
       if (isDraggingRef.current) return;
       clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(snapToNearest, 80);
+      scrollTimeout = setTimeout(snapToNearest, 120);
     };
+
     track.addEventListener("scroll", onScroll, { passive: true });
+    scheduleTransformUpdate();
+
+    const ro = new ResizeObserver(() => scheduleTransformUpdate());
+    ro.observe(track);
+
     return () => {
       track.removeEventListener("scroll", onScroll);
       clearTimeout(scrollTimeout);
+      ro.disconnect();
       stopMomentum();
+      if (transformRafId.current != null) {
+        cancelAnimationFrame(transformRafId.current);
+      }
     };
-  }, [snapToNearest, stopMomentum, trackRef]);
+  }, [scheduleTransformUpdate, snapToNearest, stopMomentum, trackRef]);
+
+  useEffect(() => {
+    const onResize = () => {
+      centerScaleRef.current = getCenterScale();
+      scheduleTransformUpdate();
+    };
+    window.addEventListener("resize", onResize, { passive: true });
+    return () => window.removeEventListener("resize", onResize);
+  }, [scheduleTransformUpdate]);
+
+  useEffect(() => {
+    if (slideCount > 0) {
+      scheduleTransformUpdate();
+    }
+  }, [slideCount, scheduleTransformUpdate]);
+
+  const getSlideTransform = useCallback(
+    (index: number): SlideTransform => slideTransforms[index] ?? DEFAULT_TRANSFORM,
+    [slideTransforms]
+  );
 
   return {
     activeIndex,
     isDragging,
+    isScrolling,
+    slideTransforms,
+    getSlideTransform,
     scrollToIndex,
     snapToNearest,
     handlers: {

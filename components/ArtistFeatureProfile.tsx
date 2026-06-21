@@ -84,11 +84,12 @@ export default function ArtistFeatureProfile({ profile }: ArtistFeatureProfilePr
   return (
     <div className="space-y-8">
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="flex flex-col items-center justify-center bg-brand-purple-deep p-6 sm:p-8">
+        <div className="flex flex-col items-center justify-center bg-brand-purple-deep p-4 sm:p-6 md:p-8">
           <VinylPhotoFrame
             src={coverSrc}
             alt={displayName(profile)}
-            size={240}
+            size={280}
+            maxVw={52}
             className="drop-shadow-[0_12px_32px_rgba(0,0,0,0.5)]"
           >
             <div className="absolute inset-0 bg-gradient-to-t from-brand-purple-deep/90 via-transparent to-transparent" />

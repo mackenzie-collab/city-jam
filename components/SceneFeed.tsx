@@ -1,25 +1,28 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Music } from "lucide-react";
 import CursorCarousel from "@/components/carousel/CursorCarousel";
 import VinylSleeveCard from "@/components/vinyl/VinylSleeveCard";
 import AudioPostCard from "@/components/AudioPostCard";
-import EmptyState from "@/components/EmptyState";
-import { fetchSceneFeed, subscribeToAudioPosts, type AudioPost } from "@/lib/scene";
+import { cn } from "@/lib/utils";
+import {
+  DEMO_POSTS,
+  fetchSceneFeed,
+  subscribeToAudioPosts,
+  type AudioPost,
+} from "@/lib/scene";
 
 export default function SceneFeed() {
-  const [posts, setPosts] = useState<AudioPost[]>([]);
+  const [posts, setPosts] = useState<AudioPost[]>(DEMO_POSTS);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<"carousel" | "grid">("carousel");
 
   const load = useCallback(async () => {
-    setError(null);
     try {
-      setPosts(await fetchSceneFeed());
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load feed");
+      const feed = await fetchSceneFeed();
+      setPosts(feed.length > 0 ? feed : DEMO_POSTS);
+    } catch {
+      setPosts(DEMO_POSTS);
     } finally {
       setLoading(false);
     }
@@ -31,23 +34,7 @@ export default function SceneFeed() {
     return unsub;
   }, [load]);
 
-  if (loading) {
-    return <p className="text-cj-gold-muted">Loading scene...</p>;
-  }
-
-  if (error) {
-    return <p className="text-red-400">{error}</p>;
-  }
-
-  if (posts.length === 0) {
-    return (
-      <EmptyState
-        icon={Music}
-        title="No posts yet"
-        description="Be the first to drop a track on the scene."
-      />
-    );
-  }
+  const displayPosts = posts.length > 0 ? posts : DEMO_POSTS;
 
   return (
     <div>
@@ -70,16 +57,28 @@ export default function SceneFeed() {
 
       {view === "grid" ? (
         <div className="mb-6 hidden gap-6 lg:grid lg:grid-cols-2">
-          {posts.map((post) => (
-            <AudioPostCard key={post.id} post={post} queue={posts} />
+          {displayPosts.map((post) => (
+            <AudioPostCard key={post.id} post={post} queue={displayPosts} />
           ))}
         </div>
       ) : null}
 
-      <div className={view === "grid" ? "-mx-4 sm:-mx-6 lg:hidden" : "-mx-4 sm:-mx-6"}>
-        <CursorCarousel ariaLabel="Scene feed" gap="lg">
-          {posts.map((post) => (
-            <VinylSleeveCard key={post.id} post={post} queue={posts} />
+      {loading && (
+        <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-brand-gold/50">
+          Syncing live feed…
+        </p>
+      )}
+
+      <div className={cn(view === "grid" ? "lg:hidden" : undefined, "-mx-4 sm:-mx-6")}>
+        <CursorCarousel
+          ariaLabel="Scene feed"
+          gap="lg"
+          fullBleed
+          showControls
+          showDragHint
+        >
+          {displayPosts.map((post) => (
+            <VinylSleeveCard key={post.id} post={post} queue={displayPosts} />
           ))}
         </CursorCarousel>
       </div>

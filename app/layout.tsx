@@ -31,7 +31,10 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#050508",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#5C007A" },
+    { media: "(prefers-color-scheme: light)", color: "#5C007A" },
+  ],
 };
 
 export const metadata: Metadata = {
@@ -39,6 +42,12 @@ export const metadata: Metadata = {
   title: "City Jam — Make Music Fun Again",
   description:
     "Audio-first, anonymous musician matchmaking. No photos, no follower counts, no algorithms.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "City Jam",
+  },
   icons: {
     icon: "/brand/city-jam-logo.png",
     apple: "/brand/city-jam-logo.png",
@@ -66,6 +75,10 @@ export default function RootLayout({
       className={`${dmSans.variable} ${bebasNeue.variable} ${courierPrime.variable}`}
     >
       <head>
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="City Jam" />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="font-body">

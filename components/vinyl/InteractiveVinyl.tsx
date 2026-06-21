@@ -19,6 +19,8 @@ export interface InteractiveVinylProps {
   className?: string;
   /** Show time readout for a11y */
   showTime?: boolean;
+  /** Fill parent container (use with a sized wrapper for responsive scaling) */
+  fluid?: boolean;
 }
 
 function formatTime(sec: number): string {
@@ -40,13 +42,14 @@ export default function InteractiveVinyl({
   onPlayToggle,
   className,
   showTime = false,
+  fluid = false,
 }: InteractiveVinylProps) {
   const uid = useId().replace(/:/g, "");
   const cx = size / 2;
   const cy = size / 2;
   const outerR = size / 2 - 1;
   const grooves = GROOVE_FRACTIONS.map((f) => outerR * f);
-  const labelR = outerR * 0.48;
+  const labelR = outerR * 0.62;
   const progressPct = duration > 0 ? progress / duration : 0;
   const arcEnd = progressPct * 360;
   const discClipId = `vinyl-disc-${uid}`;
@@ -60,7 +63,7 @@ export default function InteractiveVinyl({
         "cj-vinyl-disc relative shrink-0 rounded-full",
         isPlaying && "cj-vinyl-disc--spinning motion-reduce:animate-none"
       )}
-      style={{ width: size, height: size }}
+      style={fluid ? { width: "100%", height: "100%" } : { width: size, height: size }}
     >
       <svg
         viewBox={`0 0 ${size} ${size}`}
@@ -122,9 +125,9 @@ export default function InteractiveVinyl({
               opacity={0.85}
             />
           )}
-          <circle cx={cx} cy={cy} r={labelR * 0.38} fill="none" stroke="#B3A200" strokeWidth="2" />
-          <circle cx={cx} cy={cy} r={labelR * 0.22} fill="var(--royal-purple-deep, #3d0052)" />
-          <circle cx={cx} cy={cy} r={labelR * 0.08} fill="var(--parchment, #D0CF88)" />
+          <circle cx={cx} cy={cy} r={labelR * 0.28} fill="none" stroke="#B3A200" strokeWidth="1.5" />
+          <circle cx={cx} cy={cy} r={labelR * 0.16} fill="var(--royal-purple-deep, #3d0052)" />
+          <circle cx={cx} cy={cy} r={labelR * 0.06} fill="var(--parchment, #D0CF88)" />
         </g>
       </svg>
     </div>

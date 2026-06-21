@@ -1,19 +1,27 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import CursorCarousel from "@/components/carousel/CursorCarousel";
 import VinylSleeveCard from "@/components/vinyl/VinylSleeveCard";
-import { fetchSceneFeed, subscribeToAudioPosts, type AudioPost } from "@/lib/scene";
+import {
+  DEMO_POSTS,
+  fetchSceneFeed,
+  subscribeToAudioPosts,
+  type AudioPost,
+} from "@/lib/scene";
 
 export default function ScenePreviewCarousel() {
-  const [posts, setPosts] = useState<AudioPost[]>([]);
+  const [posts, setPosts] = useState<AudioPost[]>(DEMO_POSTS);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
     try {
-      setPosts(await fetchSceneFeed({ limit: 12 }));
+      const feed = await fetchSceneFeed({ limit: 12 });
+      setPosts(feed.length > 0 ? feed : DEMO_POSTS);
+    } catch {
+      setPosts(DEMO_POSTS);
     } finally {
       setLoading(false);
     }
@@ -25,42 +33,47 @@ export default function ScenePreviewCarousel() {
     return unsub;
   }, [load]);
 
+  const displayPosts = useMemo(
+    () => (posts.length > 0 ? posts : DEMO_POSTS),
+    [posts]
+  );
+
   return (
-    <section className="cj-section overflow-hidden bg-cj-surface py-12 sm:py-16">
+    <section
+      id="on-the-scene"
+      className="cj-section relative overflow-hidden border-y border-brand-gold/15 bg-brand-purple-deep py-12 sm:py-16"
+    >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8">
         <span className="cj-badge mb-3">On the scene</span>
-        <h2 className="cj-headline text-3xl sm:text-4xl">
+        <h2 className="cj-headline text-3xl sm:text-4xl md:text-5xl">
           Close your eyes.{" "}
           <span className="text-brand-gold">Listen.</span>
         </h2>
-        <p className="mt-3 max-w-xl font-body text-sm text-cj-text-muted">
+        <p className="mt-3 max-w-xl font-body text-sm text-cj-text-muted sm:text-base">
           Drag through fresh drops from musicians worldwide. Every card is audio-first — no photos, no vanity.
-        </p>
-        <p className="mt-2 font-mono text-[11px] uppercase tracking-widest text-brand-gold/70">
-          Drag to browse →
         </p>
         <Link href="/scene" className="cj-link-groove mt-4 inline-flex items-center gap-2 text-sm">
           Full scene feed <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
 
-      <div className="mt-8">
-        {loading ? (
-          <p className="px-4 text-center font-mono text-sm text-cj-text-muted sm:px-6">Loading tracks…</p>
-        ) : posts.length === 0 ? (
-          <p className="px-4 text-center font-mono text-sm text-cj-text-muted sm:px-6">
-            The scene is warming up.{" "}
-            <Link href="/scene" className="text-brand-gold hover:underline">
-              Drop the first track →
-            </Link>
+      <div className="relative mt-8">
+        {loading && (
+          <p className="pointer-events-none absolute inset-x-0 top-0 z-20 px-4 text-center font-mono text-[10px] uppercase tracking-widest text-brand-gold/50 sm:px-6">
+            Syncing live feed…
           </p>
-        ) : (
-          <CursorCarousel ariaLabel="Scene audio feed" gap="lg">
-            {posts.map((post) => (
-              <VinylSleeveCard key={post.id} post={post} queue={posts} />
-            ))}
-          </CursorCarousel>
         )}
+        <CursorCarousel
+          ariaLabel="Scene audio feed"
+          gap="lg"
+          fullBleed
+          showControls
+          showDragHint
+        >
+          {displayPosts.map((post) => (
+            <VinylSleeveCard key={post.id} post={post} queue={displayPosts} />
+          ))}
+        </CursorCarousel>
       </div>
     </section>
   );

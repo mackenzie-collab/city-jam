@@ -27,7 +27,7 @@ export default function MobileNav() {
 
   return (
     <nav className="cj-mobile-nav">
-      <div className="flex justify-around px-1 pt-2">
+      <div className="flex justify-around px-2 pt-2">
         {tabs.map(({ href, label, icon }) => {
           const active =
             pathname === href ||
@@ -41,7 +41,7 @@ export default function MobileNav() {
               key={href}
               href={linkHref}
               className={cn(
-                "flex min-h-11 min-w-[3.5rem] flex-1 flex-col items-center justify-center gap-0.5 px-1 py-1 text-[11px] font-medium no-underline",
+                "flex min-h-11 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-0.5 py-1 text-[10px] font-medium no-underline sm:text-[11px]",
                 active ? "text-cj-gold cj-nav-tab-active" : "text-cj-text-muted"
               )}
             >
@@ -55,7 +55,7 @@ export default function MobileNav() {
                   className={cn(active ? "opacity-100" : "opacity-60")}
                 />
               )}
-              <span className="max-w-[4rem] truncate">{label}</span>
+              <span className="max-w-[3.5rem] truncate leading-tight">{label}</span>
             </Link>
           );
         })}

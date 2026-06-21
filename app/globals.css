@@ -53,6 +53,22 @@
   --cj-dark: var(--vinyl-black);
   --cj-bg-rgb: 5 5 8;
   --cj-dark-rgb: 5 5 8;
+
+  --cj-section-px: 1rem;
+  --cj-carousel-slide-half: min(140px, 42.5vw);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --cj-section-px: 1.5rem;
+    --cj-carousel-slide-half: 150px;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --cj-section-px: 2rem;
+  }
 }
 
 :root[data-theme="light"] {
@@ -97,9 +113,16 @@
 }
 
 @layer base {
+  html {
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
     background-color: rgb(var(--cj-bg-rgb));
     color: var(--cj-text);
+    overflow-x: hidden;
+    min-height: 100dvh;
     @apply font-body text-base leading-relaxed antialiased;
   }
 
@@ -112,6 +135,8 @@
 
 .cj-app {
   isolation: isolate;
+  min-height: 100dvh;
+  overflow-x: hidden;
 }
 
 /* Zine grain — 3–4% per brand spec */
@@ -328,6 +353,10 @@
 
   .snap-x-mandatory {
     scroll-snap-type: x mandatory;
+  }
+
+  .snap-x-proximity {
+    scroll-snap-type: x proximity;
   }
 
   .snap-start {
@@ -551,25 +580,37 @@
 
 .carousel-slide {
   scroll-snap-align: center;
+  max-width: min(85vw, 300px);
 }
 
-.carousel-slide > * {
-  transition: transform 0.3s ease, opacity 0.3s ease;
+.cj-cursor-carousel--cover-flow .carousel-slide {
+  margin-inline: -0.25rem;
+}
+
+@media (min-width: 640px) {
+  .cj-cursor-carousel--cover-flow .carousel-slide {
+    margin-inline: -0.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .cj-cursor-carousel--cover-flow .carousel-slide {
+    margin-inline: -0.625rem;
+  }
+}
+
+.cj-cursor-carousel--cover-flow.cj-cursor-carousel--compact .carousel-slide {
+  max-width: min(82vw, 260px);
+}
+
+.cj-carousel-slide-content {
   transform-origin: center center;
+  will-change: transform, opacity;
+  max-width: 100%;
 }
 
-.cj-carousel-active {
-  z-index: 1;
-}
-
-.cj-carousel-active > * {
-  transform: scale(1.05);
-  opacity: 1;
-}
-
-.cj-carousel-inactive > * {
-  transform: scale(0.98);
-  opacity: 0.85;
+.cj-cursor-carousel {
+  overflow-x: clip;
 }
 
 .cj-cursor-carousel-track {
@@ -577,6 +618,7 @@
   scroll-behavior: auto;
   overscroll-behavior-x: contain;
   touch-action: pan-x pan-y pinch-zoom;
+  cursor: grab;
 }
 
 .cj-cursor-carousel-track--dragging {
@@ -585,14 +627,63 @@
   cursor: grabbing;
 }
 
-.carousel-slide:focus-within > *,
-.carousel-slide:hover > * {
-  transform: scale(1.02);
+.cj-cursor-carousel-track--full-bleed {
+  scroll-padding-inline: var(--cj-section-px);
 }
 
-.cj-carousel-active:focus-within > *,
-.cj-carousel-active:hover > * {
-  transform: scale(1.06);
+.cj-carousel-edge-spacer {
+  width: max(
+    var(--cj-section-px),
+    calc((100vw - min(100vw, 72rem)) / 2 + var(--cj-section-px))
+  );
+  flex-shrink: 0;
+}
+
+.cj-carousel-nav-btn {
+  @apply inline-flex h-9 w-9 items-center justify-center border border-brand-gold/40 bg-brand-purple-deep text-brand-gold transition-colors;
+  border-radius: 0;
+}
+
+.cj-carousel-nav-btn:hover:not(:disabled) {
+  @apply border-brand-gold bg-brand-purple text-brand-gold;
+}
+
+.cj-carousel-nav-btn:disabled {
+  @apply cursor-not-allowed opacity-30;
+}
+
+.cj-carousel-dot {
+  @apply h-1.5 rounded-full transition-all duration-300;
+  border: none;
+  padding: 0;
+}
+
+.cj-carousel-dot--active {
+  @apply w-6 bg-brand-gold;
+}
+
+.cj-carousel-dot--inactive {
+  @apply w-1.5 bg-brand-gold/30;
+}
+
+.cj-carousel-dot--inactive:hover {
+  @apply bg-brand-gold/55;
+}
+
+.cj-drag-hint {
+  animation: cj-drag-hint-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes cj-drag-hint-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -601,13 +692,12 @@
   .animate-vinyl-spin,
   .cj-vinyl-disc--spinning,
   .cj-page-enter,
-  .carousel-slide:focus-within > *,
-  .carousel-slide:hover > *,
-  .cj-carousel-active > *,
-  .cj-carousel-inactive > * {
+  .cj-drag-hint,
+  .cj-carousel-slide-content {
     animation: none !important;
     transform: none !important;
     opacity: 1 !important;
+    box-shadow: none !important;
   }
 
   .cj-card-lp:hover {

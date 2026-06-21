@@ -1,0 +1,26 @@
+{
+  "name": "City Jam — Make Music Fun Again",
+  "short_name": "City Jam",
+  "description": "Audio-first, anonymous musician matchmaking. No photos, no follower counts, no algorithms.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#050508",
+  "theme_color": "#5C007A",
+  "orientation": "portrait-primary",
+  "categories": ["music", "social"],
+  "icons": [
+    {
+      "src": "/brand/city-jam-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/city-jam-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

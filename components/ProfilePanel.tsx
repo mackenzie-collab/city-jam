@@ -23,6 +23,7 @@ import {
   type StatusMood,
   type UserProfile,
 } from "@/lib/profiles";
+import { CITY_DOTS } from "@/lib/signal-map-data";
 
 interface ProfilePanelProps {
   viewUserId?: string;
@@ -362,7 +363,7 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
             <form onSubmit={handleSave} className="cj-card space-y-4">
               {profile?.cover_image_url && (
                 <div className="flex justify-center py-2">
-                  <VinylPhotoFrame src={profile.cover_image_url} alt="Cover preview" size={140} />
+                  <VinylPhotoFrame src={profile.cover_image_url} alt="Cover preview" size={168} maxVw={40} />
                 </div>
               )}
               <div>
@@ -467,9 +468,15 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
                   <input
                     value={form.city}
                     onChange={(e) => setForm({ ...form, city: e.target.value })}
-                    placeholder="London, NYC..."
+                    placeholder="Manila, London, Tokyo…"
+                    list="profile-city-options"
                     className="cj-input !pl-4 mt-1"
                   />
+                  <datalist id="profile-city-options">
+                    {CITY_DOTS.map((city) => (
+                      <option key={city.slug} value={city.name} />
+                    ))}
+                  </datalist>
                 </div>
               </div>
               <div>
@@ -508,7 +515,8 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
                   <VinylPhotoFrame
                     src={profile.cover_image_url}
                     alt={displayName(profile)}
-                    size={160}
+                    size={192}
+                    maxVw={44}
                   />
                 </div>
               )}

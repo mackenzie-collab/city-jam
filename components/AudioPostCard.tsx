@@ -59,11 +59,12 @@ export default function AudioPostCard({ post, queue, liked = false, onLike }: Au
 
   return (
     <VinylCard padding="none" className="overflow-hidden">
-      <div className="relative flex items-center justify-center border-b border-cj-gold-border/20 bg-brand-purple-deep px-6 py-8">
+      <div className="relative flex items-center justify-center border-b border-cj-gold-border/20 bg-brand-purple-deep px-4 py-6 sm:px-6 sm:py-8">
         <VinylPhotoFrame
           src={post.cover_url}
           alt={post.title}
-          size={168}
+          size={200}
+          maxVw={42}
           className="drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
         />
         <button

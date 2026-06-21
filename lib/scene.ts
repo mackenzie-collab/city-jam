@@ -36,7 +36,7 @@ export function sceneUnavailable() {
   return !isSupabaseConfigured() || !getSupabase();
 }
 
-const DEMO_POSTS: AudioPost[] = [
+export const DEMO_POSTS: AudioPost[] = [
   {
     id: "demo-1",
     user_id: "demo-user-1",
@@ -120,7 +120,8 @@ export async function fetchSceneFeed(opts?: {
 
   const { data, error } = await q;
   if (error) throw error;
-  return enrichPosts(data ?? []);
+  const enriched = await enrichPosts(data ?? []);
+  return enriched.length > 0 ? enriched : DEMO_POSTS;
 }
 
 export async function fetchAudioPost(id: string): Promise<AudioPost | null> {

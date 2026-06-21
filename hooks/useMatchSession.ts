@@ -5,6 +5,7 @@ import {
   cancelMatch,
   leaveMatch,
   pollMatchStatus,
+  registerLiveMapPresence,
   subscribeToMatch,
   tryMatch,
   type MatchMode,
@@ -57,6 +58,10 @@ export function useMatchSession(
     } else {
       setStatus("error");
       setError(result.message ?? "Match failed");
+    }
+
+    if (result.status === "waiting" || result.status === "matched") {
+      void registerLiveMapPresence(userId);
     }
   }, [userId, mode, frequency, applyMatch]);
 
