@@ -233,7 +233,7 @@ export default function CursorCarousel({
         className
       )}
     >
-      <div className="relative overflow-x-clip">
+      <div className="relative overflow-x-visible bg-inherit">
         <div
           ref={emblaRef}
           role="region"

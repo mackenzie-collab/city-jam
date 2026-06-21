@@ -47,14 +47,14 @@ export default function LoginContent() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-cj-purple-dark lg:flex lg:flex-row">
-      <div className="relative h-44 shrink-0 sm:h-52 lg:hidden">
+    <div className="min-h-[100dvh] bg-brand-purple-deep lg:flex lg:flex-row">
+      <div className="relative h-44 shrink-0 bg-brand-purple sm:h-52 lg:hidden">
         <Image src={STOCK.auth} alt={STOCK.phoneJamAlt} fill className="object-cover object-top cj-grain-photo" sizes="100vw" priority />
-        <div className="absolute inset-0 bg-gradient-to-t from-cj-purple-dark via-cj-purple-dark/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-purple-deep via-brand-purple-deep/40 to-transparent" />
       </div>
-      <div className="relative hidden min-h-[100dvh] flex-1 lg:block">
-        <Image src={STOCK.auth} alt={STOCK.phoneJamAlt} fill className="object-cover cj-grain-photo" sizes="50vw" />
-        <div className="absolute inset-0 bg-cj-purple-dark/75" />
+      <div className="relative hidden min-h-[100dvh] flex-1 bg-brand-purple lg:block">
+        <Image src={STOCK.auth} alt={STOCK.phoneJamAlt} fill className="object-cover cj-grain-photo" sizes="50vw" priority />
+        <div className="absolute inset-0 bg-brand-purple-deep/75" />
       </div>
       <div className="flex min-h-0 flex-1 items-start justify-center overflow-y-auto px-4 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:items-center sm:px-6 sm:py-10 lg:min-h-[100dvh] lg:py-12">
         <div className="w-full max-w-md text-center">

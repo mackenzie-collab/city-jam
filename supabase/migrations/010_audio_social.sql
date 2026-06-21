@@ -143,12 +143,12 @@ select * from (values
   ),
   (
     'a0000004-0000-4000-8000-000000000004'::uuid,
-    'demo-user-1',
-    'Folk Demo — Unfinished',
-    'Acoustic sketch. Looking for a cellist.',
-    'FOLK',
+    'demo-user-4',
+    'Violin Breakdown',
+    'Solo étude recorded in one take, no edits.',
+    'CLASSICAL',
     'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
-    '/images/08_folk_songwriter.png',
+    '/images/04_classical_violinist.png',
     67,
     12
   )

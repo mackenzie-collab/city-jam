@@ -7,9 +7,8 @@ import { useAudioPlayer, type Track } from "@/contexts/AudioPlayerContext";
 import { incrementPlayCount, likePost, type AudioPost } from "@/lib/scene";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
-import CassetteChip from "@/components/analog/CassetteChip";
-import VinylPhotoFrame from "@/components/vinyl/VinylPhotoFrame";
 import VinylCard from "@/components/analog/VinylCard";
+import VinylPhotoFrame from "@/components/vinyl/VinylPhotoFrame";
 
 interface AudioPostCardProps {
   post: AudioPost;
@@ -78,9 +77,7 @@ export default function AudioPostCard({ post, queue, liked = false, onLike }: Au
           </span>
         </button>
         {post.genre && (
-          <span className="absolute left-3 top-3">
-            <CassetteChip>{post.genre}</CassetteChip>
-          </span>
+          <span className="cj-tag absolute left-3 top-3 bg-cj-card/90">{post.genre}</span>
         )}
       </div>
 

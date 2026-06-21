@@ -9,7 +9,7 @@ import VinylSleeveCard from "@/components/vinyl/VinylSleeveCard";
 import VinylPhotoFrame from "@/components/vinyl/VinylPhotoFrame";
 import VinylCard from "@/components/analog/VinylCard";
 import { ICONS, BRAND } from "@/lib/brand-assets";
-import { fetchActiveProfiles, type UserProfile } from "@/lib/profiles";
+import { fetchActiveProfiles, demoCoverForProfile, type UserProfile } from "@/lib/profiles";
 import { fetchSceneFeed, type AudioPost } from "@/lib/scene";
 
 const GENRES = ["ALL", "ELECTRONIC", "JAZZ", "HIP-HOP", "ROCK", "FOLK", "CLASSICAL"];
@@ -53,9 +53,26 @@ export default function DiscoverGrid() {
     });
   }, [profiles, search, genre]);
 
+  const filteredPosts = useMemo(() => {
+    const q = search.toLowerCase();
+    return posts.filter((p) => {
+      const matchSearch =
+        !q ||
+        p.title.toLowerCase().includes(q) ||
+        p.caption.toLowerCase().includes(q) ||
+        p.genre.toLowerCase().includes(q) ||
+        (p.author_display_name ?? "").toLowerCase().includes(q) ||
+        (p.author_username ?? "").toLowerCase().includes(q);
+      const matchGenre = genre === "ALL" || p.genre === genre;
+      return matchSearch && matchGenre;
+    });
+  }, [posts, search, genre]);
+
   const trending = useMemo(() => {
-    return [...posts].sort((a, b) => b.like_count + b.play_count - (a.like_count + a.play_count)).slice(0, 8);
-  }, [posts]);
+    return [...filteredPosts]
+      .sort((a, b) => b.like_count + b.play_count - (a.like_count + a.play_count))
+      .slice(0, 8);
+  }, [filteredPosts]);
 
   return (
     <FeatureShell
@@ -91,10 +108,14 @@ export default function DiscoverGrid() {
         </div>
       </div>
 
-      {trending.length > 0 && (
+      {loading ? (
         <section className="relative mb-10">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-cj-gold-muted">Loading on the scene…</p>
+        </section>
+      ) : trending.length > 0 ? (
+        <section className="cj-carousel-band relative mb-10 overflow-hidden bg-cj-purple-card/50 py-6 sm:py-8">
           <GrainOverlay className="opacity-[0.03]" />
-          <div className="relative mb-3">
+          <div className="relative mb-3 px-4 sm:px-6 md:px-8">
             <span className="cj-badge mb-2">Trending</span>
             <h2 className="cj-headline text-2xl sm:text-3xl">On the scene</h2>
           </div>
@@ -106,19 +127,23 @@ export default function DiscoverGrid() {
             </CursorCarousel>
           </div>
         </section>
+      ) : (
+        <section className="relative mb-10">
+          <p className="text-cj-gold-muted">No tracks match your search.</p>
+        </section>
       )}
 
       <section>
         <h2 className="mb-4 text-lg font-bold text-cj-text">Artists</h2>
         {loading ? (
-          <p className="text-cj-gold-muted">Loading...</p>
+          <p className="text-cj-gold-muted">Loading artists…</p>
         ) : filteredProfiles.length === 0 ? (
           <p className="text-cj-gold-muted">No artists match your search.</p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filteredProfiles.map((p) => {
               const href = p.username ? `/profile/${p.username}` : `/profile?user=${p.user_id}`;
-              const cover = p.cover_image_url || BRAND.logo2026Updated;
+              const cover = demoCoverForProfile(p) || BRAND.logo2026Updated;
               return (
                 <Link key={p.user_id} href={href} className="no-underline">
                   <VinylCard padding="none" className="overflow-hidden transition-shadow hover:shadow-md">

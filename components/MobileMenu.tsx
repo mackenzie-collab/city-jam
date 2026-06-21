@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 const PRIMARY_LINKS = [
   { href: "/", label: "Home" },
   { href: "/discover", label: "Discover" },
-  { href: "/scene", label: "Scene", highlight: true },
+  { href: "/scene", label: "Scene" },
   { href: "/jam", label: "Jam" },
   { href: "/profile", label: "Profile" },
 ];
@@ -72,17 +72,12 @@ export default function MobileMenu({
           <p className="mb-2 px-2 text-xs font-medium text-cj-text-muted">
             Main
           </p>
-          {PRIMARY_LINKS.map(({ href, label, highlight }) => (
+          {PRIMARY_LINKS.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
               onClick={onClose}
-              className={cn(
-                "mb-1 flex min-h-11 items-center rounded-md px-3 text-sm font-medium no-underline transition-colors",
-                highlight
-                  ? "bg-cj-gold/10 font-semibold text-cj-gold"
-                  : "text-cj-text hover:bg-cj-surface-elevated"
-              )}
+              className="mb-1 flex min-h-11 items-center rounded-md px-3 text-sm font-medium text-cj-text no-underline transition-colors hover:bg-cj-surface-elevated"
             >
               {label}
             </Link>

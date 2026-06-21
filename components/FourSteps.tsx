@@ -30,7 +30,7 @@ const steps = [
 
 export default function FourSteps() {
   return (
-    <section className="cj-section cj-section-poster relative overflow-hidden bg-brand-black">
+    <section className="cj-section cj-section-poster relative overflow-hidden bg-cj-bg">
       <GrainOverlay intensity={0.035} />
       <PosterMotif variant="section" opacity={0.4} />
       <div className="relative mx-auto max-w-6xl">

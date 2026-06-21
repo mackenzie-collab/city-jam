@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 
 export default function Hero() {
   return (
-    <section className="cj-section-poster relative flex min-h-[88dvh] flex-col justify-center overflow-hidden px-0 py-10 sm:py-12 md:py-16">
-      <div className="absolute inset-0 bg-brand-black" aria-hidden />
-      <div className="absolute inset-0 bg-brand-purple/40" aria-hidden />
+    <section className="cj-hero-section cj-section-poster relative flex min-h-[88dvh] flex-col justify-center overflow-hidden px-0 py-10 sm:py-12 md:py-16">
+      <div className="absolute inset-0 bg-cj-bg" aria-hidden />
+      <div className="absolute inset-0 bg-cj-surface/45" aria-hidden />
       <GrainOverlay warm intensity={0.04} />
 
       <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6 md:px-8">
@@ -30,9 +30,9 @@ export default function Hero() {
             </p>
 
             <div className="cj-mobile-cta-stack mt-8 sm:mt-10">
-              <Link href="/community" className="no-underline">
+              <Link href="/scene" className="no-underline">
                 <Button variant="primary" size="lg" className="w-full sm:w-auto">
-                  Enter the community
+                  Enter the scene
                 </Button>
               </Link>
               <Link href="/echo-roulette" className="no-underline">

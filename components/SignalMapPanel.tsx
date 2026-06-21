@@ -68,7 +68,9 @@ export default function SignalMapPanel({
           </div>
         )}
         <div className="text-xs text-cj-gold-muted">
-          <span className="font-mono text-brand-gold">{totalOnline} live</span>
+          <span className="font-mono text-brand-gold">
+            {totalOnline === 1 ? "1 musician live" : `${totalOnline} musicians live`}
+          </span>
           {visible && yourCity ? (
             <p className="mt-1">
               Visible in {yourCity.name} · {yourCity.onlineCount} nearby
@@ -107,7 +109,9 @@ export default function SignalMapPanel({
     <aside className="flex h-full flex-col border border-cj-gold-border bg-cj-purple-card/95 backdrop-blur-sm">
       <div className="border-b border-cj-gold-border px-4 py-3">
         <p className="font-display text-sm uppercase tracking-widest text-cj-gold">Signal Map</p>
-        <p className="font-mono text-[10px] text-cj-gold-muted">{totalOnline} musicians live</p>
+        <p className="font-mono text-[10px] text-cj-gold-muted">
+          {totalOnline === 1 ? "1 musician live" : `${totalOnline} musicians live`}
+        </p>
       </div>
 
       {needsGeoConsent && (

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import BrandLogo from "@/components/BrandLogo";
 import CjIcon from "@/components/CjIcon";
 import { BRAND, ICONS, MOBILE_NAV_ICONS } from "@/lib/brand-assets";
+import { isNavActive } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -29,10 +30,7 @@ export default function MobileNav() {
     <nav className="cj-mobile-nav">
       <div className="flex justify-around px-2 pt-2">
         {tabs.map(({ href, label, icon }) => {
-          const active =
-            pathname === href ||
-            (href !== "/" && pathname.startsWith(href)) ||
-            (href === "/scene" && pathname.startsWith("/community"));
+          const active = isNavActive(pathname, href);
           const profileHref = isAuthenticated ? "/profile" : "/login?returnUrl=/profile";
           const linkHref = href === "/profile" && !isAuthenticated ? profileHref : href;
 

@@ -69,7 +69,7 @@ export default function SceneFeed() {
         </p>
       )}
 
-      <div className={cn(view === "grid" ? "lg:hidden" : undefined, "-mx-4 sm:-mx-6")}>
+      <div className={cn(view === "grid" ? "lg:hidden" : undefined, "cj-carousel-band relative -mx-4 bg-cj-purple-card/40 py-4 sm:-mx-6")}>
         <CursorCarousel ariaLabel="Scene feed" fullBleed showControls>
           {displayPosts.map((post) => (
             <VinylSleeveCard key={post.id} post={post} queue={displayPosts} />

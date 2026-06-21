@@ -345,6 +345,27 @@ const DEMO_PROFILES: UserProfile[] = [
   },
 ];
 
+const DEMO_COVER_BY_USER_ID = Object.fromEntries(
+  DEMO_PROFILES.map((p) => [p.user_id, p.cover_image_url])
+) as Record<string, string>;
+
+const DEMO_COVER_BY_USERNAME = Object.fromEntries(
+  DEMO_PROFILES.map((p) => [p.username, p.cover_image_url])
+) as Record<string, string>;
+
+/** Resolve cover art from demo seed data when DB rows omit cover_image_url. */
+export function demoCoverForProfile(profile: Pick<UserProfile, "user_id" | "username" | "cover_image_url">): string {
+  if (profile.cover_image_url) return profile.cover_image_url;
+  return DEMO_COVER_BY_USER_ID[profile.user_id] ?? DEMO_COVER_BY_USERNAME[profile.username] ?? "";
+}
+
+function enrichProfileCovers(profiles: UserProfile[]): UserProfile[] {
+  return profiles.map((p) => ({
+    ...p,
+    cover_image_url: demoCoverForProfile(p),
+  }));
+}
+
 export async function fetchProfile(userId: string): Promise<UserProfile | null> {
   if (profilesUnavailable()) {
     return DEMO_PROFILES.find((p) => p.user_id === userId) ?? null;
@@ -436,7 +457,8 @@ export async function fetchActiveProfiles(limit = 50): Promise<UserProfile[]> {
     .limit(limit);
   if (error) throw error;
   const rows = data ?? [];
-  return rows.length > 0 ? rows : DEMO_PROFILES.slice(0, limit);
+  const merged = rows.length > 0 ? enrichProfileCovers(rows) : DEMO_PROFILES.slice(0, limit);
+  return merged.length > 0 ? merged : DEMO_PROFILES.slice(0, limit);
 }
 
 export async function syncAuthProfile(userId: string, displayName: string): Promise<void> {

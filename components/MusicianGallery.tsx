@@ -28,7 +28,7 @@ export default function MusicianGallery() {
         </Link>
       </div>
 
-      <div className="relative mt-5">
+      <div className="cj-carousel-band relative mt-5">
         <CursorCarousel
           ariaLabel="Musician gallery"
           fullBleed

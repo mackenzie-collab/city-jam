@@ -56,7 +56,7 @@ export default function ScenePreviewCarousel() {
         </Link>
       </div>
 
-      <div className="relative mt-5">
+      <div className="cj-carousel-band relative mt-5">
         <CursorCarousel ariaLabel="Scene audio feed" fullBleed showControls>
           {displayPosts.map((post) => (
             <VinylSleeveCard key={post.id} post={post} queue={displayPosts} />

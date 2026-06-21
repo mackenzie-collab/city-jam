@@ -11,13 +11,14 @@ import { Button } from "@/components/ui/button";
 import JamStreakWidget from "@/components/JamStreakWidget";
 import ThemeToggle from "@/components/ThemeToggle";
 import { ICONS } from "@/lib/brand-assets";
+import { isNavActive } from "@/lib/nav";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/discover", label: "Discover" },
-  { href: "/scene", label: "Scene", highlight: true },
+  { href: "/scene", label: "Scene" },
   { href: "/jam", label: "Jam" },
   { href: "/profile", label: "Profile" },
 ];
@@ -50,17 +51,14 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-6 lg:flex">
           {navLinks.map((link) => {
-            const active =
-              pathname === link.href ||
-              (link.href !== "/" && pathname.startsWith(`${link.href}/`)) ||
-              (link.href === "/scene" && pathname.startsWith("/community"));
+            const active = isNavActive(pathname, link.href);
             return (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
                   "font-body text-sm font-medium no-underline transition-colors hover:text-brand-gold",
-                  active || link.highlight
+                  active
                     ? "cj-nav-tab-active text-brand-parchment"
                     : "text-cj-text-muted"
                 )}

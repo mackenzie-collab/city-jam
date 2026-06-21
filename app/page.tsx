@@ -13,7 +13,7 @@ import Footer from "@/components/Footer";
 export default function HomePage() {
   return (
     <MarketingShell>
-      <main>
+      <main className="relative z-[1] bg-cj-bg">
         <Hero />
         <SignalMapSection />
         <ScenePreviewCarousel />
