@@ -1,34 +1,33 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import VinylCard from "@/components/analog/VinylCard";
 
 export default function GuestModeCTA() {
   return (
-    <section className="cj-section bg-cj-purple">
-      <div className="cj-crt-panel mx-auto max-w-4xl text-center">
-        <div className="cj-crt-scanline" aria-hidden />
-        <span className="cj-badge relative mb-4 sm:mb-6">No Commitment</span>
-        <h2 className="cj-headline relative text-4xl sm:text-5xl md:text-7xl">
-          Try Before You
-          <br />
-          <span className="text-cj-gold-bright">Transmit.</span>
+    <section className="cj-section bg-cj-bg">
+      <VinylCard className="mx-auto max-w-4xl text-center">
+        <span className="cj-badge mb-4 sm:mb-6">No commitment</span>
+        <h2 className="cj-headline text-3xl sm:text-4xl md:text-5xl">
+          Try before you{" "}
+          <span className="text-label-amber">transmit</span>
         </h2>
-        <p className="relative mx-auto mt-4 max-w-xl font-mono text-sm text-cj-gold-muted sm:mt-6 sm:text-base">
+        <p className="mx-auto mt-4 max-w-xl text-base text-cj-text-muted sm:mt-6">
           Spin the dial as a guest. Explore the signal map. No account needed
           to feel the vibe — but you&apos;ll need one to connect.
         </p>
-        <div className="cj-mobile-cta-stack relative mx-auto mt-8 max-w-md justify-center sm:mt-10">
+        <div className="cj-mobile-cta-stack mx-auto mt-8 max-w-md justify-center sm:mt-10">
           <Link href="/echo-roulette" className="no-underline">
             <Button variant="primary" size="lg" className="w-full">
-              Try as Guest
+              Try as guest
             </Button>
           </Link>
           <Link href="/register" className="no-underline">
             <Button variant="secondary" size="lg" className="w-full">
-              Join the Rebellion
+              Join the rebellion
             </Button>
           </Link>
         </div>
-      </div>
+      </VinylCard>
     </section>
   );
 }

@@ -241,8 +241,8 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
               {isOwnProfile ? (
                 <JamStreakWidget showBadges={false} />
               ) : (
-                <div className="cj-card border-orange-500/30">
-                  <p className="text-[10px] uppercase tracking-widest text-orange-300/80">Jam Streak</p>
+                <div className="cj-card border-label-amber/30">
+                  <p className="text-xs font-medium text-label-amber/80">Jam Streak</p>
                   <p className="mt-2 font-display text-4xl text-cj-gold">
                     {streak.current_week_streak}
                     <span className="ml-2 text-sm uppercase text-cj-gold-muted">weeks</span>

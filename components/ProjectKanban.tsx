@@ -106,7 +106,8 @@ export default function ProjectKanban({
           return (
             <div
               key={id}
-              className={`min-w-[min(85vw,220px)] flex-1 snap-start rounded-xl border ${color} bg-cj-dark/50 p-3 sm:min-w-[200px]`}
+              className={`min-w-[min(85vw,220px)] flex-1 snap-start rounded-xl border ${color} p-3 sm:min-w-[200px]`}
+              style={{ backgroundColor: "var(--cj-input-bg)" }}
               onDragOver={(e) => {
                 e.preventDefault();
                 e.dataTransfer.dropEffect = "move";

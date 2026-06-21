@@ -10,6 +10,7 @@ Local `.env.local` is set. Realtime is on.
 
 | Name | Value |
 |------|--------|
+| `NEXT_PUBLIC_SITE_URL` | `https://city-jam.vercel.app` |
 | `NEXT_PUBLIC_SUPABASE_URL` | `https://ifrhsazcivovyiusxpkx.supabase.co` |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | *(copy from `.env.local` in this folder)* |
 

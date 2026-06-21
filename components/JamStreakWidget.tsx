@@ -37,7 +37,7 @@ export default function JamStreakWidget({ compact, showBadges = true }: JamStrea
       <Link
         href="/community"
         title="Jam Streak — consecutive weeks of engagement"
-        className="flex items-center gap-1.5 rounded-full border border-orange-500/40 bg-orange-500/10 px-3 py-1 text-xs uppercase tracking-widest text-orange-200 no-underline hover:border-orange-400/60"
+        className="flex items-center gap-1.5 rounded-full border border-label-amber/40 bg-label-amber/10 px-3 py-1 text-xs font-medium text-label-cream no-underline hover:border-label-amber/60"
       >
         <Flame className="h-3 w-3" />
         {weeks}w {emoji}
@@ -46,10 +46,10 @@ export default function JamStreakWidget({ compact, showBadges = true }: JamStrea
   }
 
   return (
-    <div className="cj-card border-orange-500/30 bg-gradient-to-br from-cj-purple-card to-orange-950/20">
+    <div className="cj-card border-label-amber/30 bg-gradient-to-br from-cj-purple-card to-wax-burgundy/20">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-[10px] uppercase tracking-widest text-orange-300/80">Jam Streak</p>
+          <p className="text-xs font-medium text-label-amber/80">Jam Streak</p>
           <p className="mt-1 text-[10px] text-cj-gold-muted/80">Consecutive weeks engaged</p>
           <p className="mt-2 font-display text-5xl text-cj-gold">
             {weeks}

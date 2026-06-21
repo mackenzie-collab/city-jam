@@ -71,11 +71,12 @@ Dashboard → **Database** → **Replication** → enable realtime for:
 Create `.env.local` locally:
 
 ```env
+NEXT_PUBLIC_SITE_URL=https://city-jam.vercel.app
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
 ```
 
-Add the **same variables** in Vercel → Project → Settings → Environment Variables, then redeploy.
+Add the **same variables** in Vercel → Project → Settings → Environment Variables (use your production URL for `NEXT_PUBLIC_SITE_URL`), then redeploy.
 
 ---
 

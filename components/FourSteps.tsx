@@ -1,3 +1,7 @@
+import GrainOverlay from "@/components/GrainOverlay";
+import PosterMotif from "@/components/PosterMotif";
+import BarcodeDivider from "@/components/BarcodeDivider";
+
 const steps = [
   {
     number: "01",
@@ -26,28 +30,41 @@ const steps = [
 
 export default function FourSteps() {
   return (
-    <section className="cj-section bg-cj-purple-dark">
-      <div className="mx-auto max-w-6xl">
-        <span className="cj-badge mb-4 sm:mb-6">Process</span>
-        <h2 className="cj-headline text-4xl sm:text-5xl md:text-7xl">
-          Four Steps.
-          <br />
-          <span className="text-cj-gold-bright">Then It&apos;s Gone.</span>
+    <section className="cj-section cj-section-poster relative overflow-hidden bg-cj-bg">
+      <GrainOverlay intensity={0.14} />
+      <PosterMotif variant="section" opacity={0.5} />
+      <div className="relative mx-auto max-w-6xl">
+        <BarcodeDivider className="mb-6 max-w-md opacity-70" />
+        <span className="cj-badge mb-4 font-headline uppercase tracking-[0.14em] sm:mb-6">
+          Process
+        </span>
+        <h2 className="cj-poster-headline text-3xl sm:text-4xl md:text-5xl">
+          Four steps.{" "}
+          <span className="text-label-amber">Then it&apos;s gone.</span>
         </h2>
 
-        <div className="mt-8 grid gap-6 sm:mt-12 sm:grid-cols-2 sm:gap-8">
-          {steps.map((step) => (
-            <div key={step.number} className="relative pl-4 pt-6">
-              <span className="cj-step-watermark" aria-hidden>
-                {step.number}
-              </span>
-              <span className="relative font-mono text-sm text-cj-gold-bright">{step.number}</span>
-              <h3 className="relative mt-2 font-headline text-xl uppercase text-cj-gold">
-                {step.title}
-              </h3>
-              <p className="relative mt-2 text-sm text-cj-gold-muted">
-                {step.description}
-              </p>
+        <div className="mt-10 grid gap-0 sm:grid-cols-2">
+          {steps.map((step, i) => (
+            <div
+              key={step.number}
+              className="border-b border-cj-border py-6 sm:odd:pr-8 sm:even:pl-8 sm:[&:nth-child(-n+2)]:border-t"
+            >
+              <div className="flex items-baseline gap-4">
+                <span className="font-headline text-3xl font-bold tabular-nums text-label-amber sm:text-4xl">
+                  {step.number}
+                </span>
+                <div>
+                  <h3 className="font-headline text-lg font-bold uppercase tracking-[0.1em] text-cj-text sm:text-xl">
+                    {step.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-cj-text-muted">
+                    {step.description}
+                  </p>
+                </div>
+              </div>
+              {i === 1 && (
+                <BarcodeDivider className="mt-6 max-w-[120px] opacity-50 sm:hidden" />
+              )}
             </div>
           ))}
         </div>

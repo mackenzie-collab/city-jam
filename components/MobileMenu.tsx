@@ -55,13 +55,13 @@ export default function MobileMenu({
         onClick={onClose}
         aria-label="Close menu"
       />
-      <div className="absolute right-0 top-0 flex h-full w-[min(100%,20rem)] flex-col border-l border-cj-gold-border bg-cj-purple-dark shadow-2xl">
-        <div className="flex items-center justify-between border-b border-cj-gold-border px-5 py-4">
+      <div className="absolute right-0 top-0 flex h-full w-[min(100%,20rem)] flex-col border-l border-cj-border bg-cj-bg shadow-2xl">
+        <div className="flex items-center justify-between border-b border-cj-border px-5 py-4">
           <BrandLogo size={32} />
           <button
             type="button"
             onClick={onClose}
-            className="flex h-10 w-10 items-center justify-center text-cj-gold"
+            className="flex h-10 w-10 items-center justify-center text-cj-text-muted hover:text-cj-text"
             aria-label="Close"
           >
             <X className="h-5 w-5" />
@@ -69,7 +69,7 @@ export default function MobileMenu({
         </div>
 
         <nav className="flex-1 overflow-y-auto px-4 py-4">
-          <p className="mb-2 px-2 text-[10px] uppercase tracking-widest text-cj-gold-muted">
+          <p className="mb-2 px-2 text-xs font-medium text-cj-text-muted">
             Main
           </p>
           {PRIMARY_LINKS.map(({ href, label, highlight }) => (
@@ -78,17 +78,17 @@ export default function MobileMenu({
               href={href}
               onClick={onClose}
               className={cn(
-                "mb-1 flex min-h-11 items-center rounded-lg px-3 text-sm uppercase tracking-widest no-underline transition-colors",
+                "mb-1 flex min-h-11 items-center rounded-md px-3 text-sm font-medium no-underline transition-colors",
                 highlight
-                  ? "bg-cj-gold/10 font-semibold text-cj-gold-bright"
-                  : "text-cj-gold hover:bg-cj-purple-card"
+                  ? "bg-cj-gold/10 font-semibold text-cj-gold"
+                  : "text-cj-text hover:bg-cj-surface-elevated"
               )}
             >
               {label}
             </Link>
           ))}
 
-          <p className="mb-2 mt-6 px-2 text-[10px] uppercase tracking-widest text-cj-gold-muted">
+          <p className="mb-2 mt-6 px-2 text-xs font-medium text-cj-text-muted">
             Tools
           </p>
           {TOOL_LINKS.map(({ href, label }) => (
@@ -96,7 +96,7 @@ export default function MobileMenu({
               key={href}
               href={href}
               onClick={onClose}
-              className="mb-1 flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm uppercase tracking-wider text-cj-gold no-underline hover:bg-cj-purple-card"
+              className="mb-1 flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-medium text-cj-text no-underline hover:bg-cj-surface-elevated"
             >
               <CjIcon src={TOOL_ICONS[href]} alt="" size={18} className="opacity-80" />
               {label}
@@ -104,7 +104,7 @@ export default function MobileMenu({
           ))}
         </nav>
 
-        <div className="border-t border-cj-gold-border p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <div className="border-t border-cj-border p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
           {isAuthenticated ? (
             <div className="space-y-2">
               <Link href="/profile" onClick={onClose} className="block no-underline">

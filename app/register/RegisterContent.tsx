@@ -74,7 +74,7 @@ export default function RegisterContent() {
           <p className="mt-2 text-sm text-cj-gold-muted">Cover art over selfies. Music speaks first.</p>
           <div className="mt-8 sm:mt-10">
             {pendingEmail ? (
-              <div className="rounded-2xl border border-cj-gold-border bg-cj-dark/80 p-6 text-left">
+              <div className="rounded-2xl border border-cj-gold-border p-6 text-left" style={{ backgroundColor: "var(--cj-input-bg)" }}>
                 <h2 className="text-lg font-semibold text-cj-gold">Check your email</h2>
                 <p className="mt-2 text-sm text-cj-gold-muted">
                   We sent a confirmation link to <span className="text-cj-gold">{pendingEmail}</span>.

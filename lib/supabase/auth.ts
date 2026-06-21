@@ -1,4 +1,5 @@
 import { AuthChangeEvent, Provider, Session, User } from "@supabase/supabase-js";
+import { authCallbackUrl } from "@/lib/site-url";
 import { getSupabase } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -9,8 +10,7 @@ export function supabaseAuthAvailable(): boolean {
 }
 
 function authRedirectUrl(returnPath = "/profile"): string {
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
-  return `${origin}/auth/callback?next=${encodeURIComponent(returnPath)}`;
+  return authCallbackUrl(returnPath);
 }
 
 export async function signInWithEmail(email: string, password: string) {
@@ -24,12 +24,11 @@ export async function signInWithEmail(email: string, password: string) {
 export async function signUpWithEmail(email: string, password: string) {
   const supabase = getSupabase();
   if (!supabase) throw new Error("Supabase not configured");
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent("/profile")}`,
+      emailRedirectTo: authCallbackUrl("/profile"),
     },
   });
   if (error) throw error;
@@ -39,7 +38,13 @@ export async function signUpWithEmail(email: string, password: string) {
 export async function resendSignupConfirmation(email: string) {
   const supabase = getSupabase();
   if (!supabase) throw new Error("Supabase not configured");
-  const { error } = await supabase.auth.resend({ type: "signup", email });
+  const { error } = await supabase.auth.resend({
+    type: "signup",
+    email,
+    options: {
+      emailRedirectTo: authCallbackUrl("/profile"),
+    },
+  });
   if (error) throw error;
 }
 
@@ -91,9 +96,8 @@ export async function signInWithApple(returnPath?: string) {
 export async function resetPasswordForEmail(email: string) {
   const supabase = getSupabase();
   if (!supabase) throw new Error("Supabase not configured");
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${origin}/login`,
+    redirectTo: authCallbackUrl("/settings/security"),
   });
   if (error) throw error;
 }

@@ -108,7 +108,8 @@ export default function AuthCard({
             type="button"
             onClick={() => handleOAuth(id)}
             disabled={loading || !onOAuth}
-            className="flex w-full items-center justify-center gap-3 rounded-full border border-cj-gold-border bg-cj-dark py-3 text-sm text-cj-gold transition-opacity hover:opacity-80 disabled:opacity-50"
+            className="flex w-full items-center justify-center gap-3 rounded-full border border-cj-gold-border py-3 text-sm text-cj-gold transition-opacity hover:opacity-80 disabled:opacity-50"
+            style={{ backgroundColor: "var(--cj-input-bg)" }}
           >
             <OAuthIcon provider={id} />
             {label}

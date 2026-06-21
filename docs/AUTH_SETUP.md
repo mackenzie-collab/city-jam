@@ -50,10 +50,13 @@ See also [docs/auth-native.md](./auth-native.md) for Expo deep links.
 
 Production and Preview need:
 
+- `NEXT_PUBLIC_SITE_URL` = `https://city-jam.vercel.app` — **required** so signup/password emails redirect to production, not localhost
 - `NEXT_PUBLIC_SUPABASE_URL` = `https://ifrhsazcivovyiusxpkx.supabase.co`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = anon key from [Project Settings → API](https://supabase.com/dashboard/project/ifrhsazcivovyiusxpkx/settings/api)
 
 Redeploy after changing env vars.
+
+**Important:** Supabase **Site URL** (step 1) must also be `https://city-jam.vercel.app`. If it is still `http://localhost:3000`, confirmation links in older emails may still point at localhost until users request a new confirmation email.
 
 ## Verify
 
@@ -68,4 +71,5 @@ Redeploy after changing env vars.
 | OAuth page: "provider is not enabled" | Enable Google/Facebook/Apple in Supabase Providers |
 | "Email not confirmed" | Click confirmation link or disable Confirm email for testing |
 | Redirect loop / callback error | Add redirect URLs in step 1 |
+| Confirmation link opens localhost | Set Supabase Site URL to production; add `NEXT_PUBLIC_SITE_URL` on Vercel; resend confirmation |
 | Works locally, not on Vercel | Check env vars on Vercel project → Settings → Environment Variables |

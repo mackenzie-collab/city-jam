@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import CjIcon from "@/components/CjIcon";
+import VinylCard from "@/components/analog/VinylCard";
+import GrainOverlay from "@/components/GrainOverlay";
+import BarcodeDivider from "@/components/BarcodeDivider";
 import { TOOL_ICONS } from "@/lib/brand-assets";
 
 const tools = [
@@ -48,37 +51,41 @@ const tools = [
 
 export default function MoreToolsGrid() {
   return (
-    <section className="cj-section bg-cj-purple-dark">
-      <div className="mx-auto max-w-6xl">
-        <span className="cj-badge mb-4 sm:mb-6">Explore</span>
-        <h2 className="cj-headline text-4xl sm:text-5xl md:text-7xl">
-          More Tools.
-          <br />
-          <span className="text-cj-gold-bright">Your Scene.</span>
+    <section className="cj-section cj-section-poster relative overflow-hidden bg-cj-surface">
+      <GrainOverlay intensity={0.12} />
+      <div className="relative mx-auto max-w-6xl">
+        <BarcodeDivider className="mb-6 max-w-sm opacity-65" />
+        <span className="cj-badge mb-4 font-headline uppercase tracking-[0.14em] sm:mb-6">
+          Explore
+        </span>
+        <h2 className="cj-poster-headline text-3xl sm:text-4xl md:text-5xl">
+          More tools.{" "}
+          <span className="text-label-amber">Your scene.</span>
         </h2>
 
-        <div className="mt-8 grid gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-          {tools.map((tool) => (
-            <Link
-              key={tool.title}
-              href={tool.href}
-              className="group cj-divider-card block transition-all hover:border-cj-gold/60"
-            >
-              <CjIcon
-                src={TOOL_ICONS[tool.href]}
-                alt=""
-                size={28}
-                className="mb-4 opacity-80 group-hover:opacity-100"
-              />
-              <h3 className="font-headline text-2xl uppercase text-cj-gold">
-                {tool.title}
-              </h3>
-              <p className="mt-3 text-sm text-cj-gold-muted">
-                {tool.description}
-              </p>
-              <span className="mt-6 inline-flex items-center gap-1 text-xs uppercase tracking-nav text-cj-gold transition-all group-hover:gap-2">
-                Open <ArrowRight className="h-3 w-3" />
-              </span>
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+          {tools.map((tool, i) => (
+            <Link key={tool.title} href={tool.href} className="group block no-underline">
+              <VinylCard className="h-full transition-shadow hover:shadow-lg">
+                <div className="mb-3 flex items-center justify-between">
+                  <CjIcon
+                    src={TOOL_ICONS[tool.href]}
+                    alt=""
+                    size={24}
+                    className="opacity-80 group-hover:opacity-100"
+                  />
+                  <span className="font-headline text-xs font-bold tabular-nums text-cj-text-muted">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </div>
+                <h3 className="font-headline text-lg font-bold uppercase tracking-[0.08em] text-cj-text sm:text-xl">
+                  {tool.title}
+                </h3>
+                <p className="mt-2 text-sm text-cj-text-muted">{tool.description}</p>
+                <span className="mt-4 inline-flex items-center gap-1 font-headline text-xs uppercase tracking-wide text-label-amber transition-all group-hover:gap-2">
+                  Open <ArrowRight className="h-3.5 w-3.5" />
+                </span>
+              </VinylCard>
             </Link>
           ))}
         </div>

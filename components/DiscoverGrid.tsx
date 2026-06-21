@@ -90,16 +90,16 @@ export default function DiscoverGrid() {
 
       {trending.length > 0 && (
         <section className="mb-10">
-          <h2 className="mb-4 font-display text-lg uppercase text-cj-gold">Trending on Scene</h2>
+          <h2 className="mb-4 text-lg font-bold text-cj-text">Trending on Scene</h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {trending.map((post) => (
               <Link key={post.id} href={`/scene/post/${post.id}`} className="no-underline">
-                <VinylCard padding="default" className="!p-4 flex items-center gap-3 transition-colors hover:border-cj-gold">
+                <VinylCard padding="default" className="!p-4 flex items-center gap-3 transition-shadow hover:shadow-md">
                   {post.cover_url && (
                     <CoverArtFrame src={post.cover_url} aspect="square" className="h-12 w-12 shrink-0" sizes="48px" />
                   )}
                 <div className="min-w-0">
-                  <p className="truncate font-display uppercase text-cj-gold">{post.title}</p>
+                  <p className="truncate font-semibold text-cj-text">{post.title}</p>
                   <p className="truncate text-xs text-cj-gold-muted">
                     {post.author_display_name} · {post.like_count} likes
                   </p>
@@ -112,7 +112,7 @@ export default function DiscoverGrid() {
       )}
 
       <section>
-        <h2 className="mb-4 font-display text-lg uppercase text-cj-gold">Artists</h2>
+        <h2 className="mb-4 text-lg font-bold text-cj-text">Artists</h2>
         {loading ? (
           <p className="text-cj-gold-muted">Loading...</p>
         ) : filteredProfiles.length === 0 ? (
@@ -124,10 +124,10 @@ export default function DiscoverGrid() {
               const cover = p.cover_image_url || BRAND.logo2026Updated;
               return (
                 <Link key={p.user_id} href={href} className="no-underline">
-                  <VinylCard padding="none" className="cj-gold-frame overflow-hidden transition-colors hover:border-cj-gold">
+                  <VinylCard padding="none" className="overflow-hidden transition-shadow hover:shadow-md">
                     <CoverArtFrame src={cover} aspect="square" sizes="(max-width:768px) 50vw, 250px" />
                     <div className="p-4">
-                    <p className="font-display text-lg uppercase text-cj-gold hover:text-cj-gold-bright">
+                    <p className="text-lg font-semibold text-cj-text hover:text-cj-gold">
                       {p.display_name}
                     </p>
                     <p className="text-xs text-cj-gold-muted">

@@ -3,25 +3,25 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap text-sm font-semibold uppercase tracking-nav transition-all disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap text-sm font-semibold transition-colors disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         primary:
-          "rounded bg-cj-gold px-6 py-3 text-cj-purple-card shadow-emboss hover:rotate-[2deg] hover:opacity-95 active:translate-y-0.5 active:shadow-press-collapse",
+          "rounded-full bg-cj-gold px-6 py-2.5 text-cj-on-gold hover:bg-cj-gold-bright",
         secondary:
-          "rounded border-2 border-label-cream px-6 py-3 text-cj-gold hover:rotate-[2deg] hover:bg-cj-gold/5 active:translate-y-0.5 active:shadow-press-collapse",
+          "rounded-full border border-cj-border px-6 py-2.5 text-cj-text hover:border-cj-gold hover:bg-cj-gold/5",
         ghost:
-          "rounded border border-transparent px-4 py-2 text-cj-gold hover:border-cj-gold-border hover:bg-cj-gold/5 active:opacity-80",
+          "rounded-md px-4 py-2 font-medium text-cj-text-muted hover:bg-cj-surface-elevated hover:text-cj-text",
         outline:
-          "rounded border border-cj-gold-border px-4 py-2 text-cj-gold hover:border-cj-gold hover:bg-cj-gold/5",
+          "rounded-full border border-cj-border px-4 py-2 text-cj-text hover:border-cj-gold hover:bg-cj-gold/5",
         destructive:
-          "rounded border border-wax-burgundy bg-wax-burgundy/20 px-6 py-3 text-label-cream hover:rotate-[-2deg] hover:bg-wax-burgundy/40 active:shadow-press-collapse",
+          "rounded-full border border-wax-burgundy bg-wax-burgundy/20 px-6 py-2.5 text-label-cream hover:bg-wax-burgundy/40",
       },
       size: {
         default: "",
         sm: "px-4 py-2 text-xs",
-        lg: "px-8 py-4 text-base",
+        lg: "px-8 py-3 text-base",
       },
     },
     defaultVariants: {

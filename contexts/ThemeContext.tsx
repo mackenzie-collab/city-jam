@@ -8,38 +8,37 @@ import {
   useMemo,
   useState,
 } from "react";
-import { usePathname } from "next/navigation";
 
 export type ThemeMode = "dark" | "light";
 
 const STORAGE_KEY = "cj-theme";
 
-const LIGHT_ROUTES = ["/discover", "/privacy", "/terms", "/contact"];
-const DARK_ROUTES = [
-  "/scene",
-  "/jam",
-  "/blind-echo",
-  "/echo-roulette",
-  "/studio",
-  "/collab",
-  "/vault",
-  "/circles",
-  "/listening-rooms",
-  "/community",
-  "/signal-map",
-];
+const THEME_COLORS: Record<ThemeMode, string> = {
+  dark: "#0D0A0F",
+  light: "#F5EDD6",
+};
 
-function routeDefaultTheme(pathname: string): ThemeMode {
-  if (LIGHT_ROUTES.some((r) => pathname === r || pathname.startsWith(`${r}/`))) {
-    return "light";
-  }
-  if (pathname.startsWith("/profile/") && pathname !== "/profile") {
-    return "light";
-  }
-  if (DARK_ROUTES.some((r) => pathname === r || pathname.startsWith(`${r}/`))) {
-    return "dark";
-  }
-  return "dark";
+function getSystemTheme(): ThemeMode {
+  if (typeof window === "undefined") return "dark";
+  return window.matchMedia("(prefers-color-scheme: light)").matches
+    ? "light"
+    : "dark";
+}
+
+function readStoredTheme(): ThemeMode | null {
+  if (typeof window === "undefined") return null;
+  const stored = localStorage.getItem(STORAGE_KEY) as ThemeMode | null;
+  return stored === "dark" || stored === "light" ? stored : null;
+}
+
+function resolveTheme(): ThemeMode {
+  return readStoredTheme() ?? getSystemTheme();
+}
+
+function applyTheme(mode: ThemeMode) {
+  document.documentElement.setAttribute("data-theme", mode);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", THEME_COLORS[mode]);
 }
 
 interface ThemeContextValue {
@@ -51,24 +50,21 @@ interface ThemeContextValue {
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const [override, setOverride] = useState<ThemeMode | null>(null);
+  const [theme, setThemeState] = useState<ThemeMode>(() => {
+    if (typeof window === "undefined") return "dark";
+    const fromDom = document.documentElement.getAttribute("data-theme");
+    if (fromDom === "light" || fromDom === "dark") return fromDom;
+    return resolveTheme();
+  });
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const stored = localStorage.getItem(STORAGE_KEY) as ThemeMode | null;
-    if (stored === "dark" || stored === "light") setOverride(stored);
-  }, []);
-
-  const theme = override ?? routeDefaultTheme(pathname);
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
+    applyTheme(theme);
   }, [theme]);
 
   const setTheme = useCallback((mode: ThemeMode) => {
-    setOverride(mode);
+    setThemeState(mode);
     localStorage.setItem(STORAGE_KEY, mode);
+    applyTheme(mode);
   }, []);
 
   const toggleTheme = useCallback(() => {

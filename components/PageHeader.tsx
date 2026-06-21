@@ -25,13 +25,13 @@ export default function PageHeader({
 }: PageHeaderProps) {
   return (
     <header
-      className={`sticky top-0 z-50 flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 ${
-        dark ? "bg-cj-dark border-b border-cj-gold-border" : "bg-cj-purple-dark"
+      className={`cj-header flex items-center justify-between px-4 py-3 sm:px-6 ${
+        dark ? "bg-cj-bg" : "bg-cj-bg"
       }`}
     >
       <Link
         href={backHref}
-        className="flex h-10 w-10 items-center justify-center text-cj-gold transition-opacity hover:opacity-70"
+        className="flex h-10 w-10 items-center justify-center text-cj-text-muted transition-colors hover:text-cj-text"
         aria-label="Go back"
       >
         <ArrowLeft className="h-5 w-5" />
@@ -46,7 +46,7 @@ export default function PageHeader({
         {showDot && (
           <span className="h-2 w-2 rounded-full bg-cj-gold-bright animate-pulse-dot" />
         )}
-        <h1 className="font-display text-sm uppercase tracking-widest text-cj-gold">
+        <h1 className="text-sm font-semibold text-cj-text">
           {title}
         </h1>
       </div>

@@ -1,48 +1,37 @@
-import {
-  Instrument_Serif,
-  Barlow_Condensed,
-  Inter,
-  JetBrains_Mono,
-  Special_Elite,
-} from "next/font/google";
 import type { Metadata, Viewport } from "next";
+import { Barlow_Condensed, Instrument_Serif, Inter } from "next/font/google";
+
 import "./globals.css";
+
 import LiveConfigBanner from "@/components/LiveConfigBanner";
 import Providers from "@/components/Providers";
 
-const instrumentSerif = Instrument_Serif({
-  weight: "400",
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-display",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
 const barlowCondensed = Barlow_Condensed({
+  subsets: ["latin"],
   weight: ["400", "600", "700"],
-  subsets: ["latin"],
   variable: "--font-headline",
+  display: "swap",
 });
 
-const inter = Inter({
+const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
-  variable: "--font-inter",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-});
-
-const specialElite = Special_Elite({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-typewriter",
+  weight: ["400"],
+  variable: "--font-display",
+  display: "swap",
 });
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#1E0B2C",
+  themeColor: "#0D0A0F",
 };
 
 export const metadata: Metadata = {
@@ -62,16 +51,24 @@ export const metadata: Metadata = {
   },
 };
 
+const themeInitScript = `(function(){try{var k='cj-theme',s=localStorage.getItem(k),t=s==='light'||s==='dark'?s:window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="dark" suppressHydrationWarning>
-      <body
-        className={`${instrumentSerif.variable} ${barlowCondensed.variable} ${inter.variable} ${jetbrainsMono.variable} ${specialElite.variable}`}
-      >
+    <html
+      lang="en"
+      data-theme="dark"
+      suppressHydrationWarning
+      className={`${inter.variable} ${barlowCondensed.variable} ${instrumentSerif.variable}`}
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body className="font-body">
         <Providers>
           <LiveConfigBanner />
           {children}
