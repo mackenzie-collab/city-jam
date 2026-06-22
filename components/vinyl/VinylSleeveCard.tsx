@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Play } from "lucide-react";
 import { cn, formatRelativeTime } from "@/lib/utils";
 import CoverArtFrame from "@/components/analog/CoverArtFrame";
@@ -28,6 +29,8 @@ function toTrack(p: AudioPost): Track {
 
 export default function VinylSleeveCard({ post, queue, className, compact = false }: VinylSleeveCardProps) {
   const { play, currentTrack, isPlaying, toggle, progress, duration } = useAudioPlayer();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const track = toTrack(post);
   const isActive = currentTrack?.id === post.id;
   const profileHref = post.author_username
@@ -120,7 +123,7 @@ export default function VinylSleeveCard({ post, queue, className, compact = fals
           <Link href={profileHref} className="truncate font-body text-xs text-cj-text-muted hover:text-brand-gold">
             {post.author_display_name ?? "Musician"}
           </Link>
-          {post.created_at && (
+          {mounted && post.created_at && (
             <span className="shrink-0 font-mono text-[9px] text-cj-text-muted/70">
               · {formatRelativeTime(post.created_at)}
             </span>

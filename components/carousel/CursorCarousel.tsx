@@ -59,10 +59,16 @@ export default function CursorCarousel({
 
   const useLoop = loop && slideCount > 4;
 
-  const scrollToIndex = useCallback((index: number, behavior: ScrollBehavior = "smooth") => {
+  const scrollToIndex = useCallback((index: number, smooth = true) => {
+    const track = trackRef.current;
     const slide = slideRefs.current[index];
-    if (!slide) return;
-    slide.scrollIntoView({ behavior, inline: "center", block: "nearest" });
+    if (!track || !slide) return;
+
+    const targetLeft = slide.offsetLeft - (track.clientWidth - slide.offsetWidth) / 2;
+    track.scrollTo({
+      left: Math.max(0, targetLeft),
+      behavior: smooth ? "smooth" : "auto",
+    });
     setSelectedIndex(index);
   }, []);
 
@@ -73,7 +79,7 @@ export default function CursorCarousel({
   useEffect(() => {
     setSelectedIndex(0);
     const frame = requestAnimationFrame(() => {
-      scrollToIndex(0, "instant");
+      scrollToIndex(0, false);
     });
     return () => cancelAnimationFrame(frame);
   }, [contentKey, slideCount, scrollToIndex]);

@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button";
 import VinylCard from "@/components/analog/VinylCard";
 
 export default function GuestModeCTA() {
@@ -16,16 +15,12 @@ export default function GuestModeCTA() {
           to feel the vibe — but you&apos;ll need one to connect.
         </p>
         <div className="cj-mobile-cta-stack mx-auto mt-8 max-w-md justify-center sm:mt-10">
-          <Link href="/echo-roulette" className="no-underline">
-            <Button variant="primary" size="lg" className="w-full">
-              Try as guest
-            </Button>
-          </Link>
-          <Link href="/register" className="no-underline">
-            <Button variant="secondary" size="lg" className="w-full">
-              Join the rebellion
-            </Button>
-          </Link>
+          <ButtonLink href="/echo-roulette" variant="primary" size="lg" className="w-full">
+            Try as guest
+          </ButtonLink>
+          <ButtonLink href="/register" variant="secondary" size="lg" className="w-full">
+            Join the rebellion
+          </ButtonLink>
         </div>
       </VinylCard>
     </section>

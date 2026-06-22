@@ -36,6 +36,8 @@ export function sceneUnavailable() {
   return !isSupabaseConfigured() || !getSupabase();
 }
 
+export const DEMO_BASE_MS = Date.parse("2026-06-01T12:00:00.000Z");
+
 export const DEMO_POSTS: AudioPost[] = [
   {
     id: "demo-1",
@@ -48,7 +50,7 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 142,
     like_count: 23,
     comment_count: 5,
-    created_at: new Date(Date.now() - 3600000).toISOString(),
+    created_at: new Date(DEMO_BASE_MS - 3600000).toISOString(),
     author_username: "nightoperator",
     author_display_name: "Night Operator",
   },
@@ -63,7 +65,7 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 89,
     like_count: 17,
     comment_count: 3,
-    created_at: new Date(Date.now() - 7200000).toISOString(),
+    created_at: new Date(DEMO_BASE_MS - 7200000).toISOString(),
     author_username: "keysandsmoke",
     author_display_name: "Keys & Smoke",
   },
@@ -78,7 +80,7 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 256,
     like_count: 41,
     comment_count: 8,
-    created_at: new Date(Date.now() - 86400000).toISOString(),
+    created_at: new Date(DEMO_BASE_MS - 86400000).toISOString(),
     author_username: "beatarchitect",
     author_display_name: "Beat Architect",
   },
@@ -93,7 +95,7 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 67,
     like_count: 14,
     comment_count: 2,
-    created_at: new Date(Date.now() - 172800000).toISOString(),
+    created_at: new Date(DEMO_BASE_MS - 172800000).toISOString(),
     author_username: "ariavolkov",
     author_display_name: "Aria Volkov",
   },
@@ -108,7 +110,7 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 198,
     like_count: 32,
     comment_count: 6,
-    created_at: new Date(Date.now() - 259200000).toISOString(),
+    created_at: new Date(DEMO_BASE_MS - 259200000).toISOString(),
     author_username: "lowendtheory",
     author_display_name: "Low End Theory",
   },
@@ -123,7 +125,7 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 54,
     like_count: 19,
     comment_count: 4,
-    created_at: new Date(Date.now() - 345600000).toISOString(),
+    created_at: new Date(DEMO_BASE_MS - 345600000).toISOString(),
     author_username: "meadowlark",
     author_display_name: "Meadow Lark",
   },
@@ -138,7 +140,7 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 41,
     like_count: 11,
     comment_count: 1,
-    created_at: new Date(Date.now() - 432000000).toISOString(),
+    created_at: new Date(DEMO_BASE_MS - 432000000).toISOString(),
     author_username: "soprano_null",
     author_display_name: "Soprano Null",
   },
@@ -153,7 +155,7 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 73,
     like_count: 22,
     comment_count: 3,
-    created_at: new Date(Date.now() - 518400000).toISOString(),
+    created_at: new Date(DEMO_BASE_MS - 518400000).toISOString(),
     author_username: "carmenreyes",
     author_display_name: "Carmen Reyes",
   },
@@ -168,7 +170,7 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 112,
     like_count: 28,
     comment_count: 5,
-    created_at: new Date(Date.now() - 604800000).toISOString(),
+    created_at: new Date(DEMO_BASE_MS - 604800000).toISOString(),
     author_username: "sectioneight",
     author_display_name: "Section Eight",
   },
@@ -183,7 +185,7 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 301,
     like_count: 47,
     comment_count: 9,
-    created_at: new Date(Date.now() - 691200000).toISOString(),
+    created_at: new Date(DEMO_BASE_MS - 691200000).toISOString(),
     author_username: "sleepwalker",
     author_display_name: "Sleepwalker",
   },
@@ -198,7 +200,7 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 88,
     like_count: 16,
     comment_count: 2,
-    created_at: new Date(Date.now() - 777600000).toISOString(),
+    created_at: new Date(DEMO_BASE_MS - 777600000).toISOString(),
     author_username: "devsharma",
     author_display_name: "Dev Sharma",
   },
@@ -213,7 +215,7 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 167,
     like_count: 35,
     comment_count: 7,
-    created_at: new Date(Date.now() - 864000000).toISOString(),
+    created_at: new Date(DEMO_BASE_MS - 864000000).toISOString(),
     author_username: "staticsaint",
     author_display_name: "Static Saint",
   },
@@ -228,7 +230,7 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 29,
     like_count: 8,
     comment_count: 1,
-    created_at: new Date(Date.now() - 950400000).toISOString(),
+    created_at: new Date(DEMO_BASE_MS - 950400000).toISOString(),
     author_username: "thecollective",
     author_display_name: "The Collective",
   },
@@ -243,7 +245,7 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 214,
     like_count: 39,
     comment_count: 6,
-    created_at: new Date(Date.now() - 1036800000).toISOString(),
+    created_at: new Date(DEMO_BASE_MS - 1036800000).toISOString(),
     author_username: "voltcrawler",
     author_display_name: "Volt Crawler",
   },
@@ -258,7 +260,7 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 45,
     like_count: 12,
     comment_count: 2,
-    created_at: new Date(Date.now() - 1123200000).toISOString(),
+    created_at: new Date(DEMO_BASE_MS - 1123200000).toISOString(),
     author_username: "eastriverstrings",
     author_display_name: "East River Strings",
   },
@@ -273,7 +275,7 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 389,
     like_count: 62,
     comment_count: 11,
-    created_at: new Date(Date.now() - 1209600000).toISOString(),
+    created_at: new Date(DEMO_BASE_MS - 1209600000).toISOString(),
     author_username: "globaljam",
     author_display_name: "Global Jam",
   },
@@ -477,13 +479,17 @@ export async function isFollowing(followerId: string, followingId: string): Prom
 }
 
 export async function incrementPlayCount(postId: string): Promise<void> {
-  if (sceneUnavailable()) return;
-  const { data: post } = await db().from("audio_posts").select("play_count").eq("id", postId).maybeSingle();
-  if (post) {
-    await db()
-      .from("audio_posts")
-      .update({ play_count: (post.play_count ?? 0) + 1 })
-      .eq("id", postId);
+  if (sceneUnavailable() || postId.startsWith("demo-")) return;
+  try {
+    const { data: post } = await db().from("audio_posts").select("play_count").eq("id", postId).maybeSingle();
+    if (post) {
+      await db()
+        .from("audio_posts")
+        .update({ play_count: (post.play_count ?? 0) + 1 })
+        .eq("id", postId);
+    }
+  } catch {
+    /* non-fatal */
   }
 }
 

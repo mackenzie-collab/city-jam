@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button";
 import CjIcon from "@/components/CjIcon";
 import VinylCard from "@/components/analog/VinylCard";
 import GrainOverlay from "@/components/GrainOverlay";
@@ -54,11 +53,9 @@ export default function TwoModes() {
               <p className="mt-3 flex-1 font-mono text-sm leading-relaxed text-brand-parchment/70">
                 {mode.description}
               </p>
-              <Link href={mode.href} className="mt-6 block no-underline">
-                <Button variant="secondary" className="w-full border-brand-gold/40 text-brand-parchment hover:border-brand-gold sm:w-auto">
-                  {mode.cta}
-                </Button>
-              </Link>
+              <ButtonLink href={mode.href} variant="secondary" className="mt-6 w-full border-brand-gold/40 text-brand-parchment hover:border-brand-gold sm:w-auto">
+                {mode.cta}
+              </ButtonLink>
             </VinylCard>
           ))}
         </div>

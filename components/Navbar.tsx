@@ -7,7 +7,7 @@ import { LogOut, Menu } from "lucide-react";
 import BrandLogo from "@/components/BrandLogo";
 import MobileMenu from "@/components/MobileMenu";
 import CjIcon from "@/components/CjIcon";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import JamStreakWidget from "@/components/JamStreakWidget";
 import ThemeToggle from "@/components/ThemeToggle";
 import { ICONS } from "@/lib/brand-assets";
@@ -96,12 +96,10 @@ export default function Navbar() {
               <Link href="/login" className="cj-sign-in-ghost hidden sm:inline-flex">
                 Sign in
               </Link>
-              <Link href="/register" className="no-underline">
-                <Button variant="primary" size="sm" className="px-4">
-                  <span className="sm:hidden">Join</span>
-                  <span className="hidden sm:inline">Join the rebellion</span>
-                </Button>
-              </Link>
+              <ButtonLink href="/register" variant="primary" size="sm" className="px-4">
+                <span className="sm:hidden">Join</span>
+                <span className="hidden sm:inline">Join the rebellion</span>
+              </ButtonLink>
             </>
           )}
         </div>

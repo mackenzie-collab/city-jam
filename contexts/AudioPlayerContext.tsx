@@ -49,11 +49,16 @@ function loadQueue(): Track[] {
 
 function saveQueue(queue: Track[]) {
   if (typeof window === "undefined") return;
-  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(queue));
+  try {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(queue));
+  } catch {
+    /* quota / private mode */
+  }
 }
 
 export function AudioPlayerProvider({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const queueRef = useRef<Track[]>([]);
   const [queue, setQueue] = useState<Track[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -64,9 +69,14 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
   const currentTrack = queue[currentIndex] ?? null;
 
   useEffect(() => {
+    queueRef.current = queue;
+  }, [queue]);
+
+  useEffect(() => {
     const saved = loadQueue();
     if (saved.length > 0) {
       setQueue(saved);
+      queueRef.current = saved;
     }
     setHydrated(true);
   }, []);
@@ -76,6 +86,7 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
     saveQueue(queue);
   }, [queue, hydrated]);
 
+  /* Single Audio instance for the app lifetime — never recreate on queue changes. */
   useEffect(() => {
     const audio = new Audio();
     audioRef.current = audio;
@@ -85,7 +96,10 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
     const onEnded = () => {
       setCurrentIndex((i) => {
         const next = i + 1;
-        if (next < queue.length) return next;
+        if (next < queueRef.current.length) {
+          setIsPlaying(true);
+          return next;
+        }
         setIsPlaying(false);
         return i;
       });
@@ -104,15 +118,18 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
       audio.removeEventListener("ended", onEnded);
       audioRef.current = null;
     };
-  }, [queue.length]);
+  }, []);
+
+  const loadedTrackIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !currentTrack) return;
 
-    if (audio.src !== currentTrack.audioUrl) {
+    if (loadedTrackIdRef.current !== currentTrack.id) {
       audio.src = currentTrack.audioUrl;
       audio.load();
+      loadedTrackIdRef.current = currentTrack.id;
     }
 
     if (isPlaying) {
@@ -120,7 +137,7 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
     } else {
       audio.pause();
     }
-  }, [currentTrack, isPlaying]);
+  }, [currentTrack?.id, currentTrack?.audioUrl, isPlaying]);
 
   const play = useCallback((track: Track, newQueue?: Track[]) => {
     if (newQueue) {
@@ -144,19 +161,19 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
   const pause = useCallback(() => setIsPlaying(false), []);
 
   const toggle = useCallback(() => {
-    if (!currentTrack) return;
+    if (!queueRef.current.length) return;
     setIsPlaying((p) => !p);
-  }, [currentTrack]);
+  }, []);
 
   const next = useCallback(() => {
     setCurrentIndex((i) => {
-      if (i + 1 < queue.length) {
+      if (i + 1 < queueRef.current.length) {
         setIsPlaying(true);
         return i + 1;
       }
       return i;
     });
-  }, [queue.length]);
+  }, []);
 
   const prev = useCallback(() => {
     const audio = audioRef.current;

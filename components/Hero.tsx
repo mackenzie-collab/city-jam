@@ -1,8 +1,7 @@
-import Link from "next/link";
 import GrainOverlay from "@/components/GrainOverlay";
 import HeroArtboard from "@/components/home/HeroArtboard";
 import BrandLogo from "@/components/BrandLogo";
-import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button";
 
 export default function Hero() {
   return (
@@ -30,16 +29,12 @@ export default function Hero() {
             </p>
 
             <div className="cj-mobile-cta-stack mt-8 sm:mt-10">
-              <Link href="/scene" className="no-underline">
-                <Button variant="primary" size="lg" className="w-full sm:w-auto">
-                  Enter the scene
-                </Button>
-              </Link>
-              <Link href="/echo-roulette" className="no-underline">
-                <Button variant="secondary" size="lg" className="w-full sm:w-auto">
-                  Try as guest
-                </Button>
-              </Link>
+              <ButtonLink href="/scene" variant="primary" size="lg" className="w-full sm:w-auto">
+                Enter the scene
+              </ButtonLink>
+              <ButtonLink href="/echo-roulette" variant="secondary" size="lg" className="w-full sm:w-auto">
+                Try as guest
+              </ButtonLink>
             </div>
           </div>
 
