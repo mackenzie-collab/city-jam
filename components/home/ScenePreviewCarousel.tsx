@@ -1,10 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import CursorCarousel from "@/components/carousel/CursorCarousel";
-import GrainOverlay from "@/components/GrainOverlay";
+import CarouselSection from "@/components/carousel/CarouselSection";
 import VinylSleeveCard from "@/components/vinyl/VinylSleeveCard";
 import {
   fetchSceneFeed,
@@ -15,6 +13,37 @@ import {
 import { cn } from "@/lib/utils";
 
 const GENRE_FILTERS = ["ALL", "ELECTRONIC", "JAZZ", "HIP-HOP", "ROCK", "FOLK", "CLASSICAL", "WORLD"] as const;
+
+function GenreFilters({
+  genre,
+  onChange,
+}: {
+  genre: string;
+  onChange: (g: string) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-cj-text-muted">
+        Filter by genre
+      </p>
+      <div className="cj-carousel-filters -mx-1 flex gap-2 overflow-x-auto px-1 pb-1 scrollbar-thin">
+        {GENRE_FILTERS.map((g) => (
+          <button
+            key={g}
+            type="button"
+            onClick={() => onChange(g)}
+            className={cn(
+              "cj-pill shrink-0 text-[10px] sm:text-xs",
+              genre === g && "cj-pill-active"
+            )}
+          >
+            {g}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function ScenePreviewCarousel() {
   const [posts, setPosts] = useState<AudioPost[]>(() => mergeSceneFeed([], 16));
@@ -50,71 +79,44 @@ export default function ScenePreviewCarousel() {
 
   return (
     <>
-      <section
+      <CarouselSection
         id="on-the-scene"
-        className="relative overflow-x-visible border-y border-brand-gold/15 bg-brand-purple-deep py-8 sm:py-10"
+        badge="On the scene"
+        title={
+          <>
+            Close your eyes. <span className="text-brand-gold">Listen.</span>
+          </>
+        }
+        description="Fresh drops from musicians worldwide. Every card is audio-first — drag to browse the crate."
+        link={{ href: "/scene", label: "Full scene feed" }}
+        filters={<GenreFilters genre={genre} onChange={setGenre} />}
+        variant="deep"
       >
-        <GrainOverlay className="opacity-[0.035]" />
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 md:px-8">
-          <span className="cj-badge mb-2">On the scene</span>
-          <h2 className="cj-headline text-3xl sm:text-4xl md:text-5xl">
-            Close your eyes.{" "}
-            <span className="text-brand-gold">Listen.</span>
-          </h2>
-          <p className="mt-2 max-w-xl font-body text-sm text-cj-text-muted sm:text-base">
-            Fresh drops from musicians worldwide. Every card is audio-first.
-          </p>
-          <Link href="/scene" className="cj-link-groove mt-3 inline-flex items-center gap-2 text-sm">
-            Full scene feed <ArrowRight className="h-4 w-4" />
-          </Link>
-
-          <div className="mt-5 flex flex-wrap gap-2">
-            {GENRE_FILTERS.map((g) => (
-              <button
-                key={g}
-                type="button"
-                onClick={() => setGenre(g)}
-                className={cn(
-                  "cj-pill text-[10px] sm:text-xs",
-                  genre === g && "cj-pill-active"
-                )}
-              >
-                {g}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="cj-carousel-band relative mt-5">
-          <CursorCarousel ariaLabel="Scene audio feed" fullBleed showControls loop>
-            {displayPosts.map((post) => (
-              <VinylSleeveCard key={post.id} post={post} queue={displayPosts} />
-            ))}
-          </CursorCarousel>
-        </div>
-      </section>
+        <CursorCarousel ariaLabel="Scene audio feed" showControls loop contentKey={genre}>
+          {displayPosts.map((post) => (
+            <VinylSleeveCard key={post.id} post={post} queue={displayPosts} />
+          ))}
+        </CursorCarousel>
+      </CarouselSection>
 
       {trendingPosts.length >= 3 && (
-        <section
+        <CarouselSection
           id="trending-this-week"
-          className="relative overflow-x-visible border-b border-brand-gold/10 bg-cj-surface py-8 sm:py-10"
+          badge="Trending this week"
+          title={
+            <>
+              Most played. <span className="text-brand-gold">Right now.</span>
+            </>
+          }
+          description="Tracks gaining momentum across the scene."
+          variant="surface"
         >
-          <GrainOverlay className="opacity-[0.03]" />
-          <div className="relative mx-auto max-w-6xl px-4 sm:px-6 md:px-8">
-            <span className="cj-badge mb-2">Trending this week</span>
-            <h2 className="cj-headline text-2xl sm:text-3xl">
-              Most played.{" "}
-              <span className="text-brand-gold">Right now.</span>
-            </h2>
-          </div>
-          <div className="cj-carousel-band relative mt-5">
-            <CursorCarousel ariaLabel="Trending tracks" fullBleed showControls compact loop>
-              {trendingPosts.map((post) => (
-                <VinylSleeveCard key={`trend-${post.id}`} post={post} queue={trendingPosts} compact />
-              ))}
-            </CursorCarousel>
-          </div>
-        </section>
+          <CursorCarousel ariaLabel="Trending tracks" showControls compact loop>
+            {trendingPosts.map((post) => (
+              <VinylSleeveCard key={`trend-${post.id}`} post={post} queue={trendingPosts} compact />
+            ))}
+          </CursorCarousel>
+        </CarouselSection>
       )}
     </>
   );

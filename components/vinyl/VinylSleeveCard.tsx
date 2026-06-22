@@ -51,8 +51,8 @@ export default function VinylSleeveCard({ post, queue, className, compact = fals
   return (
     <article
       className={cn(
-        "cj-zine-border group relative flex w-full max-w-[min(92vw,400px)] flex-col bg-brand-purple-deep transition-shadow hover:shadow-lg sm:max-w-[min(88vw,440px)]",
-        compact && "max-w-[min(90vw,360px)] sm:max-w-[min(85vw,380px)]",
+        "cj-zine-border group relative mx-auto flex w-[280px] max-w-[78vw] flex-col bg-brand-purple-deep transition-shadow hover:shadow-lg sm:w-[320px] md:w-[360px]",
+        compact && "w-[240px] max-w-[72vw] sm:w-[280px]",
         isActive && "ring-1 ring-brand-gold/40",
         className
       )}
