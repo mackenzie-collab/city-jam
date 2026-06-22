@@ -1,47 +1,5 @@
--- City Jam — run in Supabase SQL Editor (Dashboard → SQL → New query)
+-- Bind matchmaking RPC calls to the authenticated user.
 
--- Match queue
-create table if not exists public.match_queue (
-  id uuid primary key default gen_random_uuid(),
-  user_id text not null,
-  mode text not null check (mode in ('blind-echo', 'echo-roulette')),
-  frequency numeric,
-  status text not null default 'waiting' check (status in ('waiting', 'matched', 'cancelled')),
-  session_id uuid,
-  is_initiator boolean default false,
-  created_at timestamptz not null default now()
-);
-
-create index if not exists match_queue_waiting_idx
-  on public.match_queue (mode, status, created_at);
-
--- Map presence (neighborhood-level, rounded coords)
-create table if not exists public.map_presence (
-  user_id text primary key,
-  lng numeric not null,
-  lat numeric not null,
-  updated_at timestamptz not null default now()
-);
-
--- Session decisions (transmit / fade)
-create table if not exists public.session_decisions (
-  session_id uuid not null,
-  user_id text not null,
-  decision text not null check (decision in ('transmit', 'fade')),
-  created_at timestamptz not null default now(),
-  primary key (session_id, user_id)
-);
-
-alter table public.match_queue enable row level security;
-alter table public.map_presence enable row level security;
-alter table public.session_decisions enable row level security;
-
--- Open policies for MVP (tighten before production)
-create policy "match_queue_all" on public.match_queue for all using (true) with check (true);
-create policy "map_presence_all" on public.map_presence for all using (true) with check (true);
-create policy "session_decisions_all" on public.session_decisions for all using (true) with check (true);
-
--- Atomic match pairing
 create or replace function public.try_match(
   p_user_id text,
   p_mode text,
@@ -64,6 +22,7 @@ begin
       using errcode = '42501';
   end if;
 
+  -- Clear only stale waiting rows for this user before re-queueing.
   delete from public.match_queue
   where user_id = p_user_id and status = 'waiting';
 
