@@ -29,14 +29,9 @@ export default function MusicianGallery() {
       </div>
 
       <div className="cj-carousel-band relative mt-5">
-        <CursorCarousel
-          ariaLabel="Musician gallery"
-          fullBleed
-          showControls
-          trackClassName="py-3"
-        >
+        <CursorCarousel ariaLabel="Musician gallery" fullBleed showControls loop trackClassName="py-3">
           {MUSICIAN_PHOTOS.map(({ src, alt }) => (
-            <VinylPhotoFrame key={src} src={src} alt={alt} size={220} maxVw={52} />
+            <VinylPhotoFrame key={src} src={src} alt={alt} size={260} maxVw={58} />
           ))}
         </CursorCarousel>
       </div>

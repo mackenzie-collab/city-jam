@@ -26,7 +26,7 @@ export default function DiscoverGrid() {
     try {
       const [p, feed] = await Promise.all([
         fetchActiveProfiles(50).catch(() => [] as UserProfile[]),
-        fetchSceneFeed({ limit: 20 }),
+        fetchSceneFeed({ limit: 20, minCount: 12 }),
       ]);
       setProfiles(p);
       setPosts(feed);
@@ -120,7 +120,7 @@ export default function DiscoverGrid() {
             <h2 className="cj-headline text-2xl sm:text-3xl">On the scene</h2>
           </div>
           <div className="-mx-4 sm:-mx-6">
-            <CursorCarousel ariaLabel="Trending tracks" fullBleed compact showControls>
+            <CursorCarousel ariaLabel="Trending tracks" fullBleed compact showControls loop>
               {trending.map((post) => (
                 <VinylSleeveCard key={post.id} post={post} queue={trending} compact />
               ))}

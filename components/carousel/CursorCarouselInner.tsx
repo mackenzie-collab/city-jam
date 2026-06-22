@@ -9,18 +9,11 @@ import {
 } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import {
-  EffectCoverflow,
-  Navigation,
-  Pagination,
-  Keyboard,
-  A11y,
-} from "swiper/modules";
+import { Navigation, Pagination, Keyboard, A11y } from "swiper/modules";
 import type { Swiper as SwiperInstance } from "swiper";
 import { cn } from "@/lib/utils";
 
 import "swiper/css";
-import "swiper/css/effect-coverflow";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
@@ -28,14 +21,36 @@ export interface CursorCarouselProps {
   children: ReactNode;
   className?: string;
   trackClassName?: string;
-  /** Accessible label for the carousel region */
   ariaLabel?: string;
-  /** Full-bleed edge-to-edge track with peek of adjacent slides */
   fullBleed?: boolean;
-  /** Narrower slides for compact vinyl cards */
   compact?: boolean;
-  /** Prev/next arrows, dot indicators, and slide counter */
   showControls?: boolean;
+  /** Infinite loop when more than 4 slides */
+  loop?: boolean;
+}
+
+function CarouselCardSkeleton({ compact }: { compact?: boolean }) {
+  return (
+    <div
+      className={cn(
+        "cj-zine-border mx-auto flex w-full max-w-[min(92vw,400px)] flex-col bg-brand-purple-deep animate-pulse sm:max-w-[min(88vw,440px)]",
+        compact && "max-w-[min(90vw,360px)]"
+      )}
+      aria-hidden
+    >
+      <div className="border-b border-[var(--cj-zine-border)] bg-brand-purple p-4">
+        <div className="flex items-end justify-center gap-3">
+          <div className="aspect-square w-[52%] rounded-2xl bg-cj-surface/50" />
+          <div className="h-[170px] w-[170px] shrink-0 rounded-full bg-cj-surface/40 sm:h-[200px] sm:w-[200px]" />
+        </div>
+      </div>
+      <div className="space-y-2 p-3">
+        <div className="h-2 w-16 rounded bg-brand-gold/20" />
+        <div className="h-5 w-3/4 rounded bg-cj-text/10" />
+        <div className="h-3 w-1/2 rounded bg-cj-text/10" />
+      </div>
+    </div>
+  );
 }
 
 export default function CursorCarouselInner({
@@ -46,6 +61,7 @@ export default function CursorCarouselInner({
   fullBleed = false,
   compact = false,
   showControls = false,
+  loop = false,
 }: CursorCarouselProps) {
   const slides = Children.toArray(children);
   const slideCount = slides.length;
@@ -54,14 +70,10 @@ export default function CursorCarouselInner({
   const paginationRef = useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [swiper, setSwiper] = useState<SwiperInstance | null>(null);
-  const [reducedMotion, setReducedMotion] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    setReducedMotion(
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    );
   }, []);
 
   useEffect(() => {
@@ -96,22 +108,19 @@ export default function CursorCarouselInner({
 
   if (slideCount === 1) {
     return (
-      <div
-        className={cn(
-          "cj-cursor-carousel cj-cursor-carousel--swiper relative",
-          className
-        )}
-      >
+      <div className={cn("cj-cursor-carousel cj-cursor-carousel--swiper relative", className)}>
         {slides[0]}
       </div>
     );
   }
 
+  const useLoop = loop && slideCount > 4;
+
   if (!mounted) {
     return (
       <div
         className={cn(
-          "cj-cursor-carousel cj-cursor-carousel--swiper relative min-h-[280px]",
+          "cj-cursor-carousel cj-cursor-carousel--swiper relative min-h-[24rem] md:min-h-[28rem]",
           compact && "cj-cursor-carousel--compact",
           fullBleed ? "w-full" : undefined,
           className
@@ -119,14 +128,12 @@ export default function CursorCarouselInner({
         aria-label={ariaLabel}
         aria-busy="true"
       >
-        <div className="flex h-full items-center justify-center px-4 py-8">
-          <div className="h-48 w-48 max-w-[52vw] animate-pulse rounded-full bg-cj-surface/40" />
+        <div className="flex items-center justify-center px-4 py-8">
+          <CarouselCardSkeleton compact={compact} />
         </div>
       </div>
     );
   }
-
-  const useCoverflow = !reducedMotion;
 
   return (
     <div
@@ -139,60 +146,22 @@ export default function CursorCarouselInner({
     >
       <div className="relative overflow-visible bg-inherit">
         <Swiper
-          modules={[EffectCoverflow, Navigation, Pagination, Keyboard, A11y]}
-          effect={useCoverflow ? "coverflow" : undefined}
+          modules={[Navigation, Pagination, Keyboard, A11y]}
           grabCursor
           centeredSlides
           slidesPerView="auto"
-          spaceBetween={-24}
+          spaceBetween={-20}
           slideToClickedSlide
-          watchSlidesProgress
+          loop={useLoop}
           keyboard={{ enabled: true }}
           a11y={{
             enabled: true,
             containerRoleDescriptionMessage: "carousel",
             itemRoleDescriptionMessage: "slide",
           }}
-          coverflowEffect={
-            useCoverflow
-              ? {
-                  rotate: 0,
-                  stretch: 0,
-                  depth: 120,
-                  modifier: 1.5,
-                  slideShadows: false,
-                }
-              : undefined
-          }
           breakpoints={{
-            0: {
-              spaceBetween: -16,
-              ...(useCoverflow
-                ? {
-                    coverflowEffect: {
-                      rotate: 0,
-                      stretch: 0,
-                      depth: 80,
-                      modifier: 1.2,
-                      slideShadows: false,
-                    },
-                  }
-                : {}),
-            },
-            640: {
-              spaceBetween: -24,
-              ...(useCoverflow
-                ? {
-                    coverflowEffect: {
-                      rotate: 0,
-                      stretch: 0,
-                      depth: 120,
-                      modifier: 1.5,
-                      slideShadows: false,
-                    },
-                  }
-                : {}),
-            },
+            0: { spaceBetween: -16 },
+            640: { spaceBetween: -24 },
           }}
           navigation={false}
           pagination={false}
@@ -207,9 +176,7 @@ export default function CursorCarouselInner({
         >
           {slides.map((child, i) => (
             <SwiperSlide key={i} className="carousel-slide">
-              <div className="cj-carousel-slide-content h-full w-full">
-                {child}
-              </div>
+              <div className="cj-carousel-slide-content h-full w-full">{child}</div>
             </SwiperSlide>
           ))}
         </Swiper>
@@ -219,7 +186,7 @@ export default function CursorCarouselInner({
         <div
           className={cn(
             "cj-carousel-controls mt-4 flex items-center justify-center gap-3 sm:gap-4",
-            fullBleed ? "px-4 sm:px-6 md:px-8" : "px-4 sm:px-6 md:px-8"
+            "px-4 sm:px-6 md:px-8"
           )}
         >
           <button
@@ -238,7 +205,6 @@ export default function CursorCarouselInner({
               role="tablist"
               aria-label={`${ariaLabel} slides`}
             />
-
             <span
               className="font-mono text-[10px] uppercase tracking-[0.22em] text-brand-gold/75 sm:text-[11px]"
               aria-live="polite"

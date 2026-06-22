@@ -279,6 +279,29 @@ export const DEMO_POSTS: AudioPost[] = [
   },
 ];
 
+/** Pad sparse live feeds with demo catalog — live posts stay first. */
+export function mergeSceneFeed(live: AudioPost[], minCount = 12): AudioPost[] {
+  const seen = new Set<string>();
+  const merged: AudioPost[] = [];
+
+  for (const post of live) {
+    if (seen.has(post.id)) continue;
+    seen.add(post.id);
+    merged.push(post);
+  }
+
+  if (merged.length >= minCount) return merged.slice(0, minCount);
+
+  for (const demo of DEMO_POSTS) {
+    if (merged.length >= minCount) break;
+    if (seen.has(demo.id)) continue;
+    seen.add(demo.id);
+    merged.push(demo);
+  }
+
+  return merged;
+}
+
 async function enrichPosts(posts: AudioPost[]): Promise<AudioPost[]> {
   if (posts.length === 0) return posts;
   const userIds = Array.from(new Set(posts.map((p) => p.user_id)));
@@ -301,14 +324,19 @@ export async function fetchSceneFeed(opts?: {
   genre?: string;
   userId?: string;
   limit?: number;
+  /** Minimum items — pads with DEMO_POSTS when live feed is sparse */
+  minCount?: number;
 }): Promise<AudioPost[]> {
-  if (sceneUnavailable()) return DEMO_POSTS;
+  const limit = opts?.limit ?? 50;
+  const minCount = opts?.minCount ?? 12;
+
+  if (sceneUnavailable()) return mergeSceneFeed([], Math.min(limit, minCount));
 
   let q = db()
     .from("audio_posts")
     .select("*")
     .order("created_at", { ascending: false })
-    .limit(opts?.limit ?? 50);
+    .limit(limit);
 
   if (opts?.genre) q = q.eq("genre", opts.genre);
   if (opts?.userId) q = q.eq("user_id", opts.userId);
@@ -316,7 +344,7 @@ export async function fetchSceneFeed(opts?: {
   const { data, error } = await q;
   if (error) throw error;
   const enriched = await enrichPosts(data ?? []);
-  return enriched.length > 0 ? enriched : DEMO_POSTS;
+  return mergeSceneFeed(enriched, minCount).slice(0, limit);
 }
 
 export async function fetchAudioPost(id: string): Promise<AudioPost | null> {

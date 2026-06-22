@@ -6,23 +6,23 @@ import VinylSleeveCard from "@/components/vinyl/VinylSleeveCard";
 import AudioPostCard from "@/components/AudioPostCard";
 import { cn } from "@/lib/utils";
 import {
-  DEMO_POSTS,
   fetchSceneFeed,
+  mergeSceneFeed,
   subscribeToAudioPosts,
   type AudioPost,
 } from "@/lib/scene";
 
 export default function SceneFeed() {
-  const [posts, setPosts] = useState<AudioPost[]>(DEMO_POSTS);
+  const [posts, setPosts] = useState<AudioPost[]>(() => mergeSceneFeed([], 12));
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<"carousel" | "grid">("carousel");
 
   const load = useCallback(async () => {
     try {
-      const feed = await fetchSceneFeed();
-      setPosts(feed.length > 0 ? feed : DEMO_POSTS);
+      const feed = await fetchSceneFeed({ minCount: 12 });
+      setPosts(feed);
     } catch {
-      setPosts(DEMO_POSTS);
+      setPosts(mergeSceneFeed([], 12));
     } finally {
       setLoading(false);
     }
@@ -34,7 +34,7 @@ export default function SceneFeed() {
     return unsub;
   }, [load]);
 
-  const displayPosts = posts.length > 0 ? posts : DEMO_POSTS;
+  const displayPosts = posts.length > 0 ? posts : mergeSceneFeed([], 12);
 
   return (
     <div>
@@ -70,7 +70,7 @@ export default function SceneFeed() {
       )}
 
       <div className={cn(view === "grid" ? "lg:hidden" : undefined, "cj-carousel-band relative -mx-4 bg-cj-purple-card/40 py-4 sm:-mx-6")}>
-        <CursorCarousel ariaLabel="Scene feed" fullBleed showControls>
+        <CursorCarousel ariaLabel="Scene feed" fullBleed showControls loop>
           {displayPosts.map((post) => (
             <VinylSleeveCard key={post.id} post={post} queue={displayPosts} />
           ))}
