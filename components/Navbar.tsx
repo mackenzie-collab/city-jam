@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { LogOut, Menu } from "lucide-react";
@@ -14,8 +14,9 @@ import { isNavActive } from "@/lib/nav";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
-const navLinks = [
+const navLinks: { href: string; label: string; hash?: boolean }[] = [
   { href: "/", label: "Home" },
+  { href: "/#affiliates", label: "Affiliates", hash: true },
   { href: "/discover", label: "Discover" },
   { href: "/scene", label: "Scene" },
   { href: "/jam", label: "Jam" },
@@ -27,6 +28,18 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [affiliatesActive, setAffiliatesActive] = useState(false);
+
+  useEffect(() => {
+    const syncAffiliates = () => {
+      setAffiliatesActive(
+        window.location.pathname === "/" && window.location.hash === "#affiliates"
+      );
+    };
+    syncAffiliates();
+    window.addEventListener("hashchange", syncAffiliates);
+    return () => window.removeEventListener("hashchange", syncAffiliates);
+  }, [pathname]);
 
   const handleLogout = async () => {
     await logout();
@@ -50,7 +63,11 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-6 lg:flex">
           {navLinks.map((link) => {
-            const active = isNavActive(pathname, link.href);
+            const active = link.hash
+                ? affiliatesActive
+                : link.href === "/"
+                  ? pathname === "/" && !affiliatesActive
+                  : isNavActive(pathname, link.href);
             return (
               <Link
                 key={link.href}

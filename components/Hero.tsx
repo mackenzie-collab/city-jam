@@ -34,6 +34,9 @@ export default function Hero() {
               <ButtonLink href="/blind-echo" variant="primary" size="lg" className="w-full sm:w-auto">
                 Enter Blind Echo
               </ButtonLink>
+              <ButtonLink href="/#affiliates" variant="secondary" size="lg" className="w-full sm:w-auto">
+                Affiliate waitlist
+              </ButtonLink>
               <ButtonLink href="/scene" variant="secondary" size="lg" className="w-full sm:w-auto">
                 Enter the scene
               </ButtonLink>

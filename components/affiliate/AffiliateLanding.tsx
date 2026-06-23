@@ -64,10 +64,17 @@ function TikTokIcon({ size = 20 }: { size?: number }) {
   );
 }
 
-export default function AffiliateLanding() {
+interface AffiliateLandingProps {
+  embedded?: boolean;
+}
+
+export default function AffiliateLanding({ embedded = false }: AffiliateLandingProps) {
   return (
     <>
-      <section className="affiliate-hero" aria-labelledby="affiliate-hero-heading">
+      <section
+        className={embedded ? "affiliate-hero affiliate-hero--embedded" : "affiliate-hero"}
+        aria-labelledby="affiliate-hero-heading"
+      >
         <div className="affiliate-hero__canvas" aria-hidden>
           <div className="affiliate-hero__mesh" />
         </div>
@@ -343,6 +350,7 @@ export default function AffiliateLanding() {
         </div>
       </FadeIn>
 
+      {!embedded ? (
       <footer className="affiliate-footer">
         <div className="affiliate-container">
           <BarcodeDivider className="affiliate-footer__barcode" />
@@ -381,6 +389,7 @@ export default function AffiliateLanding() {
           </div>
         </div>
       </footer>
+      ) : null}
     </>
   );
 }

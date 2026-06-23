@@ -1,44 +1,13 @@
-import { Anton, Barlow_Condensed, Inter, Space_Mono } from "next/font/google";
 import Script from "next/script";
 
-import "./affiliate.css";
-
-const anton = Anton({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-affiliate-display",
-  display: "swap",
-});
-
-const barlowCondensed = Barlow_Condensed({
-  subsets: ["latin"],
-  weight: ["700", "800"],
-  variable: "--font-affiliate-condensed",
-  display: "swap",
-});
-
-const spaceMono = Space_Mono({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-affiliate-mono",
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-affiliate-body",
-  display: "swap",
-});
+import AffiliateShell from "@/components/affiliate/AffiliateShell";
 
 const ga4Id = process.env.NEXT_PUBLIC_GA4_ID;
 const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
 export default function AffiliateLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div
-      className={`affiliate-page ${anton.variable} ${barlowCondensed.variable} ${spaceMono.variable} ${inter.variable}`}
-    >
+    <AffiliateShell>
       <a href="#main-content" className="affiliate-skip-link">
         Skip to main content
       </a>
@@ -77,6 +46,6 @@ export default function AffiliateLayout({ children }: { children: React.ReactNod
       ) : null}
 
       {children}
-    </div>
+    </AffiliateShell>
   );
 }

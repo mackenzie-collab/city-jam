@@ -14,6 +14,16 @@ const nextConfig = {
 
   env: siteUrl ? { NEXT_PUBLIC_SITE_URL: siteUrl.replace(/\/$/, "") } : {},
 
+  async redirects() {
+    return [
+      {
+        source: "/affiliate",
+        destination: "/#affiliates",
+        permanent: false,
+      },
+    ];
+  },
+
 };
 
 

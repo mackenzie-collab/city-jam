@@ -68,7 +68,7 @@ export default function Footer() {
           <Link href="/privacy" className="cj-link-groove uppercase tracking-wide">
             Privacy
           </Link>
-          <Link href="/affiliate" className="cj-link-groove uppercase tracking-wide">
+          <Link href="/#affiliates" className="cj-link-groove uppercase tracking-wide">
             Affiliates
           </Link>
           <Link href="/terms" className="cj-link-groove uppercase tracking-wide">

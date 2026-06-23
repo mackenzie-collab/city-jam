@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 
 const PRIMARY_LINKS = [
   { href: "/", label: "Home" },
+  { href: "/#affiliates", label: "Affiliates" },
   { href: "/discover", label: "Discover" },
   { href: "/scene", label: "Scene" },
   { href: "/jam", label: "Jam" },

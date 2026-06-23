@@ -879,4 +879,84 @@
   .cj-card-lp:hover {
     transform: none !important;
   }
+
+  .cj-home-panel {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* ── Homepage app / affiliates tabs ── */
+.cj-home-experience {
+  position: relative;
+}
+
+.cj-home-tabs {
+  --cj-header-offset: 3.25rem;
+}
+
+.cj-home-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cj-text-muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.cj-home-tab:hover,
+.cj-home-tab:focus-visible {
+  color: var(--cj-text);
+  outline: none;
+}
+
+.cj-home-tab--active {
+  color: var(--cj-gold);
+  border-bottom-color: var(--cj-gold);
+  background: rgba(179, 162, 0, 0.06);
+}
+
+.cj-home-tab__pill {
+  padding: 0.15rem 0.45rem;
+  font-size: 0.5625rem;
+  letter-spacing: 0.1em;
+  color: var(--cj-bg);
+  background: var(--cj-gold);
+}
+
+.cj-home-panel {
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+
+.cj-home-panel--active {
+  opacity: 1;
+  transform: translateY(0);
+  position: relative;
+  z-index: 1;
+}
+
+.cj-home-panel--inactive {
+  opacity: 0;
+  transform: translateY(0.75rem);
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  visibility: hidden;
 }

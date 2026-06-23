@@ -275,6 +275,25 @@
   }
 }
 
+.affiliate-hero--embedded {
+  min-height: auto;
+  padding-bottom: 0;
+}
+
+.affiliate-hero--embedded .affiliate-hero__content {
+  padding-block: clamp(2.5rem, 6vh, 4rem);
+}
+
+.affiliate-hero--embedded .affiliate-hero-vinyl {
+  opacity: 0.55;
+}
+
+@media (max-width: 1023px) {
+  .affiliate-hero--embedded .affiliate-hero-vinyl {
+    display: none;
+  }
+}
+
 .affiliate-hero__canvas {
   position: absolute;
   inset: 0;
