@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Flame, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import CjIcon from "@/components/CjIcon";
+import StreakIcon from "@/components/StreakIcon";
 import FeatureShell from "@/components/FeatureShell";
 import ToolsStrip from "@/components/ToolsStrip";
 import JamStreakWidget from "@/components/JamStreakWidget";
@@ -99,8 +100,8 @@ export default function CommunityHub() {
 
         <aside className="space-y-6">
           <div className="cj-card">
-            <p className="mb-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-cj-gold-muted">
-              <Flame className="h-3 w-3" /> Jam Streak Leaders
+            <p className="mb-4 flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-cj-text-muted">
+              <StreakIcon size={14} /> Jam Streak Leaders
             </p>
             {leaders.length === 0 ? (
               <p className="text-xs text-cj-gold-muted">Stay active each week to claim the top spot.</p>

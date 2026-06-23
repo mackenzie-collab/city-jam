@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { User, Sparkles, Users, Trash2 } from "lucide-react";
 import FeatureShell from "@/components/FeatureShell";
 import JamStreakWidget, { BadgeGallery } from "@/components/JamStreakWidget";
+import StreakIcon from "@/components/StreakIcon";
 import ToolsStrip from "@/components/ToolsStrip";
 import VinylPhotoFrame from "@/components/vinyl/VinylPhotoFrame";
 import { Button } from "@/components/ui/button";
@@ -243,11 +244,14 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
               {isOwnProfile ? (
                 <JamStreakWidget showBadges={false} />
               ) : (
-                <div className="cj-card border-label-amber/30">
-                  <p className="text-xs font-medium text-label-amber/80">Jam Streak</p>
-                  <p className="mt-2 font-display text-4xl text-cj-gold">
+                <div className="cj-card border-brand-gold/30">
+                  <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-brand-gold">
+                    <StreakIcon size={16} />
+                    Jam Streak
+                  </p>
+                  <p className="mt-2 font-display text-4xl text-brand-gold">
                     {streak.current_week_streak}
-                    <span className="ml-2 text-sm uppercase text-cj-gold-muted">weeks</span>
+                    <span className="ml-2 text-sm uppercase text-cj-text-muted">weeks</span>
                   </p>
                 </div>
               )}

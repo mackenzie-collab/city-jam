@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import VinylCard from "@/components/analog/VinylCard";
+import StreakIcon from "@/components/StreakIcon";
 import { fetchCommunityFeed, type FeedItem } from "@/lib/community";
 import { STOCK } from "@/lib/brand-assets";
 
@@ -77,7 +78,10 @@ export default function CommunityPreview() {
             </div>
             <VinylCard className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
               <div>
-                <p className="text-xl font-bold text-cj-text">Jam streak</p>
+                <p className="flex items-center gap-2 font-display text-xl uppercase tracking-wide text-cj-text">
+                  <StreakIcon size={20} />
+                  Jam streak
+                </p>
                 <p className="mt-2 text-sm text-cj-text-muted">
                   Stay active each week — jam, collab, or post. Build your weekly streak and climb the leaderboard.
                 </p>

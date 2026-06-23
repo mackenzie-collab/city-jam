@@ -2,12 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Flame } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import StreakIcon from "@/components/StreakIcon";
 import { badgesForUser, BADGES } from "@/lib/badges";
 import {
   fetchJamStreak,
-  streakEmoji,
   weekStreakLabel,
   type JamStreak,
 } from "@/lib/streaks";
@@ -29,7 +28,6 @@ export default function JamStreakWidget({ compact, showBadges = true }: JamStrea
   if (!user || !streak) return null;
 
   const weeks = streak.current_week_streak;
-  const emoji = streakEmoji(weeks);
   const earned = badgesForUser(streak.earned_badges);
 
   if (compact) {
@@ -37,28 +35,30 @@ export default function JamStreakWidget({ compact, showBadges = true }: JamStrea
       <Link
         href="/community"
         title="Jam Streak — consecutive weeks of engagement"
-        className="flex items-center gap-1.5 rounded-full border border-label-amber/40 bg-label-amber/10 px-3 py-1 text-xs font-medium text-label-cream no-underline hover:border-label-amber/60"
+        className="flex items-center gap-1.5 border border-brand-gold/40 bg-brand-gold/10 px-3 py-1 font-mono text-xs uppercase tracking-widest text-cj-parchment no-underline hover:border-brand-gold/60"
       >
-        <Flame className="h-3 w-3" />
-        {weeks}w {emoji}
+        <StreakIcon size={14} />
+        {weeks}w
       </Link>
     );
   }
 
   return (
-    <div className="cj-card border-label-amber/30 bg-gradient-to-br from-cj-purple-card to-wax-burgundy/20">
+    <div className="cj-card border-brand-gold/30 bg-gradient-to-br from-brand-purple-deep to-cj-bg">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-xs font-medium text-label-amber/80">Jam Streak</p>
-          <p className="mt-1 text-[10px] text-cj-gold-muted/80">Consecutive weeks engaged</p>
-          <p className="mt-2 font-display text-5xl text-cj-gold">
-            {weeks}
-            <span className="ml-2 text-lg uppercase text-cj-gold-muted">wk</span>
-            <span className="ml-2 text-2xl">{emoji}</span>
+          <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-brand-gold">
+            <StreakIcon size={16} />
+            Jam Streak
           </p>
-          <p className="mt-1 text-xs text-cj-gold-muted">{weekStreakLabel(weeks)}</p>
+          <p className="mt-1 font-mono text-[10px] text-cj-text-muted">Consecutive weeks engaged</p>
+          <p className="mt-2 font-display text-5xl text-brand-gold">
+            {weeks}
+            <span className="ml-2 text-lg uppercase text-cj-text-muted">wk</span>
+          </p>
+          <p className="mt-1 font-mono text-xs text-cj-text-muted">{weekStreakLabel(weeks)}</p>
         </div>
-        <div className="text-right text-[10px] uppercase tracking-widest text-cj-gold-muted">
+        <div className="text-right font-mono text-[10px] uppercase tracking-widest text-cj-text-muted">
           <p>Best: {streak.longest_week_streak}w</p>
           <p className="mt-1">Total jams: {streak.total_jams}</p>
         </div>
@@ -66,18 +66,25 @@ export default function JamStreakWidget({ compact, showBadges = true }: JamStrea
 
       {showBadges && (
         <div className="mt-4">
-          <p className="mb-2 text-[10px] uppercase tracking-widest text-cj-gold-muted">Badges</p>
+          <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-cj-text-muted">
+            Badges
+          </p>
           {earned.length === 0 ? (
-            <p className="text-xs text-cj-gold-muted">Jam, collab, or post to earn badges.</p>
+            <p className="font-mono text-xs text-cj-text-muted">Jam, collab, or post to earn badges.</p>
           ) : (
             <div className="flex flex-wrap gap-2">
               {earned.map((b) => (
                 <span
                   key={b.id}
                   title={b.description}
-                  className="inline-flex items-center gap-1 rounded-full border border-cj-gold-border bg-cj-purple/40 px-2 py-1 text-xs text-cj-gold"
+                  className="inline-flex items-center gap-1 border border-cj-gold-border bg-brand-purple/40 px-2 py-1 font-mono text-xs text-brand-gold"
                 >
-                  {b.emoji} {b.name}
+                  {b.id.startsWith("streak_") || b.id === "first_jam" ? (
+                    <StreakIcon size={14} />
+                  ) : (
+                    <span>{b.emoji}</span>
+                  )}
+                  {b.name}
                 </span>
               ))}
             </div>
@@ -106,26 +113,34 @@ export function BadgeGallery({ earnedIds }: BadgeGalleryProps) {
 
   return (
     <div className="cj-card">
-      <p className="mb-1 text-[10px] uppercase tracking-widest text-cj-gold-muted">Jam Streak Badges</p>
-      <p className="mb-4 text-xs text-cj-gold-muted">
+      <p className="mb-1 flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-cj-text-muted">
+        <StreakIcon size={14} />
+        Jam Streak Badges
+      </p>
+      <p className="mb-4 font-mono text-xs text-cj-text-muted">
         Earn badges by staying active week after week — events, collabs, and reels all count.
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
         {BADGES.map((b) => {
           const unlocked = earnedSet.has(b.id);
+          const isStreakBadge = b.id.startsWith("streak_") || b.id === "first_jam";
           return (
             <div
               key={b.id}
-              className={`flex items-start gap-3 rounded-lg border px-3 py-2 ${
+              className={`flex items-start gap-3 border px-3 py-2 ${
                 unlocked
-                  ? "border-cj-gold/50 bg-cj-purple/30"
+                  ? "border-brand-gold/50 bg-brand-purple/30"
                   : "border-cj-gold-border/40 opacity-50"
               }`}
             >
-              <span className="text-2xl">{b.emoji}</span>
+              {isStreakBadge ? (
+                <StreakIcon size={24} className={unlocked ? "" : "opacity-40"} />
+              ) : (
+                <span className="text-2xl">{b.emoji}</span>
+              )}
               <div>
-                <p className="text-sm font-medium text-cj-gold">{b.name}</p>
-                <p className="text-xs text-cj-gold-muted">{b.description}</p>
+                <p className="font-display text-sm uppercase tracking-wide text-brand-gold">{b.name}</p>
+                <p className="font-mono text-xs text-cj-text-muted">{b.description}</p>
               </div>
             </div>
           );
