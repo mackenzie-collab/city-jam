@@ -21,7 +21,7 @@ export default function MusicianGallery() {
     >
       <CursorCarousel ariaLabel="Musician gallery" showControls loop variant="gallery">
         {MUSICIAN_PHOTOS.map(({ src, alt }) => (
-          <VinylPhotoFrame key={src} src={src} alt={alt} size={240} maxVw={44} className="mx-auto" />
+          <VinylPhotoFrame key={src} src={src} alt={alt} size={260} maxVw={44} className="mx-auto w-full max-w-full" />
         ))}
       </CursorCarousel>
     </CarouselSection>

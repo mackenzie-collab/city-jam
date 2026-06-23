@@ -39,6 +39,9 @@ export default function VinylSleeveCard({ post, queue, className, compact = fals
   const postHref = `/scene/post/${post.id}`;
   const progressPct = isActive && duration > 0 ? (progress / duration) * 100 : 0;
 
+  const mobileVinylSize = compact ? 140 : 160;
+  const desktopVinylSize = compact ? 155 : 180;
+
   const handlePlay = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -51,61 +54,55 @@ export default function VinylSleeveCard({ post, queue, className, compact = fals
     incrementPlayCount(post.id).catch(() => undefined);
   };
 
+  const handleVinylToggle = () => {
+    if (isActive) toggle();
+    else {
+      const tracks = (queue ?? [post]).map(toTrack);
+      play(track, tracks);
+      incrementPlayCount(post.id).catch(() => undefined);
+    }
+  };
+
   return (
     <article
       className={cn(
-        "cj-zine-border group relative mx-auto flex w-[280px] max-w-[78vw] flex-col bg-brand-purple-deep transition-shadow hover:shadow-lg sm:w-[320px] md:w-[360px]",
-        compact && "w-[240px] max-w-[72vw] sm:w-[280px]",
+        "cj-vinyl-sleeve-card cj-zine-border group relative mx-auto flex flex-col bg-brand-purple-deep transition-shadow hover:shadow-lg",
         isActive && "ring-1 ring-brand-gold/40",
         className
       )}
     >
-      <div className="relative border-b border-[var(--cj-zine-border)] bg-brand-purple p-2.5 sm:p-3">
-        <div className="flex items-end justify-center gap-2 sm:gap-2.5">
+      <div className="cj-vinyl-sleeve-art relative border-b border-[var(--cj-zine-border)] bg-brand-purple p-2.5 sm:p-3">
+        <div className="cj-vinyl-sleeve-art-row">
           <CoverArtFrame
             src={post.cover_url}
             alt=""
             aspect="square"
             className={cn(
-              "cj-sleeve-cover w-[52%] shrink-0 transition-transform duration-300 sm:w-[55%]",
+              "cj-sleeve-cover w-[52%] max-w-[52%] shrink-0 transition-transform duration-300 sm:w-[55%] sm:max-w-[55%]",
               isActive && "-translate-y-0.5"
             )}
             sizes="(max-width: 640px) 200px, 240px"
           />
-          <div className="relative isolate shrink-0 overflow-visible">
+          <div className="cj-vinyl-sleeve-disc">
             <InteractiveVinyl
-              size={compact ? 150 : 170}
+              size={mobileVinylSize}
               className="sm:hidden"
               coverUrl={post.cover_url || undefined}
               title={post.title}
               artist={post.author_display_name}
               isPlaying={isActive && isPlaying}
               interactive
-              onPlayToggle={() => {
-                if (isActive) toggle();
-                else {
-                  const tracks = (queue ?? [post]).map(toTrack);
-                  play(track, tracks);
-                  incrementPlayCount(post.id).catch(() => undefined);
-                }
-              }}
+              onPlayToggle={handleVinylToggle}
             />
             <InteractiveVinyl
-              size={compact ? 165 : 200}
+              size={desktopVinylSize}
               className="hidden sm:block"
               coverUrl={post.cover_url || undefined}
               title={post.title}
               artist={post.author_display_name}
               isPlaying={isActive && isPlaying}
               interactive
-              onPlayToggle={() => {
-                if (isActive) toggle();
-                else {
-                  const tracks = (queue ?? [post]).map(toTrack);
-                  play(track, tracks);
-                  incrementPlayCount(post.id).catch(() => undefined);
-                }
-              }}
+              onPlayToggle={handleVinylToggle}
             />
           </div>
         </div>

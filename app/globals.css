@@ -55,28 +55,18 @@
   --cj-dark-rgb: 5 5 8;
 
   --cj-section-px: 1rem;
-  --cj-carousel-gap: 1rem;
-  --cj-carousel-slide-w: 280px;
-  --cj-carousel-slide-w-compact: 240px;
-  --cj-carousel-slide-w-gallery: 220px;
   --cj-gold-glow-active: 0 0 0 1px rgba(179, 162, 0, 0.45), 0 6px 24px rgba(179, 162, 0, 0.12);
 }
 
 @media (min-width: 640px) {
   :root {
     --cj-section-px: 1.5rem;
-    --cj-carousel-gap: 1.5rem;
-    --cj-carousel-slide-w: 320px;
-    --cj-carousel-slide-w-compact: 280px;
-    --cj-carousel-slide-w-gallery: 260px;
   }
 }
 
 @media (min-width: 768px) {
   :root {
     --cj-section-px: 2rem;
-    --cj-carousel-slide-w: 360px;
-    --cj-carousel-slide-w-gallery: 280px;
   }
 }
 
@@ -695,6 +685,7 @@
   isolation: isolate;
   position: relative;
   box-sizing: border-box;
+  overflow: hidden;
   opacity: 0.72;
   transform: scale(0.97);
   transition:
@@ -731,6 +722,9 @@
 .cj-carousel-slide-content {
   transform-origin: center center;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
   padding-block: 0.5rem;
   transition:
     transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
@@ -786,6 +780,67 @@
   display: flex;
   align-items: center;
   gap: 0.375rem;
+}
+
+/* Carousel tokens last in file so breakpoint overrides always win over theme :root blocks. */
+:root {
+  --cj-carousel-gap: 1rem;
+  --cj-carousel-slide-w: 280px;
+  --cj-carousel-slide-w-compact: 240px;
+  --cj-carousel-slide-w-gallery: 220px;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --cj-carousel-gap: 1.5rem;
+    --cj-carousel-slide-w: 320px;
+    --cj-carousel-slide-w-compact: 280px;
+    --cj-carousel-slide-w-gallery: 240px;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --cj-carousel-slide-w: 360px;
+    --cj-carousel-slide-w-compact: 300px;
+    --cj-carousel-slide-w-gallery: 260px;
+  }
+}
+
+.cj-vinyl-sleeve-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.cj-vinyl-sleeve-art {
+  overflow: hidden;
+}
+
+.cj-vinyl-sleeve-art-row {
+  display: flex;
+  min-width: 0;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.5rem;
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .cj-vinyl-sleeve-art-row {
+    gap: 0.625rem;
+  }
+}
+
+.cj-vinyl-sleeve-disc {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  flex: 1 1 0;
+  max-width: calc(50% + 0.625rem);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
 }
 
 .cj-carousel-controls {
