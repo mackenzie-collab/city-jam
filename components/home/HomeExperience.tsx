@@ -5,33 +5,77 @@ import { cn } from "@/lib/utils";
 
 type HomeView = "app" | "affiliates";
 
+/** Hashes that keep the Affiliates tab active (subsection anchors included). */
+const AFFILIATE_HASHES = new Set([
+  "#affiliates",
+  "#signup",
+  "#signup-individual",
+  "#signup-band",
+  "#how-it-works",
+  "#earnings",
+  "#faq",
+]);
+
+function isAffiliateHash(hash: string): boolean {
+  return AFFILIATE_HASHES.has(hash);
+}
+
+function readView(): HomeView {
+  if (typeof window === "undefined") return "app";
+  return isAffiliateHash(window.location.hash) ? "affiliates" : "app";
+}
+
+function scrollToAffiliateHash(hash: string) {
+  if (!hash || hash === "#affiliates") return;
+  const id = hash.slice(1);
+  const target = document.getElementById(id);
+  if (!target) return;
+
+  requestAnimationFrame(() => {
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
 interface HomeExperienceProps {
   appContent: ReactNode;
   affiliateContent: ReactNode;
 }
 
-function readView(): HomeView {
-  if (typeof window === "undefined") return "app";
-  return window.location.hash === "#affiliates" ? "affiliates" : "app";
-}
-
 export default function HomeExperience({ appContent, affiliateContent }: HomeExperienceProps) {
   const [view, setView] = useState<HomeView>("app");
+  const [hash, setHash] = useState("");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    setView(readView());
 
-    const onHashChange = () => setView(readView());
-    window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
+    const syncFromHash = () => {
+      const nextHash = window.location.hash;
+      setHash(nextHash);
+      setView(readView());
+    };
+
+    syncFromHash();
+    window.addEventListener("hashchange", syncFromHash);
+    return () => window.removeEventListener("hashchange", syncFromHash);
   }, []);
+
+  useEffect(() => {
+    if (!mounted || view !== "affiliates") return;
+    scrollToAffiliateHash(hash);
+  }, [mounted, view, hash]);
 
   const selectView = useCallback((next: HomeView) => {
     setView(next);
-    const url = next === "affiliates" ? "/#affiliates" : "/";
-    window.history.replaceState(null, "", url);
+    if (next === "affiliates") {
+      window.history.replaceState(null, "", "/#affiliates");
+      setHash("#affiliates");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    window.history.replaceState(null, "", "/");
+    setHash("");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
