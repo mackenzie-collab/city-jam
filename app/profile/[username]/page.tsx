@@ -9,13 +9,7 @@ export default async function PublicProfilePage({
 }: {
   params: { username: string };
 }) {
-  let profile = null;
-  try {
-    profile = await fetchProfileByUsername(params.username);
-  } catch {
-    notFound();
-  }
-
+  const profile = await fetchProfileByUsername(params.username);
   if (!profile) notFound();
 
   return (

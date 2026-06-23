@@ -1,4 +1,4 @@
-import { getSupabase } from "@/lib/supabase/client";
+import { getSupabaseDataClient } from "@/lib/supabase/data-client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createCommunityPost } from "@/lib/community";
 
@@ -45,13 +45,21 @@ export const STATUS_PRESETS: { text: string; artist?: string; mood?: StatusMood 
 ];
 
 function db() {
-  const supabase = getSupabase();
+  const supabase = getSupabaseDataClient();
   if (!supabase) throw new Error("Supabase not configured");
   return supabase;
 }
 
 export function profilesUnavailable() {
-  return !isSupabaseConfigured() || !getSupabase();
+  return !isSupabaseConfigured() || !getSupabaseDataClient();
+}
+
+function demoProfileByUsername(username: string): UserProfile | null {
+  return DEMO_PROFILES.find((p) => p.username === username) ?? null;
+}
+
+function demoProfileByUserId(userId: string): UserProfile | null {
+  return DEMO_PROFILES.find((p) => p.user_id === userId) ?? null;
 }
 
 const DEMO_PROFILES: UserProfile[] = [
@@ -367,16 +375,21 @@ function enrichProfileCovers(profiles: UserProfile[]): UserProfile[] {
 }
 
 export async function fetchProfile(userId: string): Promise<UserProfile | null> {
-  if (profilesUnavailable()) {
-    return DEMO_PROFILES.find((p) => p.user_id === userId) ?? null;
+  const demo = demoProfileByUserId(userId);
+  if (profilesUnavailable()) return demo;
+
+  try {
+    const { data, error } = await db()
+      .from("user_profiles")
+      .select("*")
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (error) throw error;
+    if (data) return { ...data, cover_image_url: demoCoverForProfile(data) };
+    return demo;
+  } catch {
+    return demo;
   }
-  const { data, error } = await db()
-    .from("user_profiles")
-    .select("*")
-    .eq("user_id", userId)
-    .maybeSingle();
-  if (error) throw error;
-  return data;
 }
 
 export async function upsertProfile(
@@ -493,16 +506,21 @@ function slugify(name: string): string {
 }
 
 export async function fetchProfileByUsername(username: string): Promise<UserProfile | null> {
-  if (profilesUnavailable()) {
-    return DEMO_PROFILES.find((p) => p.username === username) ?? null;
+  const demo = demoProfileByUsername(username);
+  if (profilesUnavailable()) return demo;
+
+  try {
+    const { data, error } = await db()
+      .from("user_profiles")
+      .select("*")
+      .eq("username", username)
+      .maybeSingle();
+    if (error) throw error;
+    if (data) return { ...data, cover_image_url: demoCoverForProfile(data) };
+    return demo;
+  } catch {
+    return demo;
   }
-  const { data, error } = await db()
-    .from("user_profiles")
-    .select("*")
-    .eq("username", username)
-    .maybeSingle();
-  if (error) throw error;
-  return data;
 }
 
 export async function ensureUsername(userId: string, displayName: string): Promise<string> {
@@ -529,7 +547,7 @@ export async function ensureUsername(userId: string, displayName: string): Promi
 }
 
 export async function uploadCoverImage(userId: string, file: File): Promise<string> {
-  const supabase = getSupabase();
+  const supabase = getSupabaseDataClient();
   if (!supabase) throw new Error("Storage not configured");
 
   const ext = file.name.split(".").pop() ?? "jpg";

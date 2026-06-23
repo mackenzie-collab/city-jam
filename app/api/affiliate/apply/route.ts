@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { reportServerError } from "@/lib/report-error";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -29,7 +30,7 @@ async function persistToSupabase(payload: {
 
   const { error } = await supabase.from("affiliate_applications").insert(payload);
   if (error) {
-    console.error("Affiliate Supabase insert failed:", error.message);
+    reportServerError(error, { route: "api/affiliate/apply", extra: { step: "supabase-insert" } });
     return { ok: false as const, error: error.message };
   }
 
@@ -48,13 +49,16 @@ async function forwardToWebhook(payload: Record<string, unknown>) {
     });
 
     if (!webhookResponse.ok) {
-      console.error("Affiliate webhook failed:", webhookResponse.status, await webhookResponse.text());
+      reportServerError(await webhookResponse.text(), {
+        route: "api/affiliate/apply",
+        extra: { step: "webhook", status: webhookResponse.status },
+      });
       return { ok: false as const, error: "Webhook failed" };
     }
 
     return { ok: true as const };
   } catch (error) {
-    console.error("Affiliate webhook error:", error);
+    reportServerError(error, { route: "api/affiliate/apply", extra: { step: "webhook" } });
     return { ok: false as const, error: "Webhook error" };
   }
 }

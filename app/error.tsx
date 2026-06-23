@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { reportClientError } from "@/lib/report-error";
 
 export default function Error({
   error,
@@ -10,7 +11,7 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("[City Jam]", error);
+    reportClientError(error, { boundary: "app/error" });
   }, [error]);
 
   return (

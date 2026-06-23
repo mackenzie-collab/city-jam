@@ -27,13 +27,21 @@ function timeAgo(iso: string): string {
   return `${Math.floor(hrs / 24)}d ago`;
 }
 
-export default function ScenePostPage({ postId }: { postId: string }) {
+export default function ScenePostPage({
+  postId,
+  initialPost = null,
+  initialComments = [],
+}: {
+  postId: string;
+  initialPost?: AudioPost | null;
+  initialComments?: AudioComment[];
+}) {
   const { user } = useAuth();
   const router = useRouter();
-  const [post, setPost] = useState<AudioPost | null>(null);
-  const [comments, setComments] = useState<AudioComment[]>([]);
+  const [post, setPost] = useState<AudioPost | null>(initialPost);
+  const [comments, setComments] = useState<AudioComment[]>(initialComments);
   const [body, setBody] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialPost);
   const [posting, setPosting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,8 +58,9 @@ export default function ScenePostPage({ postId }: { postId: string }) {
   }, [postId]);
 
   useEffect(() => {
+    if (initialPost) return;
     load();
-  }, [load]);
+  }, [initialPost, load]);
 
   const handleComment = async (e: React.FormEvent) => {
     e.preventDefault();

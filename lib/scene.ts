@@ -1,3 +1,4 @@
+import { getSupabaseDataClient } from "@/lib/supabase/data-client";
 import { getSupabase } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -27,13 +28,17 @@ export interface AudioComment {
 }
 
 function db() {
-  const supabase = getSupabase();
+  const supabase = getSupabaseDataClient();
   if (!supabase) throw new Error("Supabase not configured");
   return supabase;
 }
 
 export function sceneUnavailable() {
-  return !isSupabaseConfigured() || !getSupabase();
+  return !isSupabaseConfigured() || !getSupabaseDataClient();
+}
+
+function demoPostById(id: string): AudioPost | null {
+  return DEMO_POSTS.find((p) => p.id === id) ?? null;
 }
 
 export const DEMO_BASE_MS = Date.parse("2026-06-01T12:00:00.000Z");
@@ -350,14 +355,18 @@ export async function fetchSceneFeed(opts?: {
 }
 
 export async function fetchAudioPost(id: string): Promise<AudioPost | null> {
-  if (sceneUnavailable()) {
-    return DEMO_POSTS.find((p) => p.id === id) ?? null;
+  const demo = demoPostById(id);
+  if (sceneUnavailable()) return demo;
+
+  try {
+    const { data, error } = await db().from("audio_posts").select("*").eq("id", id).maybeSingle();
+    if (error) throw error;
+    if (!data) return demo;
+    const [enriched] = await enrichPosts([data]);
+    return enriched;
+  } catch {
+    return demo;
   }
-  const { data, error } = await db().from("audio_posts").select("*").eq("id", id).maybeSingle();
-  if (error) throw error;
-  if (!data) return null;
-  const [enriched] = await enrichPosts([data]);
-  return enriched;
 }
 
 export async function createAudioPost(
@@ -419,13 +428,18 @@ export async function hasLikedPost(postId: string, userId: string): Promise<bool
 
 export async function fetchComments(postId: string): Promise<AudioComment[]> {
   if (sceneUnavailable()) return [];
-  const { data, error } = await db()
-    .from("audio_comments")
-    .select("*")
-    .eq("post_id", postId)
-    .order("created_at", { ascending: true });
-  if (error) throw error;
-  return data ?? [];
+
+  try {
+    const { data, error } = await db()
+      .from("audio_comments")
+      .select("*")
+      .eq("post_id", postId)
+      .order("created_at", { ascending: true });
+    if (error) throw error;
+    return data ?? [];
+  } catch {
+    return [];
+  }
 }
 
 export async function addComment(
