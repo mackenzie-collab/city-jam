@@ -19,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/studio",
     "/login",
     "/register",
+    "/affiliate",
   ];
 
   return routes.map((path) => ({

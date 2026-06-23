@@ -1,0 +1,713 @@
+/* City Jam Affiliate Landing — Brand v2.0 scoped tokens */
+.affiliate-page {
+  --color-bg-deep: #2d003e;
+  --color-bg-dark: #0a0a0a;
+  --color-bg-card: #1a1a1a;
+  --color-purple-brand: #5c007a;
+  --color-gold: #b3a200;
+  --color-parchment: #d0cf88;
+  --font-display: var(--font-affiliate-display), "Barlow Condensed", sans-serif;
+  --font-mono: var(--font-affiliate-mono), "Courier New", monospace;
+  --font-body: var(--font-affiliate-body), "DM Sans", sans-serif;
+
+  background-color: var(--color-bg-deep);
+  color: var(--color-parchment);
+  font-family: var(--font-body);
+  min-height: 100dvh;
+}
+
+.affiliate-page * {
+  box-sizing: border-box;
+}
+
+.affiliate-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 0.95;
+}
+
+.affiliate-mono {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.affiliate-body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+@media (min-width: 768px) {
+  .affiliate-body {
+    font-size: 1.0625rem;
+  }
+}
+
+.affiliate-section {
+  padding: 4rem 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .affiliate-section {
+    padding: 5rem 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .affiliate-section {
+    padding: 6rem 2.5rem;
+  }
+}
+
+.affiliate-container {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+.affiliate-divider {
+  height: 1px;
+  border: none;
+  background-color: var(--color-gold);
+  margin: 0;
+}
+
+.affiliate-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 1.75rem;
+  background-color: var(--color-gold);
+  color: var(--color-bg-dark);
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.125em;
+  border: 1px solid var(--color-gold);
+  border-radius: 0;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.affiliate-btn-primary:hover,
+.affiliate-btn-primary:focus-visible {
+  background-color: var(--color-purple-brand);
+  color: var(--color-parchment);
+  border-color: var(--color-purple-brand);
+  outline: none;
+}
+
+.affiliate-btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.affiliate-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 1.75rem;
+  background-color: transparent;
+  color: var(--color-parchment);
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.125em;
+  border: 1px solid var(--color-gold);
+  border-radius: 0;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.affiliate-btn-ghost:hover,
+.affiliate-btn-ghost:focus-visible {
+  background-color: rgba(179, 162, 0, 0.08);
+  outline: none;
+}
+
+.affiliate-btn-ghost--blue {
+  border-color: #1e90ff;
+}
+
+.affiliate-btn-ghost--blue:hover,
+.affiliate-btn-ghost--blue:focus-visible {
+  background-color: rgba(30, 144, 255, 0.1);
+  border-color: #1e90ff;
+}
+
+.affiliate-btn-ghost--purple {
+  border-color: #8b2be2;
+}
+
+.affiliate-btn-ghost--purple:hover,
+.affiliate-btn-ghost--purple:focus-visible {
+  background-color: rgba(139, 43, 226, 0.1);
+  border-color: #8b2be2;
+}
+
+.affiliate-btn-full {
+  width: 100%;
+}
+
+.affiliate-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid rgba(179, 162, 0, 0.25);
+  border-radius: 0;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.affiliate-card:hover {
+  border-color: var(--color-gold);
+}
+
+.affiliate-card--dark {
+  background-color: var(--color-bg-dark);
+}
+
+.affiliate-input,
+.affiliate-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: rgba(10, 10, 10, 0.6);
+  border: 1px solid rgba(179, 162, 0, 0.35);
+  border-radius: 0;
+  color: var(--color-parchment);
+  font-family: var(--font-body);
+  font-size: 1rem;
+}
+
+.affiliate-input::placeholder {
+  color: rgba(208, 207, 136, 0.5);
+}
+
+.affiliate-input:focus,
+.affiliate-select:focus {
+  outline: none;
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 1px rgba(179, 162, 0, 0.35);
+}
+
+.affiliate-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23B3A200' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+}
+
+.affiliate-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(208, 207, 136, 0.8);
+}
+
+.affiliate-hero {
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.affiliate-hero__bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.affiliate-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(45, 0, 62, 0.92) 0%,
+    rgba(45, 0, 62, 0.78) 45%,
+    rgba(10, 10, 10, 0.85) 100%
+  );
+}
+
+.affiliate-hero__grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.15;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+.affiliate-hero__content {
+  position: relative;
+  z-index: 2;
+  padding: 2rem 1.25rem 4rem;
+  max-width: 72rem;
+  margin-inline: auto;
+  width: 100%;
+}
+
+.affiliate-hero__logo {
+  margin-bottom: 3rem;
+}
+
+.affiliate-hero__headline {
+  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  max-width: 18ch;
+  color: var(--color-parchment);
+}
+
+.affiliate-hero__sub {
+  margin-top: 1.5rem;
+  max-width: 36rem;
+  font-size: 1.125rem;
+  color: var(--color-parchment);
+  opacity: 0.92;
+}
+
+.affiliate-hero__ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  margin-top: 2.5rem;
+}
+
+@media (min-width: 640px) {
+  .affiliate-hero__ctas {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+.affiliate-section-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: var(--color-parchment);
+  margin-bottom: 1.5rem;
+}
+
+.affiliate-icon-row {
+  display: grid;
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+@media (min-width: 768px) {
+  .affiliate-icon-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+.affiliate-icon-item {
+  text-align: center;
+}
+
+.affiliate-icon-item svg {
+  color: var(--color-gold);
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-inline: auto;
+}
+
+.affiliate-icon-item__label {
+  display: block;
+  margin-top: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.affiliate-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 3rem;
+}
+
+@media (min-width: 1280px) {
+  .affiliate-steps {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0;
+  }
+}
+
+.affiliate-step {
+  flex: 1;
+  padding: 1.5rem;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-gold);
+}
+
+.affiliate-step__number {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-gold);
+  margin-bottom: 0.75rem;
+}
+
+.affiliate-step__title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.affiliate-step__arrow {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-gold);
+  padding: 0 0.5rem;
+  flex-shrink: 0;
+}
+
+@media (min-width: 1280px) {
+  .affiliate-step__arrow {
+    display: flex;
+  }
+}
+
+.affiliate-earnings-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2rem;
+  font-size: 0.9375rem;
+}
+
+.affiliate-earnings-table th,
+.affiliate-earnings-table td {
+  padding: 1rem;
+  border: 1px solid var(--color-gold);
+  text-align: left;
+}
+
+.affiliate-earnings-table thead th {
+  background-color: var(--color-gold);
+  color: var(--color-bg-dark);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.affiliate-earnings-table tbody tr:nth-child(odd) {
+  background-color: var(--color-bg-dark);
+}
+
+.affiliate-earnings-table tbody tr:nth-child(even) {
+  background-color: var(--color-bg-card);
+}
+
+.affiliate-earnings-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.affiliate-disclaimer {
+  margin-top: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: rgba(208, 207, 136, 0.7);
+}
+
+.affiliate-two-col {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .affiliate-two-col {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+.affiliate-who-card {
+  padding: 2rem;
+  background-color: var(--color-bg-dark);
+  border-radius: 0;
+}
+
+.affiliate-who-card--individual {
+  border: 1px solid #1e90ff;
+}
+
+.affiliate-who-card--band {
+  border: 1px solid #8b2be2;
+}
+
+.affiliate-who-card ul {
+  margin: 1.25rem 0 2rem;
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
+.affiliate-who-card li {
+  margin-bottom: 0.625rem;
+  line-height: 1.55;
+}
+
+.affiliate-who-card__title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  text-transform: uppercase;
+}
+
+.affiliate-testimonials {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .affiliate-testimonials {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.affiliate-testimonial {
+  padding: 1.75rem;
+  position: relative;
+}
+
+.affiliate-testimonial__quote {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--color-gold);
+  opacity: 0.5;
+}
+
+.affiliate-testimonial__avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background-color: var(--color-purple-brand);
+  border: 1px solid var(--color-gold);
+  margin-top: 1rem;
+}
+
+.affiliate-testimonial__name {
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+}
+
+.affiliate-faq-item {
+  border-bottom: 1px solid rgba(179, 162, 0, 0.25);
+}
+
+.affiliate-faq-item:first-child {
+  border-top: 1px solid rgba(179, 162, 0, 0.25);
+}
+
+.affiliate-faq-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  background: none;
+  border: none;
+  color: var(--color-parchment);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.affiliate-faq-trigger:hover,
+.affiliate-faq-trigger:focus-visible {
+  color: var(--color-gold);
+  outline: none;
+}
+
+.affiliate-faq-chevron {
+  flex-shrink: 0;
+  color: var(--color-gold);
+  transition: transform 0.2s;
+}
+
+.affiliate-faq-item[data-open="true"] {
+  border-left: 3px solid var(--color-gold);
+  padding-left: 1rem;
+}
+
+.affiliate-faq-item[data-open="true"] .affiliate-faq-chevron {
+  transform: rotate(180deg);
+}
+
+.affiliate-faq-panel {
+  padding-bottom: 1.25rem;
+  color: rgba(208, 207, 136, 0.85);
+  line-height: 1.65;
+}
+
+.affiliate-form-card {
+  padding: 2rem;
+  margin-top: 2rem;
+  background-color: var(--color-bg-dark);
+  border: 1px solid var(--color-gold);
+}
+
+.affiliate-form-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.affiliate-form-success {
+  padding: 2rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--color-parchment);
+}
+
+.affiliate-footer {
+  background-color: var(--color-bg-dark);
+  padding: 2.5rem 1.25rem;
+  border-top: 1px solid rgba(179, 162, 0, 0.2);
+}
+
+.affiliate-footer__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .affiliate-footer__inner {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+.affiliate-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem 2rem;
+  justify-content: center;
+}
+
+.affiliate-footer__links a {
+  color: var(--color-parchment);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.affiliate-footer__links a:hover,
+.affiliate-footer__links a:focus-visible {
+  color: var(--color-gold);
+  outline: none;
+}
+
+.affiliate-footer__social {
+  display: flex;
+  gap: 1rem;
+}
+
+.affiliate-footer__social a {
+  color: var(--color-parchment);
+  transition: color 0.2s;
+}
+
+.affiliate-footer__social a:hover,
+.affiliate-footer__social a:focus-visible {
+  color: var(--color-gold);
+  outline: none;
+}
+
+.affiliate-footer__meta {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(179, 162, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: rgba(208, 207, 136, 0.5);
+}
+
+@media (min-width: 768px) {
+  .affiliate-footer__meta {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.affiliate-signup-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.affiliate-signup-bg__image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.25;
+}
+
+.affiliate-signup-bg__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(92, 0, 122, 0.88);
+}
+
+.affiliate-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.affiliate-skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  background-color: var(--color-gold);
+  color: var(--color-bg-dark);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.affiliate-skip-link:focus {
+  top: 1rem;
+  outline: 2px solid var(--color-parchment);
+  outline-offset: 2px;
+}
