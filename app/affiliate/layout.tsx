@@ -1,4 +1,4 @@
-import { Anton, Inter, Space_Mono } from "next/font/google";
+import { Anton, Barlow_Condensed, Inter, Space_Mono } from "next/font/google";
 import Script from "next/script";
 
 import "./affiliate.css";
@@ -7,6 +7,13 @@ const anton = Anton({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-affiliate-display",
+  display: "swap",
+});
+
+const barlowCondensed = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["700", "800"],
+  variable: "--font-affiliate-condensed",
   display: "swap",
 });
 
@@ -30,7 +37,7 @@ const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 export default function AffiliateLayout({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className={`affiliate-page ${anton.variable} ${spaceMono.variable} ${inter.variable}`}
+      className={`affiliate-page ${anton.variable} ${barlowCondensed.variable} ${spaceMono.variable} ${inter.variable}`}
       data-theme="dark"
     >
       <a href="#main-content" className="affiliate-skip-link">

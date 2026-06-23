@@ -20,7 +20,7 @@ const faqs = [
   {
     question: "What is the onboarding session?",
     answer:
-      "A 2-hour session (individual or band track) to set you up with your link, resources, and strategy.",
+      "A 30-minute session (individual or band track) to set you up with your link, resources, and strategy.",
   },
   {
     question: "Can I apply as both an individual and a band?",
@@ -28,7 +28,7 @@ const faqs = [
   },
   {
     question: "When does the program launch?",
-    answer: "July 29, 2026. Apply now to be part of the founding cohort.",
+    answer: "The waitlist opens June 24, 2026. City Jam launches July 29. Apply now to join the founding cohort.",
   },
 ] as const;
 

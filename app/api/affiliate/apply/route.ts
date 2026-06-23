@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+
 interface AffiliateApplication {
   fullName: string;
   email: string;
@@ -10,6 +13,50 @@ interface AffiliateApplication {
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+async function persistToSupabase(payload: {
+  full_name: string;
+  email: string;
+  handle: string | null;
+  track: string;
+  heard_from: string;
+  source: string;
+  submitted_at: string;
+}) {
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return { ok: false as const, error: "Supabase not configured" };
+
+  const { error } = await supabase.from("affiliate_applications").insert(payload);
+  if (error) {
+    console.error("Affiliate Supabase insert failed:", error.message);
+    return { ok: false as const, error: error.message };
+  }
+
+  return { ok: true as const };
+}
+
+async function forwardToWebhook(payload: Record<string, unknown>) {
+  const webhookUrl = process.env.AFFILIATE_FORM_WEBHOOK_URL;
+  if (!webhookUrl) return { ok: false as const, skipped: true as const };
+
+  try {
+    const webhookResponse = await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!webhookResponse.ok) {
+      console.error("Affiliate webhook failed:", webhookResponse.status, await webhookResponse.text());
+      return { ok: false as const, error: "Webhook failed" };
+    }
+
+    return { ok: true as const };
+  } catch (error) {
+    console.error("Affiliate webhook error:", error);
+    return { ok: false as const, error: "Webhook error" };
+  }
 }
 
 export async function POST(request: Request) {
@@ -39,42 +86,41 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Select a valid track." }, { status: 400 });
   }
 
-  const payload = {
+  const submittedAt = new Date().toISOString();
+  const clientPayload = {
     fullName,
     email,
     handle,
     track,
     heardFrom,
-    source: "affiliate-landing",
-    submittedAt: new Date().toISOString(),
+    source: "affiliate-waitlist",
+    submittedAt,
   };
 
-  const webhookUrl = process.env.AFFILIATE_FORM_WEBHOOK_URL;
+  const dbPayload = {
+    full_name: fullName,
+    email,
+    handle,
+    track,
+    heard_from: heardFrom,
+    source: "affiliate-waitlist",
+    submitted_at: submittedAt,
+  };
 
-  if (webhookUrl) {
-    try {
-      const webhookResponse = await fetch(webhookUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+  const supabaseResult = isSupabaseConfigured() ? await persistToSupabase(dbPayload) : { ok: false as const };
+  const webhookResult = await forwardToWebhook(clientPayload);
 
-      if (!webhookResponse.ok) {
-        console.error("Affiliate webhook failed:", webhookResponse.status, await webhookResponse.text());
-        return NextResponse.json(
-          { error: "Application could not be processed. Try again shortly." },
-          { status: 502 }
-        );
-      }
-    } catch (error) {
-      console.error("Affiliate webhook error:", error);
+  const stored = supabaseResult.ok || webhookResult.ok;
+
+  if (!stored) {
+    if (process.env.NODE_ENV === "production") {
       return NextResponse.json(
-        { error: "Application could not be processed. Try again shortly." },
-        { status: 502 }
+        { error: "Waitlist is temporarily unavailable. Email contact@cityjam.app and we'll add you manually." },
+        { status: 503 }
       );
     }
-  } else if (process.env.NODE_ENV === "production") {
-    console.warn("AFFILIATE_FORM_WEBHOOK_URL is not set — application accepted but not forwarded.");
+
+    console.warn("Affiliate waitlist submission accepted in dev without storage.");
   }
 
   return NextResponse.json({ ok: true });

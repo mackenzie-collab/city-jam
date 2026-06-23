@@ -3,14 +3,14 @@ import type { Metadata } from "next";
 import AffiliateLanding from "@/components/affiliate/AffiliateLanding";
 
 export const metadata: Metadata = {
-  title: "Affiliate Program — City Jam",
+  title: "Affiliate Waitlist — City Jam",
   description:
-    "Join the City Jam affiliate program. Earn £26.40 per active referral. Apply before July 22, 2026.",
+    "Join the City Jam affiliate waitlist. Opens June 24, 2026. Earn £26.40 per active referral after a 30-minute onboarding.",
   openGraph: {
-    title: "City Jam Affiliate Program — Earn While You Jam",
+    title: "City Jam Affiliate Waitlist — Earn While You Jam",
     description:
-      "Be part of the movement. Launch with us on July 29, 2026 and start earning from Day 1.",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "City Jam Affiliate Program" }],
+      "Waitlist opens June 24. Launch July 29. Join the founding affiliate cohort and earn from Day 1.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "City Jam Affiliate Waitlist" }],
   },
 };
 

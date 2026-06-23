@@ -88,7 +88,8 @@ export default function AffiliateForm() {
     return (
       <div className="affiliate-form-card" role="status" aria-live="polite">
         <p className="affiliate-form-success">
-          You&apos;re in. We&apos;ll reach out within 48 hours to schedule your onboarding session.
+          You&apos;re on the waitlist. We&apos;ll reach out within 48 hours to schedule your 30-minute
+          onboarding session.
         </p>
       </div>
     );
@@ -197,11 +198,11 @@ export default function AffiliateForm() {
       <button
         type="submit"
         className="affiliate-btn-primary affiliate-btn-full"
-        style={{ marginTop: "1.5rem" }}
+        style={{ marginTop: "1.75rem", gridColumn: "1 / -1" }}
         disabled={submitting}
         aria-busy={submitting}
       >
-        {submitting ? "Submitting..." : "Apply to become an affiliate"}
+        {submitting ? "Submitting..." : "Join the waitlist"}
       </button>
     </form>
   );
