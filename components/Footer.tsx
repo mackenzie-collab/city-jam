@@ -14,7 +14,7 @@ const discoverLinks = [
 
 const studioLinks = [
   { label: "Circles", href: "/circles" },
-  { label: "Vault", href: "/vault" },
+  { label: "Dashboard", href: "/dashboard" },
   { label: "Collab", href: "/collab" },
   { label: "Listen Rooms", href: "/listening-rooms" },
   { label: "Studio", href: "/studio" },

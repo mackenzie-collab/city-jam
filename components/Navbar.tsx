@@ -19,6 +19,7 @@ const navLinks: { href: string; label: string; hash?: boolean }[] = [
   { href: "/#affiliates", label: "Affiliates", hash: true },
   { href: "/discover", label: "Discover" },
   { href: "/scene", label: "Scene" },
+  { href: "/dashboard", label: "Dashboard" },
   { href: "/jam", label: "Jam" },
   { href: "/profile", label: "Profile" },
 ];

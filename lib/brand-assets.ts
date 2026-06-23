@@ -67,7 +67,7 @@ export const ICONS = {
 export const TOOL_ICONS: Record<string, string> = {
   "/studio": ICONS.mixingFaders,
   "/project-match": ICONS.search,
-  "/vault": ICONS.cassette,
+  "/dashboard": ICONS.cassette,
   "/collab": ICONS.equalizer,
   "/circles": ICONS.band,
   "/listening-rooms": ICONS.headphones,
@@ -82,6 +82,7 @@ export const MOBILE_NAV_ICONS: Record<string, string> = {
   "/discover": ICONS.search,
   "/scene": ICONS.band,
   "/jam": ICONS.frequencyDial,
+  "/dashboard": ICONS.cassette,
   "/profile": ICONS.profile,
   "/community": ICONS.band,
   "/studio": ICONS.mixingFaders,

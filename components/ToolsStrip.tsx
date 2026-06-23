@@ -5,7 +5,7 @@ import { TOOL_ICONS } from "@/lib/brand-assets";
 export const TOOLS = [
   { href: "/studio", label: "Studio", desc: "Projects & PM board" },
   { href: "/project-match", label: "Project Match", desc: "Find collaborators" },
-  { href: "/vault", label: "Vault", desc: "Upload demos & stems" },
+  { href: "/dashboard", label: "Dashboard", desc: "Your tracks & stats" },
   { href: "/collab", label: "Collab", desc: "Task boards" },
   { href: "/circles", label: "Circles", desc: "Private groups" },
   { href: "/listening-rooms", label: "Rooms", desc: "Listen together" },

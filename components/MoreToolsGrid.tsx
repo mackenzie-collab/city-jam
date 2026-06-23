@@ -28,9 +28,9 @@ const tools = [
     description: "Invite-only groups around a sound, city or shared goal.",
   },
   {
-    title: "Vault",
-    href: "/vault",
-    description: "Private storage for recordings, demos, stems.",
+    title: "Dashboard",
+    href: "/dashboard",
+    description: "Your tracks, plays, and Scene vault.",
   },
   {
     title: "Collab",

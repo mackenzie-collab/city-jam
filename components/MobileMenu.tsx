@@ -14,13 +14,13 @@ const PRIMARY_LINKS = [
   { href: "/#affiliates", label: "Affiliates" },
   { href: "/discover", label: "Discover" },
   { href: "/scene", label: "Scene" },
+  { href: "/dashboard", label: "Dashboard" },
   { href: "/jam", label: "Jam" },
   { href: "/profile", label: "Profile" },
 ];
 
 const TOOL_LINKS = [
   { href: "/project-match", label: "Project Match" },
-  { href: "/vault", label: "Vault" },
   { href: "/collab", label: "Collab" },
   { href: "/circles", label: "Circles" },
   { href: "/listening-rooms", label: "Listening Rooms" },

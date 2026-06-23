@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Archive,
   Briefcase,
   Headphones,
   LayoutDashboard,
@@ -15,9 +14,9 @@ import { cn } from "@/lib/utils";
 
 const LINKS = [
   { href: "/community", label: "Community", icon: Users },
-  { href: "/studio", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: "/studio", label: "Studio", icon: FolderKanban },
   { href: "/project-match", label: "Project Match", icon: Briefcase },
-  { href: "/vault", label: "Vault", icon: Archive },
   { href: "/collab", label: "Collab", icon: FolderKanban },
   { href: "/listening-rooms", label: "Listening Rooms", icon: Headphones },
   { href: "/circles", label: "Circles", icon: Users },

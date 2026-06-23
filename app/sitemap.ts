@@ -13,7 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/blind-echo",
     "/echo-roulette",
     "/circles",
-    "/vault",
+    "/dashboard",
     "/collab",
     "/listening-rooms",
     "/studio",

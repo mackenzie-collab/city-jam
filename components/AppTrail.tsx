@@ -6,7 +6,7 @@ import { ChevronRight } from "lucide-react";
 
 const STUDIO_PREFIXES = [
   "/studio",
-  "/vault",
+  "/dashboard",
   "/collab",
   "/project-match",
   "/circles",
@@ -17,7 +17,7 @@ const LABELS: Record<string, string> = {
   "/community": "Community",
   "/studio": "Studio",
   "/profile": "Profile",
-  "/vault": "Vault",
+  "/dashboard": "Dashboard",
   "/collab": "Collab",
   "/project-match": "Project Match",
   "/circles": "Circles",
