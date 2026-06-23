@@ -17,7 +17,8 @@
 # misc
 .DS_Store
 *.pem
-.cursor/
+.cursor/*
+!.cursor/environment.json
 
 # debug
 npm-debug.log*
