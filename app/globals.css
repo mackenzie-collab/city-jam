@@ -187,6 +187,25 @@
   }
 }
 
+@keyframes cj-vinyl-spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.cj-vinyl-spin-slow {
+  animation: cj-vinyl-spin-slow 8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cj-vinyl-spin-slow {
+    animation: none;
+  }
+}
+
 /* Bebas Neue — display headlines, ALL CAPS */
 .cj-poster-headline {
   @apply font-display text-balance font-normal uppercase leading-[0.92] tracking-[0.06em];
