@@ -38,7 +38,7 @@ export default function HomeExperience({ appContent, affiliateContent }: HomeExp
   return (
     <div className="cj-home-experience">
       <div
-        className="cj-home-tabs sticky top-[var(--cj-header-offset,0px)] z-40 border-b border-[var(--cj-zine-border)] bg-cj-bg/95 backdrop-blur-md"
+        className="cj-home-tabs sticky top-[var(--cj-header-offset,0px)] z-40 border-b border-[rgba(179,162,0,0.2)] bg-[rgba(10,10,10,0.92)] backdrop-blur-md"
         role="tablist"
         aria-label="Homepage sections"
       >

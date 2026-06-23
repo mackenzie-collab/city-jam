@@ -894,6 +894,8 @@
 
 .cj-home-tabs {
   --cj-header-offset: 3.25rem;
+  background: rgba(10, 10, 10, 0.92);
+  border-bottom-color: rgba(179, 162, 0, 0.2);
 }
 
 .cj-home-tab {
@@ -902,12 +904,12 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.875rem 1.25rem;
-  font-family: var(--font-mono);
+  font-family: var(--font-mono, "Courier New", monospace);
   font-size: 0.6875rem;
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--cj-text-muted);
+  color: rgba(208, 207, 136, 0.65);
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
@@ -927,14 +929,14 @@
 .cj-home-tab--active {
   color: var(--cj-gold);
   border-bottom-color: var(--cj-gold);
-  background: rgba(179, 162, 0, 0.06);
+  background: rgba(179, 162, 0, 0.08);
 }
 
 .cj-home-tab__pill {
   padding: 0.15rem 0.45rem;
   font-size: 0.5625rem;
   letter-spacing: 0.1em;
-  color: var(--cj-bg);
+  color: #0a0a0a;
   background: var(--cj-gold);
 }
 

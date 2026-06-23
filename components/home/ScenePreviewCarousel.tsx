@@ -17,10 +17,32 @@ const GENRE_FILTERS = ["ALL", "ELECTRONIC", "JAZZ", "HIP-HOP", "ROCK", "FOLK", "
 function GenreFilters({
   genre,
   onChange,
+  theme = "default",
 }: {
   genre: string;
   onChange: (g: string) => void;
+  theme?: "default" | "affiliate";
 }) {
+  if (theme === "affiliate") {
+    return (
+      <div className="affiliate-genre-filters">
+        <p className="affiliate-mono">Filter by genre</p>
+        <div className="affiliate-genre-filters__track scrollbar-thin">
+          {GENRE_FILTERS.map((g) => (
+            <button
+              key={g}
+              type="button"
+              onClick={() => onChange(g)}
+              className={cn("affiliate-genre-pill", genre === g && "affiliate-genre-pill--active")}
+            >
+              {g}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-cj-text-muted">
@@ -45,7 +67,11 @@ function GenreFilters({
   );
 }
 
-export default function ScenePreviewCarousel() {
+interface ScenePreviewCarouselProps {
+  theme?: "default" | "affiliate";
+}
+
+export default function ScenePreviewCarousel({ theme = "default" }: ScenePreviewCarouselProps) {
   const [posts, setPosts] = useState<AudioPost[]>(() => mergeSceneFeed([], 16));
   const [genre, setGenre] = useState<string>("ALL");
 
@@ -83,14 +109,19 @@ export default function ScenePreviewCarousel() {
         id="on-the-scene"
         badge="On the scene"
         title={
-          <>
-            Close your eyes. <span className="text-brand-gold">Listen.</span>
-          </>
+          theme === "affiliate"
+            ? "Close your eyes. Listen."
+            : (
+              <>
+                Close your eyes. <span className="text-brand-gold">Listen.</span>
+              </>
+            )
         }
         description="Fresh drops from musicians worldwide. Every card is audio-first — drag to browse the crate."
         link={{ href: "/scene", label: "Full scene feed" }}
-        filters={<GenreFilters genre={genre} onChange={setGenre} />}
+        filters={<GenreFilters genre={genre} onChange={setGenre} theme={theme} />}
         variant="deep"
+        theme={theme}
       >
         <CursorCarousel ariaLabel="Scene audio feed" showControls loop contentKey={genre}>
           {displayPosts.map((post) => (
@@ -104,12 +135,17 @@ export default function ScenePreviewCarousel() {
           id="trending-this-week"
           badge="Trending this week"
           title={
-            <>
-              Most played. <span className="text-brand-gold">Right now.</span>
-            </>
+            theme === "affiliate"
+              ? "Most played. Right now."
+              : (
+                <>
+                  Most played. <span className="text-brand-gold">Right now.</span>
+                </>
+              )
           }
           description="Tracks gaining momentum across the scene."
           variant="surface"
+          theme={theme}
         >
           <CursorCarousel ariaLabel="Trending tracks" showControls compact loop>
             {trendingPosts.map((post) => (
