@@ -13,7 +13,7 @@ import { friendlyAuthError } from "@/lib/supabase/auth-errors";
 export default function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login, oauthLogin, error } = useAuth();
+  const { login, error } = useAuth();
   const returnUrl = searchParams.get("returnUrl") || "/";
   const [loading, setLoading] = useState(false);
 
@@ -32,15 +32,6 @@ export default function LoginContent() {
     try {
       await login(data.email, data.password);
       router.push(returnUrl);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleOAuth = async (provider: "google" | "facebook" | "apple") => {
-    setLoading(true);
-    try {
-      await oauthLogin(provider, returnUrl);
     } finally {
       setLoading(false);
     }
@@ -65,7 +56,6 @@ export default function LoginContent() {
             <AuthCard
               mode="login"
               onSubmit={handleSubmit}
-              onOAuth={handleOAuth}
               onForgotPassword={handleForgotPassword}
               loading={loading}
               error={callbackError ?? error}

@@ -17,6 +17,7 @@ interface CoverArtFrameProps {
   className?: string;
   children?: React.ReactNode;
   sizes?: string;
+  warmFilter?: boolean;
 }
 
 export default function CoverArtFrame({
@@ -27,6 +28,7 @@ export default function CoverArtFrame({
   className,
   children,
   sizes = "(max-width:768px) 100vw, 400px",
+  warmFilter = false,
 }: CoverArtFrameProps) {
   return (
     <div
@@ -34,6 +36,7 @@ export default function CoverArtFrame({
         "relative overflow-hidden rounded-2xl border-2 border-cj-gold/40 bg-cj-dark cj-grain-photo",
         "shadow-[inset_0_0_0_1px_rgba(201,168,0,0.2),0_4px_20px_rgba(0,0,0,0.45)]",
         aspectClass[aspect],
+        warmFilter && "cj-sleeve-warm-filter",
         className
       )}
     >

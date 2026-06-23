@@ -102,7 +102,7 @@ export default function SecuritySettingsPage() {
         {msg && <p className="mt-4 text-sm text-cj-gold-bright">{msg}</p>}
 
         <Link href="/settings/account" className="mt-8 inline-block text-xs uppercase tracking-widest text-cj-gold-muted hover:text-cj-gold">
-          ← Connected accounts
+          ← Your account
         </Link>
       </FeatureShell>
     </ProtectedRoute>

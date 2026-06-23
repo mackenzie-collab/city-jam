@@ -56,6 +56,7 @@ export default function CursorCarousel({
   const trackRef = useRef<HTMLDivElement>(null);
   const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const useLoop = loop && slideCount > 4;
 
@@ -192,6 +193,7 @@ export default function CursorCarousel({
         {slides.map((child, index) => {
           const isActive = index === selectedIndex;
           const isAdjacent = Math.abs(index - selectedIndex) === 1;
+          const isHovered = index === hoveredIndex;
 
           return (
             <div
@@ -207,8 +209,22 @@ export default function CursorCarousel({
               className={cn(
                 "carousel-slide snap-start",
                 isActive && "carousel-slide--active",
-                isAdjacent && "carousel-slide--adjacent"
+                isAdjacent && "carousel-slide--adjacent",
+                isHovered && "carousel-slide--hovered"
               )}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              onFocus={() => setHoveredIndex(index)}
+              onBlur={(e) => {
+                if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+                  setHoveredIndex(null);
+                }
+              }}
+              onClick={(e) => {
+                const target = e.target as HTMLElement;
+                if (target.closest("button, a, [role='button']")) return;
+                scrollToIndex(index);
+              }}
             >
               <div className="cj-carousel-slide-content h-full w-full">{child}</div>
             </div>

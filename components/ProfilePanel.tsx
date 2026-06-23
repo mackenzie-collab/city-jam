@@ -496,7 +496,7 @@ export default function ProfilePanel({ viewUserId }: ProfilePanelProps) {
               </Button>
               <div className="flex flex-wrap gap-3 pt-2">
                 <Link href="/settings/account" className="text-xs uppercase tracking-widest text-cj-gold hover:underline">
-                  Connected accounts
+                  Account settings
                 </Link>
                 <Link href="/settings/security" className="text-xs uppercase tracking-widest text-cj-gold hover:underline">
                   Security & MFA

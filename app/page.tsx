@@ -1,5 +1,6 @@
 import MarketingShell from "@/components/MarketingShell";
 import Hero from "@/components/Hero";
+import BlindEchoFeature from "@/components/home/BlindEchoFeature";
 import SignalMapSection from "@/components/home/SignalMapSection";
 import ScenePreviewCarousel from "@/components/home/ScenePreviewCarousel";
 import MusicianGallery from "@/components/MusicianGallery";
@@ -15,6 +16,7 @@ export default function HomePage() {
     <MarketingShell>
       <main className="relative z-[1] bg-cj-bg">
         <Hero />
+        <BlindEchoFeature />
         <SignalMapSection />
         <ScenePreviewCarousel />
         <MusicianGallery />

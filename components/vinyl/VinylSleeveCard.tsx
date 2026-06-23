@@ -39,8 +39,8 @@ export default function VinylSleeveCard({ post, queue, className, compact = fals
   const postHref = `/scene/post/${post.id}`;
   const progressPct = isActive && duration > 0 ? (progress / duration) * 100 : 0;
 
-  const mobileVinylSize = compact ? 140 : 160;
-  const desktopVinylSize = compact ? 155 : 180;
+  const mobileVinylSize = compact ? 88 : 100;
+  const desktopVinylSize = compact ? 96 : 112;
 
   const handlePlay = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -71,17 +71,30 @@ export default function VinylSleeveCard({ post, queue, className, compact = fals
         className
       )}
     >
-      <div className="cj-vinyl-sleeve-art relative border-b border-[var(--cj-zine-border)] bg-brand-purple p-2.5 sm:p-3">
-        <div className="cj-vinyl-sleeve-art-row">
+      <div className="cj-vinyl-sleeve-art relative border-b border-[var(--cj-zine-border)] bg-brand-purple/40">
+        <div className="cj-vinyl-sleeve-header relative z-[2] border-b border-[var(--cj-zine-border)] px-2.5 py-2 sm:px-3 sm:py-2.5">
+          <Link
+            href={profileHref}
+            className="block truncate font-display text-sm uppercase leading-tight tracking-[0.08em] text-cj-text hover:text-brand-gold sm:text-base"
+          >
+            {post.author_display_name ?? "Musician"}
+          </Link>
+          <Link
+            href={postHref}
+            className="mt-0.5 block truncate font-display text-base uppercase leading-tight tracking-[0.06em] text-brand-gold hover:text-brand-parchment sm:text-lg"
+          >
+            {post.title}
+          </Link>
+        </div>
+
+        <div className="cj-vinyl-sleeve-photo relative px-2.5 pb-2.5 pt-2 sm:px-3 sm:pb-3 sm:pt-2.5">
           <CoverArtFrame
             src={post.cover_url}
             alt=""
             aspect="square"
-            className={cn(
-              "cj-sleeve-cover w-[52%] max-w-[52%] shrink-0 transition-transform duration-300 sm:w-[55%] sm:max-w-[55%]",
-              isActive && "-translate-y-0.5"
-            )}
-            sizes="(max-width: 640px) 200px, 240px"
+            warmFilter
+            className="w-full rounded-xl border-brand-gold/30"
+            sizes="(max-width: 640px) 280px, 360px"
           />
           <div className="cj-vinyl-sleeve-disc">
             <InteractiveVinyl
@@ -110,24 +123,13 @@ export default function VinylSleeveCard({ post, queue, className, compact = fals
 
       <div className="flex flex-1 flex-col p-2.5 sm:p-3">
         <p className="font-mono text-[9px] uppercase tracking-widest text-brand-gold">{post.genre}</p>
-        <Link
-          href={postHref}
-          className="mt-0.5 font-display text-lg uppercase leading-tight text-brand-parchment line-clamp-2 hover:text-brand-gold sm:text-xl"
-        >
-          {post.title}
-        </Link>
-        <div className="mt-0.5 flex items-center gap-2">
-          <Link href={profileHref} className="truncate font-body text-xs text-cj-text-muted hover:text-brand-gold">
-            {post.author_display_name ?? "Musician"}
-          </Link>
-          {mounted && post.created_at && (
-            <span className="shrink-0 font-mono text-[9px] text-cj-text-muted/70">
-              · {formatRelativeTime(post.created_at)}
-            </span>
-          )}
-        </div>
         {post.caption && !compact && (
-          <p className="mt-1.5 line-clamp-2 font-body text-xs text-cj-text-muted">{post.caption}</p>
+          <p className="mt-1 line-clamp-2 font-body text-xs text-cj-text-muted">{post.caption}</p>
+        )}
+        {mounted && post.created_at && (
+          <p className="mt-0.5 font-mono text-[9px] text-cj-text-muted/70">
+            {formatRelativeTime(post.created_at)}
+          </p>
         )}
         {isActive && duration > 0 && (
           <div className="mt-2 h-0.5 w-full overflow-hidden rounded-full bg-brand-gold/15">

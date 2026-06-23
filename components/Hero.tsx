@@ -1,7 +1,9 @@
 import GrainOverlay from "@/components/GrainOverlay";
-import HeroArtboard from "@/components/home/HeroArtboard";
 import BrandLogo from "@/components/BrandLogo";
 import { ButtonLink } from "@/components/ui/button";
+import CjIcon from "@/components/CjIcon";
+import InteractiveVinyl from "@/components/vinyl/InteractiveVinyl";
+import { ICONS } from "@/lib/brand-assets";
 
 export default function Hero() {
   return (
@@ -15,31 +17,54 @@ export default function Hero() {
           <div className="cj-page-enter relative z-[2] lg:col-span-7">
             <BrandLogo size={44} className="mb-6 sm:mb-8" priority />
             <span className="cj-badge mb-5 sm:mb-6">
-              The rebellion starts here
+              7-minute anonymous audio match
             </span>
 
             <h1 className="cj-poster-headline">
-              Make music{" "}
-              <span className="text-brand-gold">fun again</span>
+              Hear someone{" "}
+              <span className="text-brand-gold">before you see them</span>
             </h1>
 
             <p className="mt-6 max-w-lg font-body text-base leading-relaxed text-cj-text-muted sm:mt-8 md:text-lg">
-              An app for musicians. Not fans. Not listeners. Musicians. Meet your
-              people. Build your band. Make noise together.
+              Blind Echo is City Jam&apos;s high-intent matchmaking mode. Deep prompts,
+              timed sessions, and a mutual gate at the end — connect by sound alone.
             </p>
 
             <div className="cj-mobile-cta-stack mt-8 sm:mt-10">
-              <ButtonLink href="/scene" variant="primary" size="lg" className="w-full sm:w-auto">
-                Enter the scene
+              <ButtonLink href="/blind-echo" variant="primary" size="lg" className="w-full sm:w-auto">
+                Enter Blind Echo
               </ButtonLink>
-              <ButtonLink href="/echo-roulette" variant="secondary" size="lg" className="w-full sm:w-auto">
-                Try as guest
+              <ButtonLink href="/scene" variant="secondary" size="lg" className="w-full sm:w-auto">
+                Enter the scene
               </ButtonLink>
             </div>
           </div>
 
           <div className="relative z-[1] flex w-full items-center justify-center lg:col-span-5">
-            <HeroArtboard className="lg:-mr-4" />
+            <div className="cj-zine-border relative flex w-full max-w-[min(94vw,420px)] flex-col items-center bg-brand-purple-deep sm:max-w-[min(82vw,440px)] lg:-mr-4">
+              <div className="w-full border-b border-[var(--cj-zine-border)] px-3 py-2 text-center">
+                <span className="font-display text-sm uppercase tracking-[0.14em] text-cj-text">
+                  Blind Echo
+                </span>
+                <span className="ml-3 font-mono text-[10px] text-brand-gold">Featured</span>
+              </div>
+
+              <div className="flex w-full flex-col items-center px-4 py-6 sm:py-8">
+                <CjIcon src={ICONS.lightning} alt="" size={36} className="mb-4 opacity-90" />
+                <InteractiveVinyl size={220} interactive={false} className="sm:hidden" />
+                <InteractiveVinyl size={260} interactive={false} className="hidden sm:block" />
+                <p className="mt-5 text-center font-display text-lg uppercase leading-tight text-cj-text sm:text-xl">
+                  7 minutes. One match.
+                </p>
+                <p className="mt-1 font-mono text-xs text-cj-text-muted">
+                  Anonymous audio · mutual decision
+                </p>
+              </div>
+
+              <div className="w-full border-t border-[var(--cj-zine-border)] px-3 py-1.5 text-center">
+                <span className="font-mono text-[9px] text-brand-gold">Close your eyes. Listen.</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

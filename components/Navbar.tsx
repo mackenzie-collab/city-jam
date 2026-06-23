@@ -9,7 +9,6 @@ import MobileMenu from "@/components/MobileMenu";
 import CjIcon from "@/components/CjIcon";
 import { Button, ButtonLink } from "@/components/ui/button";
 import JamStreakWidget from "@/components/JamStreakWidget";
-import ThemeToggle from "@/components/ThemeToggle";
 import { ICONS } from "@/lib/brand-assets";
 import { isNavActive } from "@/lib/nav";
 import { useAuth } from "@/hooks/useAuth";
@@ -70,7 +69,6 @@ export default function Navbar() {
         </div>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-          <ThemeToggle compact />
           {!loading && isAuthenticated ? (
             <>
               <JamStreakWidget compact />

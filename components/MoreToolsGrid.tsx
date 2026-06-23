@@ -18,11 +18,6 @@ const tools = [
     description: "Your command center — projects, stats, and connected tools.",
   },
   {
-    title: "Blind Echo",
-    href: "/blind-echo",
-    description: "Anonymous 7-minute audio sessions — match by sound alone.",
-  },
-  {
     title: "Project Match",
     href: "/project-match",
     description: "Post what your track needs. Get matched by intent.",
@@ -76,10 +71,10 @@ export default function MoreToolsGrid() {
                     {String(i + 1).padStart(2, "0")}
                   </span>
                 </div>
-                <h3 className="font-display text-lg uppercase tracking-[0.06em] text-brand-parchment sm:text-xl">
+                <h3 className="font-display text-lg uppercase tracking-[0.06em] text-cj-text sm:text-xl">
                   {tool.title}
                 </h3>
-                <p className="mt-2 font-mono text-sm text-brand-parchment/65">{tool.description}</p>
+                <p className="mt-2 font-mono text-sm text-cj-text-muted">{tool.description}</p>
                 <span className="mt-4 inline-flex items-center gap-1 font-mono text-xs uppercase tracking-wide text-brand-gold transition-all group-hover:gap-2">
                   Open <ArrowRight className="h-3.5 w-3.5" />
                 </span>

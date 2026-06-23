@@ -31,10 +31,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#5C007A" },
-    { media: "(prefers-color-scheme: light)", color: "#5C007A" },
-  ],
+  themeColor: "#5C007A",
 };
 
 export const metadata: Metadata = {
@@ -60,8 +57,6 @@ export const metadata: Metadata = {
   },
 };
 
-const themeInitScript = `(function(){try{var k='cj-theme',s=localStorage.getItem(k),t=s==='light'||s==='dark'?s:window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -70,8 +65,6 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      data-theme="dark"
-      suppressHydrationWarning
       className={`${dmSans.variable} ${bebasNeue.variable} ${courierPrime.variable}`}
     >
       <head>
@@ -79,7 +72,6 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="City Jam" />
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="font-body">
         <Providers>

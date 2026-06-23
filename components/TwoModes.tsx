@@ -1,30 +1,10 @@
+import Link from "next/link";
 import { ButtonLink } from "@/components/ui/button";
 import CjIcon from "@/components/CjIcon";
 import VinylCard from "@/components/analog/VinylCard";
 import GrainOverlay from "@/components/GrainOverlay";
 import PosterMotif from "@/components/PosterMotif";
 import { ICONS } from "@/lib/brand-assets";
-
-const modes = [
-  {
-    title: "Blind Echo",
-    tag: "High intent",
-    icon: ICONS.lightning,
-    description:
-      "7-minute timed session. Deep prompts. A match gate at the end — both sides decide.",
-    href: "/blind-echo",
-    cta: "Enter Blind Echo",
-  },
-  {
-    title: "Echo Roulette",
-    tag: "Casual",
-    icon: ICONS.frequencyDial,
-    description:
-      "Spin the dial, lock into a frequency, and get matched to whoever is live.",
-    href: "/echo-roulette",
-    cta: "Enter Echo Roulette",
-  },
-];
 
 export default function TwoModes() {
   return (
@@ -33,31 +13,39 @@ export default function TwoModes() {
       <PosterMotif variant="minimal" opacity={0.3} />
       <div className="relative mx-auto max-w-6xl">
         <div className="mb-6">
-          <span className="cj-badge mb-4 sm:mb-6">Pick your frequency</span>
+          <span className="cj-badge mb-4 sm:mb-6">Casual mode</span>
           <h2 className="cj-poster-headline text-3xl sm:text-4xl md:text-5xl">
-            Two modes.{" "}
-            <span className="text-brand-gold">One truth.</span>
+            Echo{" "}
+            <span className="text-brand-gold">Roulette</span>
           </h2>
+          <p className="mt-4 max-w-xl font-body text-base text-cj-text-muted">
+            Want something lighter? Spin the dial and get matched to whoever is live.
+            Blind Echo is featured above for high-intent sessions.
+          </p>
         </div>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2 md:gap-10">
-          {modes.map((mode) => (
-            <VinylCard key={mode.title} variant="sleeve" className="relative flex flex-col border-[var(--cj-zine-border)] bg-brand-purple-deep">
-              <div className="mb-4 flex items-center justify-between">
-                <CjIcon src={mode.icon} alt="" size={28} />
-                <span className="cj-badge text-[10px]">{mode.tag}</span>
-              </div>
-              <h3 className="font-display text-2xl uppercase tracking-[0.06em] text-brand-parchment sm:text-3xl">
-                {mode.title}
-              </h3>
-              <p className="mt-3 flex-1 font-mono text-sm leading-relaxed text-brand-parchment/70">
-                {mode.description}
-              </p>
-              <ButtonLink href={mode.href} variant="secondary" className="mt-6 w-full border-brand-gold/40 text-brand-parchment hover:border-brand-gold sm:w-auto">
-                {mode.cta}
+        <div className="mt-10 max-w-xl">
+          <VinylCard variant="sleeve" className="relative flex flex-col border-[var(--cj-zine-border)] bg-brand-purple-deep">
+            <div className="mb-4 flex items-center justify-between">
+              <CjIcon src={ICONS.frequencyDial} alt="" size={28} />
+              <span className="cj-badge text-[10px]">Casual</span>
+            </div>
+            <h3 className="font-display text-2xl uppercase tracking-[0.06em] text-brand-parchment sm:text-3xl">
+              Echo Roulette
+            </h3>
+            <p className="mt-3 flex-1 font-mono text-sm leading-relaxed text-cj-text-muted">
+              Spin the dial, lock into a frequency, and get matched to whoever is live.
+              No timer, no gate — just vibes.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center gap-4">
+              <ButtonLink href="/echo-roulette" variant="secondary" className="border-brand-gold/40 text-brand-parchment hover:border-brand-gold">
+                Enter Echo Roulette
               </ButtonLink>
-            </VinylCard>
-          ))}
+              <Link href="/blind-echo" className="font-mono text-xs uppercase tracking-widest text-cj-text-muted hover:text-brand-gold">
+                ← Back to Blind Echo
+              </Link>
+            </div>
+          </VinylCard>
         </div>
       </div>
     </section>

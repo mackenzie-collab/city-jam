@@ -10,7 +10,7 @@ export function friendlyAuthError(err: unknown): string {
   const lower = msg.toLowerCase();
 
   if (lower.includes("provider is not enabled") || lower.includes("unsupported provider")) {
-    return "Social sign-in is not set up yet. Use email and password below, or ask the project owner to enable Google in Supabase (see docs/AUTH_SETUP.md).";
+    return "That sign-in method is not available. Use your email and password instead.";
   }
   if (lower.includes("email not confirmed")) {
     return "Confirm your email first — check your inbox for a link from City Jam, then log in.";

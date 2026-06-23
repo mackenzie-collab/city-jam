@@ -14,7 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 export default function RegisterContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { register, oauthLogin, error } = useAuth();
+  const { register, error } = useAuth();
   const returnUrl = searchParams.get("returnUrl") || "/";
   const [loading, setLoading] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
@@ -43,15 +43,6 @@ export default function RegisterContent() {
         return;
       }
       throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleOAuth = async (provider: "google" | "facebook" | "apple") => {
-    setLoading(true);
-    try {
-      await oauthLogin(provider, returnUrl);
     } finally {
       setLoading(false);
     }
@@ -102,7 +93,7 @@ export default function RegisterContent() {
                 </button>
               </div>
             ) : (
-              <AuthCard mode="register" onSubmit={handleSubmit} onOAuth={handleOAuth} loading={loading} error={localError ?? error} />
+              <AuthCard mode="register" onSubmit={handleSubmit} loading={loading} error={localError ?? error} />
             )}
           </div>
         </div>

@@ -4,7 +4,7 @@ import { useId } from "react";
 import { cn } from "@/lib/utils";
 
 /** Groove radii as fraction of outer disc radius (0–1). */
-const GROOVE_FRACTIONS = [0.98, 0.9, 0.82, 0.74, 0.66, 0.58, 0.5, 0.42, 0.34, 0.26, 0.18];
+const GROOVE_FRACTIONS = [0.96, 0.88, 0.8, 0.72, 0.64, 0.56, 0.48, 0.4, 0.32, 0.24, 0.16];
 
 export interface InteractiveVinylProps {
   size?: number;
@@ -49,11 +49,12 @@ export default function InteractiveVinyl({
   const cy = size / 2;
   const outerR = size / 2 - 1;
   const grooves = GROOVE_FRACTIONS.map((f) => outerR * f);
-  const labelR = outerR * 0.62;
+  const labelR = outerR * 0.58;
   const progressPct = duration > 0 ? progress / duration : 0;
   const arcEnd = progressPct * 360;
   const discClipId = `vinyl-disc-${uid}`;
   const labelClipId = `vinyl-label-${uid}`;
+  const discGradId = `vinyl-disc-grad-${uid}`;
 
   const label = title ? `${title}${artist ? ` by ${artist}` : ""}` : "Vinyl record";
 
@@ -67,7 +68,7 @@ export default function InteractiveVinyl({
     >
       <svg
         viewBox={`0 0 ${size} ${size}`}
-        className="cj-vinyl-graphic block h-full w-full text-brand-parchment/80"
+        className="cj-vinyl-graphic block h-full w-full"
         aria-hidden={interactive ? undefined : true}
       >
         <defs>
@@ -77,17 +78,23 @@ export default function InteractiveVinyl({
           <clipPath id={labelClipId}>
             <circle cx={cx} cy={cy} r={labelR} />
           </clipPath>
+          <radialGradient id={discGradId} cx="38%" cy="32%" r="72%">
+            <stop offset="0%" stopColor="#1a0030" />
+            <stop offset="55%" stopColor="var(--cj-vinyl-disc-fill, #050508)" />
+            <stop offset="100%" stopColor="#000000" />
+          </radialGradient>
         </defs>
         <g clipPath={`url(#${discClipId})`}>
-          <circle cx={cx} cy={cy} r={outerR} className="fill-[var(--cj-vinyl-disc-fill,#1a0030)]" />
+          <circle cx={cx} cy={cy} r={outerR} fill={`url(#${discGradId})`} />
           <circle
             cx={cx}
             cy={cy}
             r={outerR - 0.5}
             fill="none"
-            stroke="#B3A200"
-            strokeWidth={isPlaying ? 2 : 1.5}
-            opacity={isPlaying ? 0.95 : 0.55}
+            stroke="var(--cj-vinyl-accent, #b3a200)"
+            strokeWidth={isPlaying ? 1.5 : 1}
+            opacity={isPlaying ? 0.7 : 0.4}
+            className={isPlaying ? "cj-vinyl-ripple-ring motion-reduce:animate-none" : undefined}
           />
           {grooves.map((r, i) => (
             <circle
@@ -97,10 +104,17 @@ export default function InteractiveVinyl({
               r={r}
               fill="none"
               stroke="currentColor"
-              strokeWidth={i < 3 ? 1.5 : 1}
-              opacity={i < 4 ? 0.9 : 0.35 + (grooves.length - i) * 0.05}
+              strokeWidth={i < 2 ? 0.75 : 0.5}
+              opacity={0.15 + (grooves.length - i) * 0.04}
             />
           ))}
+          <circle
+            cx={cx}
+            cy={cy}
+            r={labelR}
+            fill="var(--cj-vinyl-label-fill, #b8860b)"
+            opacity={coverUrl ? 0.92 : 1}
+          />
           {coverUrl && (
             <image
               href={coverUrl}
@@ -118,16 +132,15 @@ export default function InteractiveVinyl({
               cy={cy}
               r={outerR - 2}
               fill="none"
-              stroke="#B3A200"
-              strokeWidth={2}
+              stroke="var(--cj-vinyl-accent, #b3a200)"
+              strokeWidth={1.5}
               strokeDasharray={`${(arcEnd / 360) * Math.PI * (outerR - 2) * 2} ${Math.PI * (outerR - 2) * 2}`}
               transform={`rotate(-90 ${cx} ${cy})`}
-              opacity={0.85}
+              opacity={0.75}
             />
           )}
-          <circle cx={cx} cy={cy} r={labelR * 0.28} fill="none" stroke="#B3A200" strokeWidth="1.5" />
-          <circle cx={cx} cy={cy} r={labelR * 0.16} fill="var(--royal-purple-deep, #3d0052)" />
-          <circle cx={cx} cy={cy} r={labelR * 0.06} fill="var(--parchment, #D0CF88)" />
+          <circle cx={cx} cy={cy} r={labelR * 0.12} fill="var(--cj-vinyl-spindle, #050508)" />
+          <circle cx={cx} cy={cy} r={labelR * 0.05} fill="var(--parchment, #d0cf88)" opacity={0.85} />
         </g>
       </svg>
     </div>

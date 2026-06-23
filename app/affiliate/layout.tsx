@@ -38,7 +38,6 @@ export default function AffiliateLayout({ children }: { children: React.ReactNod
   return (
     <div
       className={`affiliate-page ${anton.variable} ${barlowCondensed.variable} ${spaceMono.variable} ${inter.variable}`}
-      data-theme="dark"
     >
       <a href="#main-content" className="affiliate-skip-link">
         Skip to main content
