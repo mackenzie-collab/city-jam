@@ -130,6 +130,11 @@ function SceneSnapSlide({
         <h2 className="mt-1 font-display text-2xl uppercase leading-tight text-cj-parchment sm:text-3xl">
           {post.title}
         </h2>
+        {post.is_editors_pick ? (
+          <span className="mt-2 inline-block border border-brand-gold/60 bg-brand-gold/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-brand-gold">
+            Editor&apos;s Pick
+          </span>
+        ) : null}
         {post.genre ? <span className="cj-badge mt-3 text-[10px]">{post.genre}</span> : null}
         {post.caption ? (
           <p className="mt-3 max-w-xl font-body text-sm leading-relaxed text-cj-text-muted line-clamp-2">
@@ -185,7 +190,7 @@ export default function SceneSnapFeed() {
 
   const load = useCallback(async () => {
     try {
-      const feed = await fetchSceneFeed({ limit: 20, minCount: 20 });
+      const feed = await fetchSceneFeed({ limit: 20, minCount: 20, sort: "ranked" });
       setPosts(feed);
       setLikeCounts(
         Object.fromEntries(feed.map((post) => [post.id, post.like_count]))

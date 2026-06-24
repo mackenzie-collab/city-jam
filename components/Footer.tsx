@@ -13,11 +13,12 @@ const discoverLinks = [
 ];
 
 const studioLinks = [
-  { label: "Circles", href: "/circles" },
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "Collab", href: "/collab" },
-  { label: "Listen Rooms", href: "/listening-rooms" },
   { label: "Studio", href: "/studio" },
+  { label: "My Tracks", href: "/dashboard" },
+  { label: "Project Match", href: "/project-match" },
+  { label: "Collab", href: "/collab" },
+  { label: "Circles", href: "/circles" },
+  { label: "Listen Rooms", href: "/listening-rooms" },
   { label: "Jam", href: "/jam" },
 ];
 

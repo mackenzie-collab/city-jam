@@ -14,8 +14,41 @@ export interface AudioPost {
   like_count: number;
   comment_count: number;
   created_at: string;
+  is_editors_pick?: boolean;
+  editors_pick_at?: string | null;
+  editors_pick_rank?: number | null;
   author_username?: string;
   author_display_name?: string;
+}
+
+export type SceneFeedSort = "ranked" | "newest";
+
+export function popularityScore(post: AudioPost): number {
+  return (post.play_count ?? 0) + (post.like_count ?? 0);
+}
+
+/** Editor's picks first, then most popular, then recency. */
+export function rankSceneFeed(posts: AudioPost[]): AudioPost[] {
+  const picks = posts
+    .filter((p) => p.is_editors_pick)
+    .sort((a, b) => {
+      const rankDiff = (a.editors_pick_rank ?? 99) - (b.editors_pick_rank ?? 99);
+      if (rankDiff !== 0) return rankDiff;
+      return (
+        Date.parse(b.editors_pick_at ?? b.created_at) -
+        Date.parse(a.editors_pick_at ?? a.created_at)
+      );
+    });
+
+  const rest = posts
+    .filter((p) => !p.is_editors_pick)
+    .sort((a, b) => {
+      const popDiff = popularityScore(b) - popularityScore(a);
+      if (popDiff !== 0) return popDiff;
+      return Date.parse(b.created_at) - Date.parse(a.created_at);
+    });
+
+  return [...picks, ...rest];
 }
 
 export interface AudioComment {
@@ -55,6 +88,9 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 142,
     like_count: 23,
     comment_count: 5,
+    is_editors_pick: true,
+    editors_pick_rank: 3,
+    editors_pick_at: new Date(DEMO_BASE_MS - 3600000).toISOString(),
     created_at: new Date(DEMO_BASE_MS - 3600000).toISOString(),
     author_username: "nightoperator",
     author_display_name: "Night Operator",
@@ -85,6 +121,9 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 256,
     like_count: 41,
     comment_count: 8,
+    is_editors_pick: true,
+    editors_pick_rank: 1,
+    editors_pick_at: new Date(DEMO_BASE_MS - 86400000).toISOString(),
     created_at: new Date(DEMO_BASE_MS - 86400000).toISOString(),
     author_username: "beatarchitect",
     author_display_name: "Beat Architect",
@@ -280,14 +319,21 @@ export const DEMO_POSTS: AudioPost[] = [
     play_count: 389,
     like_count: 62,
     comment_count: 11,
+    is_editors_pick: true,
+    editors_pick_rank: 2,
+    editors_pick_at: new Date(DEMO_BASE_MS - 1209600000).toISOString(),
     created_at: new Date(DEMO_BASE_MS - 1209600000).toISOString(),
     author_username: "globaljam",
     author_display_name: "Global Jam",
   },
 ];
 
-/** Pad sparse live feeds with demo catalog — live posts stay first. */
-export function mergeSceneFeed(live: AudioPost[], minCount = 12): AudioPost[] {
+/** Pad sparse live feeds with demo catalog, then optionally rank. */
+export function mergeSceneFeed(
+  live: AudioPost[],
+  minCount = 12,
+  sort: SceneFeedSort = "ranked"
+): AudioPost[] {
   const seen = new Set<string>();
   const merged: AudioPost[] = [];
 
@@ -297,16 +343,17 @@ export function mergeSceneFeed(live: AudioPost[], minCount = 12): AudioPost[] {
     merged.push(post);
   }
 
-  if (merged.length >= minCount) return merged.slice(0, minCount);
-
-  for (const demo of DEMO_POSTS) {
-    if (merged.length >= minCount) break;
-    if (seen.has(demo.id)) continue;
-    seen.add(demo.id);
-    merged.push(demo);
+  if (merged.length < minCount) {
+    for (const demo of DEMO_POSTS) {
+      if (merged.length >= minCount) break;
+      if (seen.has(demo.id)) continue;
+      seen.add(demo.id);
+      merged.push(demo);
+    }
   }
 
-  return merged;
+  const ordered = sort === "ranked" ? rankSceneFeed(merged) : merged;
+  return ordered.slice(0, minCount);
 }
 
 async function enrichPosts(posts: AudioPost[]): Promise<AudioPost[]> {
@@ -333,17 +380,24 @@ export async function fetchSceneFeed(opts?: {
   limit?: number;
   /** Minimum items — pads with DEMO_POSTS when live feed is sparse */
   minCount?: number;
+  sort?: SceneFeedSort;
 }): Promise<AudioPost[]> {
   const limit = opts?.limit ?? 50;
   const minCount = opts?.minCount ?? 12;
+  const sort = opts?.userId ? "newest" : (opts?.sort ?? "ranked");
+  const poolSize = sort === "ranked" ? Math.max(limit * 2, 50) : limit;
 
-  if (sceneUnavailable()) return mergeSceneFeed([], Math.min(limit, minCount));
+  if (sceneUnavailable()) {
+    return mergeSceneFeed([], Math.min(limit, minCount), sort).slice(0, limit);
+  }
 
-  let q = db()
-    .from("audio_posts")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(limit);
+  let q = db().from("audio_posts").select("*").limit(poolSize);
+
+  if (sort === "ranked") {
+    q = q.order("play_count", { ascending: false }).order("like_count", { ascending: false });
+  } else {
+    q = q.order("created_at", { ascending: false });
+  }
 
   if (opts?.genre) q = q.eq("genre", opts.genre);
   if (opts?.userId) q = q.eq("user_id", opts.userId);
@@ -351,7 +405,7 @@ export async function fetchSceneFeed(opts?: {
   const { data, error } = await q;
   if (error) throw error;
   const enriched = await enrichPosts(data ?? []);
-  return mergeSceneFeed(enriched, minCount).slice(0, limit);
+  return mergeSceneFeed(enriched, minCount, sort).slice(0, limit);
 }
 
 export async function fetchAudioPost(id: string): Promise<AudioPost | null> {
@@ -508,7 +562,7 @@ export async function incrementPlayCount(postId: string): Promise<void> {
 }
 
 export async function fetchUserAudioPosts(userId: string): Promise<AudioPost[]> {
-  return fetchSceneFeed({ userId });
+  return fetchSceneFeed({ userId, sort: "newest" });
 }
 
 export { fetchProfileByUsername } from "@/lib/profiles";

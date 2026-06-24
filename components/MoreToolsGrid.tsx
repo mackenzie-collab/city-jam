@@ -28,9 +28,9 @@ const tools = [
     description: "Invite-only groups around a sound, city or shared goal.",
   },
   {
-    title: "Dashboard",
+    title: "My Tracks",
     href: "/dashboard",
-    description: "Your tracks, plays, and Scene vault.",
+    description: "Your Scene posts, plays, and stats.",
   },
   {
     title: "Collab",

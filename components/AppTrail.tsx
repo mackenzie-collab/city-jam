@@ -17,7 +17,7 @@ const LABELS: Record<string, string> = {
   "/community": "Community",
   "/studio": "Studio",
   "/profile": "Profile",
-  "/dashboard": "Dashboard",
+  "/dashboard": "My Tracks",
   "/collab": "Collab",
   "/project-match": "Project Match",
   "/circles": "Circles",

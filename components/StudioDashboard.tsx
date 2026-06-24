@@ -91,7 +91,7 @@ export default function StudioDashboard() {
       </div>
 
       <div className="mb-10">
-        <ToolsStrip title="Tools" variant="compact" />
+        <ToolsStrip title="Explore tools" variant="full" />
       </div>
 
       <div className="grid gap-8 lg:grid-cols-[200px_1fr]">

@@ -7,6 +7,7 @@ import VinylSleeveCard from "@/components/vinyl/VinylSleeveCard";
 import {
   fetchSceneFeed,
   mergeSceneFeed,
+  rankSceneFeed,
   subscribeToAudioPosts,
   type AudioPost,
 } from "@/lib/scene";
@@ -77,7 +78,7 @@ export default function ScenePreviewCarousel({ theme = "default" }: ScenePreview
 
   const load = useCallback(async () => {
     try {
-      const feed = await fetchSceneFeed({ limit: 16, minCount: 16 });
+      const feed = await fetchSceneFeed({ limit: 16, minCount: 16, sort: "ranked" });
       setPosts(feed);
     } catch {
       setPosts(mergeSceneFeed([], 16));
@@ -98,9 +99,8 @@ export default function ScenePreviewCarousel({ theme = "default" }: ScenePreview
   }, [posts, genre]);
 
   const trendingPosts = useMemo(() => {
-    return [...displayPosts]
-      .sort((a, b) => b.play_count + b.like_count - (a.play_count + a.like_count))
-      .slice(0, 6);
+    const base = displayPosts.filter((p) => !p.is_editors_pick);
+    return rankSceneFeed(base).slice(0, 6);
   }, [displayPosts]);
 
   return (

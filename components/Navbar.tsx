@@ -11,18 +11,11 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import JamStreakWidget from "@/components/JamStreakWidget";
 import { ICONS } from "@/lib/brand-assets";
 import { isNavActive } from "@/lib/nav";
+import { PRIMARY_NAV_LINKS } from "@/lib/nav-links";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
-const navLinks: { href: string; label: string; hash?: boolean }[] = [
-  { href: "/", label: "Home" },
-  { href: "/#affiliates", label: "Affiliates", hash: true },
-  { href: "/discover", label: "Discover" },
-  { href: "/scene", label: "Scene" },
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/jam", label: "Jam" },
-  { href: "/profile", label: "Profile" },
-];
+const navLinks = PRIMARY_NAV_LINKS;
 
 export default function Navbar() {
   const { user, isAuthenticated, loading, logout } = useAuth();

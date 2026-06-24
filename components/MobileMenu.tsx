@@ -8,24 +8,12 @@ import BrandLogo from "@/components/BrandLogo";
 import CjIcon from "@/components/CjIcon";
 import { Button } from "@/components/ui/button";
 import { ICONS, TOOL_ICONS } from "@/lib/brand-assets";
+import { MOBILE_TOOL_LINKS, PRIMARY_NAV_LINKS } from "@/lib/nav-links";
 import { cn } from "@/lib/utils";
 
-const PRIMARY_LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/#affiliates", label: "Affiliates" },
-  { href: "/discover", label: "Discover" },
-  { href: "/scene", label: "Scene" },
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/jam", label: "Jam" },
-  { href: "/profile", label: "Profile" },
-];
+const PRIMARY_LINKS = PRIMARY_NAV_LINKS;
 
-const TOOL_LINKS = [
-  { href: "/project-match", label: "Project Match" },
-  { href: "/collab", label: "Collab" },
-  { href: "/circles", label: "Circles" },
-  { href: "/listening-rooms", label: "Listening Rooms" },
-];
+const TOOL_LINKS = MOBILE_TOOL_LINKS;
 
 interface MobileMenuProps {
   open: boolean;

@@ -1,17 +1,9 @@
 import Link from "next/link";
 import CjIcon from "@/components/CjIcon";
 import { TOOL_ICONS } from "@/lib/brand-assets";
+import { STUDIO_TOOLS } from "@/lib/studio-tools";
 
-export const TOOLS = [
-  { href: "/studio", label: "Studio", desc: "Projects & PM board" },
-  { href: "/project-match", label: "Project Match", desc: "Find collaborators" },
-  { href: "/dashboard", label: "Dashboard", desc: "Your tracks & stats" },
-  { href: "/collab", label: "Collab", desc: "Task boards" },
-  { href: "/circles", label: "Circles", desc: "Private groups" },
-  { href: "/listening-rooms", label: "Rooms", desc: "Listen together" },
-  { href: "/blind-echo", label: "Blind Echo", desc: "7-min audio match" },
-  { href: "/echo-roulette", label: "Echo Roulette", desc: "Spin & connect" },
-] as const;
+export { STUDIO_TOOLS as TOOLS };
 
 interface ToolsStripProps {
   variant?: "compact" | "full";
@@ -34,7 +26,7 @@ export default function ToolsStrip({ variant = "full", title = "Your Tools" }: T
             : "grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
         }
       >
-        {TOOLS.map(({ href, label, desc }) => (
+        {STUDIO_TOOLS.map(({ href, label, desc }) => (
           <Link
             key={href}
             href={href}
