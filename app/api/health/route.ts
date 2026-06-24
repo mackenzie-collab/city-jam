@@ -18,30 +18,22 @@ export async function GET() {
 
   try {
     const supabase = createClient(url, key);
-    const { data, error } = await supabase.rpc("try_match", {
-      p_user_id: "__healthcheck__",
-      p_mode: "blind-echo",
-      p_frequency: null,
-    });
+    const { error } = await supabase
+      .from("match_queue")
+      .select("id", { count: "exact", head: true })
+      .limit(1);
 
     if (error) {
       return NextResponse.json(
-        { ok: false, supabase: true, rpc: false, message: error.message },
+        { ok: false, supabase: true, database: false, message: error.message },
         { status: 503 }
       );
     }
 
-    // Clean up healthcheck queue entry
-    await supabase
-      .from("match_queue")
-      .delete()
-      .eq("user_id", "__healthcheck__");
-
     return NextResponse.json({
       ok: true,
       supabase: true,
-      rpc: true,
-      matchStatus: data,
+      database: true,
     });
   } catch (e) {
     return NextResponse.json(
