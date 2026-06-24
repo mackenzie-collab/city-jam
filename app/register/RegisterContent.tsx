@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import BrandLogo from "@/components/BrandLogo";
+import AuthBackButton from "@/components/AuthBackButton";
 import AuthCard from "@/components/AuthCard";
 import { STOCK } from "@/lib/brand-assets";
 import { EmailConfirmationRequiredError } from "@/lib/auth";
@@ -16,6 +17,7 @@ export default function RegisterContent() {
   const searchParams = useSearchParams();
   const { register, error } = useAuth();
   const returnUrl = searchParams.get("returnUrl") || "/";
+  const explicitReturnUrl = searchParams.get("returnUrl");
   const [loading, setLoading] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
   const [pendingEmail, setPendingEmail] = useState<string | null>(null);
@@ -50,6 +52,7 @@ export default function RegisterContent() {
 
   return (
     <div className="min-h-[100dvh] bg-brand-purple-deep lg:flex lg:flex-row">
+      <AuthBackButton href={explicitReturnUrl ? returnUrl : undefined} />
       <div className="relative h-44 shrink-0 bg-brand-purple sm:h-52 lg:hidden">
         <Image src={STOCK.community} alt={STOCK.communityAlt} fill className="object-cover object-top cj-grain-photo" sizes="100vw" priority />
         <div className="absolute inset-0 bg-gradient-to-t from-brand-purple-deep via-brand-purple-deep/40 to-transparent" />
@@ -93,7 +96,7 @@ export default function RegisterContent() {
                 </button>
               </div>
             ) : (
-              <AuthCard mode="register" onSubmit={handleSubmit} loading={loading} error={localError ?? error} />
+              <AuthCard mode="register" onSubmit={handleSubmit} loading={loading} error={localError ?? error} returnUrl={returnUrl} />
             )}
           </div>
         </div>

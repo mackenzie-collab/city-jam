@@ -109,7 +109,14 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Link href="/login" className="cj-sign-in-ghost hidden sm:inline-flex">
+              <Link
+                href={
+                  pathname && pathname !== "/login"
+                    ? `/login?returnUrl=${encodeURIComponent(pathname)}`
+                    : "/login"
+                }
+                className="cj-sign-in-ghost hidden sm:inline-flex"
+              >
                 Sign in
               </Link>
               <ButtonLink href="/register" variant="primary" size="sm" className="px-4">

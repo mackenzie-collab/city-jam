@@ -26,6 +26,7 @@ export default function AuthCard({
   onForgotPassword,
   loading = false,
   error,
+  returnUrl,
 }: AuthCardProps) {
   const isLogin = mode === "login";
   const [localError, setLocalError] = useState<string | null>(null);
@@ -49,6 +50,12 @@ export default function AuthCard({
   };
 
   const displayError = error ?? localError;
+  const loginHref = returnUrl
+    ? `/login?returnUrl=${encodeURIComponent(returnUrl)}`
+    : "/login";
+  const registerHref = returnUrl
+    ? `/register?returnUrl=${encodeURIComponent(returnUrl)}`
+    : "/register";
 
   return (
     <VinylCard showDisc className="cj-auth-card w-full max-w-md !p-5 sm:!p-8">
@@ -193,14 +200,14 @@ export default function AuthCard({
         {isLogin ? (
           <>
             Don&apos;t have an account?{" "}
-            <Link href="/register" className="text-cj-gold hover:underline">
+            <Link href={registerHref} className="text-cj-gold hover:underline">
               Create account
             </Link>
           </>
         ) : (
           <>
             Already have an account?{" "}
-            <Link href="/login" className="text-cj-gold hover:underline">
+            <Link href={loginHref} className="text-cj-gold hover:underline">
               Sign in
             </Link>
           </>

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import BrandLogo from "@/components/BrandLogo";
+import AuthBackButton from "@/components/AuthBackButton";
 import AuthCard from "@/components/AuthCard";
 import { STOCK } from "@/lib/brand-assets";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,6 +16,7 @@ export default function LoginContent() {
   const searchParams = useSearchParams();
   const { login, error } = useAuth();
   const returnUrl = searchParams.get("returnUrl") || "/";
+  const explicitReturnUrl = searchParams.get("returnUrl");
   const [loading, setLoading] = useState(false);
 
   const callbackError = useMemo(() => {
@@ -39,6 +41,7 @@ export default function LoginContent() {
 
   return (
     <div className="min-h-[100dvh] bg-brand-purple-deep lg:flex lg:flex-row">
+      <AuthBackButton href={explicitReturnUrl ? returnUrl : undefined} />
       <div className="relative h-44 shrink-0 bg-brand-purple sm:h-52 lg:hidden">
         <Image src={STOCK.auth} alt={STOCK.phoneJamAlt} fill className="object-cover object-top cj-grain-photo" sizes="100vw" priority />
         <div className="absolute inset-0 bg-gradient-to-t from-brand-purple-deep via-brand-purple-deep/40 to-transparent" />
@@ -59,6 +62,7 @@ export default function LoginContent() {
               onForgotPassword={handleForgotPassword}
               loading={loading}
               error={callbackError ?? error}
+              returnUrl={returnUrl}
             />
           </div>
         </div>

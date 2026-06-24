@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
 import BrandLogo from "@/components/BrandLogo";
 import CjIcon from "@/components/CjIcon";
@@ -39,6 +40,12 @@ export default function MobileMenu({
   isAuthenticated,
   onLogout,
 }: MobileMenuProps) {
+  const pathname = usePathname();
+  const loginHref =
+    pathname && pathname !== "/login"
+      ? `/login?returnUrl=${encodeURIComponent(pathname)}`
+      : "/login";
+
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
@@ -114,7 +121,7 @@ export default function MobileMenu({
             </div>
           ) : (
             <div className="space-y-2">
-              <Link href="/login" onClick={onClose} className="block no-underline">
+              <Link href={loginHref} onClick={onClose} className="block no-underline">
                 <Button variant="secondary" className="w-full">
                   Sign in
                 </Button>
