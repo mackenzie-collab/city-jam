@@ -10,13 +10,14 @@ import { STOCK } from "@/lib/brand-assets";
 import { useAuth } from "@/hooks/useAuth";
 import { resetPasswordForEmail } from "@/lib/supabase/auth";
 import { friendlyAuthError } from "@/lib/supabase/auth-errors";
+import { safeReturnPath } from "@/lib/redirects";
 
 export default function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login, error } = useAuth();
-  const returnUrl = searchParams.get("returnUrl") || "/";
   const explicitReturnUrl = searchParams.get("returnUrl");
+  const returnUrl = safeReturnPath(explicitReturnUrl);
   const [loading, setLoading] = useState(false);
 
   const callbackError = useMemo(() => {

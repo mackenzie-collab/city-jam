@@ -1,3 +1,5 @@
+import { safeReturnPath } from "@/lib/redirects";
+
 function normalizeOrigin(raw: string): string {
   return raw.replace(/\/$/, "");
 }
@@ -27,7 +29,7 @@ export function getAppOrigin(): string {
 }
 
 export function authCallbackUrl(returnPath = "/profile"): string {
-  return `${getAppOrigin()}/auth/callback?next=${encodeURIComponent(returnPath)}`;
+  return `${getAppOrigin()}/auth/callback?next=${encodeURIComponent(safeReturnPath(returnPath, "/profile"))}`;
 }
 
 /** Server-side redirect origin: env first, then request host. */

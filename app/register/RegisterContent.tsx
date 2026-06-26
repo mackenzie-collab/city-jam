@@ -11,13 +11,14 @@ import { STOCK } from "@/lib/brand-assets";
 import { EmailConfirmationRequiredError } from "@/lib/auth";
 import { resendSignupConfirmation } from "@/lib/supabase/auth";
 import { useAuth } from "@/hooks/useAuth";
+import { safeReturnPath } from "@/lib/redirects";
 
 export default function RegisterContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { register, error } = useAuth();
-  const returnUrl = searchParams.get("returnUrl") || "/";
   const explicitReturnUrl = searchParams.get("returnUrl");
+  const returnUrl = safeReturnPath(explicitReturnUrl);
   const [loading, setLoading] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
   const [pendingEmail, setPendingEmail] = useState<string | null>(null);
