@@ -448,25 +448,10 @@ export async function likePost(postId: string, userId: string): Promise<void> {
     .from("audio_reactions")
     .insert({ post_id: postId, user_id: userId });
   if (reactErr && reactErr.code !== "23505") throw reactErr;
-
-  const { data: post } = await db().from("audio_posts").select("like_count").eq("id", postId).single();
-  if (post) {
-    await db()
-      .from("audio_posts")
-      .update({ like_count: (post.like_count ?? 0) + 1 })
-      .eq("id", postId);
-  }
 }
 
 export async function unlikePost(postId: string, userId: string): Promise<void> {
   await db().from("audio_reactions").delete().eq("post_id", postId).eq("user_id", userId);
-  const { data: post } = await db().from("audio_posts").select("like_count").eq("id", postId).single();
-  if (post && post.like_count > 0) {
-    await db()
-      .from("audio_posts")
-      .update({ like_count: post.like_count - 1 })
-      .eq("id", postId);
-  }
 }
 
 export async function hasLikedPost(postId: string, userId: string): Promise<boolean> {
@@ -508,14 +493,6 @@ export async function addComment(
     .select()
     .single();
   if (error) throw error;
-
-  const { data: post } = await db().from("audio_posts").select("comment_count").eq("id", postId).single();
-  if (post) {
-    await db()
-      .from("audio_posts")
-      .update({ comment_count: (post.comment_count ?? 0) + 1 })
-      .eq("id", postId);
-  }
   return data;
 }
 
@@ -549,13 +526,8 @@ export async function isFollowing(followerId: string, followingId: string): Prom
 export async function incrementPlayCount(postId: string): Promise<void> {
   if (sceneUnavailable() || postId.startsWith("demo-")) return;
   try {
-    const { data: post } = await db().from("audio_posts").select("play_count").eq("id", postId).maybeSingle();
-    if (post) {
-      await db()
-        .from("audio_posts")
-        .update({ play_count: (post.play_count ?? 0) + 1 })
-        .eq("id", postId);
-    }
+    const { error } = await db().rpc("increment_audio_post_play_count", { p_post_id: postId });
+    if (error) throw error;
   } catch {
     /* non-fatal */
   }
