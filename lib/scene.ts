@@ -51,6 +51,19 @@ export function rankSceneFeed(posts: AudioPost[]): AudioPost[] {
   return [...picks, ...rest];
 }
 
+function uniqueAudioPosts(posts: AudioPost[]): AudioPost[] {
+  const seen = new Set<string>();
+  const unique: AudioPost[] = [];
+
+  for (const post of posts) {
+    if (seen.has(post.id)) continue;
+    seen.add(post.id);
+    unique.push(post);
+  }
+
+  return unique;
+}
+
 export interface AudioComment {
   id: string;
   post_id: string;
@@ -391,13 +404,39 @@ export async function fetchSceneFeed(opts?: {
     return mergeSceneFeed([], Math.min(limit, minCount), sort).slice(0, limit);
   }
 
+  if (sort === "ranked") {
+    const editorPickLimit = Math.max(limit, 50);
+    let picksQuery = db()
+      .from("audio_posts")
+      .select("*")
+      .eq("is_editors_pick", true)
+      .order("editors_pick_rank", { ascending: true, nullsFirst: false })
+      .order("editors_pick_at", { ascending: false, nullsFirst: false })
+      .limit(editorPickLimit);
+    let popularQuery = db()
+      .from("audio_posts")
+      .select("*")
+      .order("play_count", { ascending: false })
+      .order("like_count", { ascending: false })
+      .limit(poolSize);
+
+    if (opts?.genre) {
+      picksQuery = picksQuery.eq("genre", opts.genre);
+      popularQuery = popularQuery.eq("genre", opts.genre);
+    }
+
+    const [{ data: picks, error: picksError }, { data: popular, error: popularError }] =
+      await Promise.all([picksQuery, popularQuery]);
+    if (picksError) throw picksError;
+    if (popularError) throw popularError;
+
+    const enriched = await enrichPosts(uniqueAudioPosts([...(picks ?? []), ...(popular ?? [])]));
+    return mergeSceneFeed(enriched, minCount, sort).slice(0, limit);
+  }
+
   let q = db().from("audio_posts").select("*").limit(poolSize);
 
-  if (sort === "ranked") {
-    q = q.order("play_count", { ascending: false }).order("like_count", { ascending: false });
-  } else {
-    q = q.order("created_at", { ascending: false });
-  }
+  q = q.order("created_at", { ascending: false });
 
   if (opts?.genre) q = q.eq("genre", opts.genre);
   if (opts?.userId) q = q.eq("user_id", opts.userId);
