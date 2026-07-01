@@ -66,6 +66,7 @@ export const ICONS = {
 
 export const TOOL_ICONS: Record<string, string> = {
   "/studio": ICONS.mixingFaders,
+  "/vault": ICONS.vinyl,
   "/project-match": ICONS.search,
   "/dashboard": ICONS.cassette,
   "/collab": ICONS.equalizer,

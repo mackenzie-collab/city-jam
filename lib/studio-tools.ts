@@ -1,6 +1,7 @@
 /** Studio hub tool launcher cards */
 export const STUDIO_TOOLS = [
   { href: "/studio", label: "Projects", desc: "Kanban + music projects" },
+  { href: "/vault", label: "Audio Vault", desc: "Private demos + stems" },
   { href: "/project-match", label: "Project Match", desc: "Find collaborators" },
   { href: "/collab", label: "Collab", desc: "Shared task boards" },
   { href: "/circles", label: "Circles", desc: "Private groups" },
