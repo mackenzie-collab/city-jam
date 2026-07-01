@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Archive,
   Briefcase,
   Headphones,
   LayoutDashboard,
@@ -15,6 +16,7 @@ import { cn } from "@/lib/utils";
 
 const WORKSPACE_LINKS = [
   { href: "/studio", label: "Studio", icon: Music, exact: true },
+  { href: "/vault", label: "Audio Vault", icon: Archive, exact: true },
   { href: "/dashboard", label: "My Tracks", icon: LayoutDashboard, exact: true },
 ] as const;
 

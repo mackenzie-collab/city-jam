@@ -187,7 +187,7 @@ export default function ProjectDetail({ projectId }: { projectId: string }) {
               <h2 className="flex items-center gap-2 font-display text-lg uppercase text-cj-gold">
                 <Archive className="h-5 w-5" /> Vault Files
               </h2>
-              <Link href="/dashboard">
+              <Link href={`/vault?project=${encodeURIComponent(projectId)}`}>
                 <Button variant="secondary" size="sm">
                   <Plus className="mr-1 h-3 w-3" /> Upload
                 </Button>

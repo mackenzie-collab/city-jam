@@ -1,5 +1,10 @@
-import { redirect } from "next/navigation";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import VaultPanel from "@/components/VaultPanel";
 
 export default function VaultPage() {
-  redirect("/dashboard");
+  return (
+    <ProtectedRoute returnUrl="/vault">
+      <VaultPanel />
+    </ProtectedRoute>
+  );
 }
